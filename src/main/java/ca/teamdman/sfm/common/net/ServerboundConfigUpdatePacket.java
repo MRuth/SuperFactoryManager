@@ -1,14 +1,19 @@
 package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.common.config.SFMConfigSync;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.HandshakeMessages;
 
 public record ServerboundConfigUpdatePacket(
         String newConfig
 ) implements SFMPacket {
-    public static final int MAX_CONFIG_LENGTH = 1024;
+    /**
+     * Value chosen to match {@link HandshakeMessages.S2CConfigData#decode(FriendlyByteBuf)}
+     */
+    public static final int MAX_CONFIG_LENGTH = 32767;
     public static class Daddy implements SFMPacketDaddy<ServerboundConfigUpdatePacket> {
         @Override
         public void encode(
@@ -30,7 +35,7 @@ public record ServerboundConfigUpdatePacket(
         ) {
             ServerPlayer player = context.sender();
             if (player == null) {
-                SFM.LOGGER.error("Received ServerboundServerConfigRequestPacket from null player");
+                SFM.LOGGER.error("Received ServerboundConfigRequestPacket from null player");
                 return;
             }
             if (!player.hasPermissions(Commands.LEVEL_OWNERS)) {
@@ -40,11 +45,8 @@ public record ServerboundConfigUpdatePacket(
                 );
                 return;
             }
-//            String configToml = ConfigExporter.getConfigToml(SFMConfig.COMMON_SPEC);
-//            configToml = configToml.replaceAll("(?m)^", "-- ");
-//            configToml = configToml.replaceAll("\r", "");
-//            SFM.LOGGER.info("Sending config to player: {}", player.getName().getString());
-//            SFMPackets.sendToPlayer(() -> player, new ClientboundServerConfigResponsePacket(configToml));
+            SFMConfigSync.ConfigSyncResult result = SFMConfigSync.updateAndSyncServerConfig(msg.newConfig);
+            player.sendSystemMessage(result.component());
         }
 
         @Override

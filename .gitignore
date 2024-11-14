@@ -18,6 +18,7 @@ out
 *.iws
 *.iml
 .idea
+.idea.bak
 
 # gradle
 build

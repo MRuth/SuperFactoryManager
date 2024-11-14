@@ -21,7 +21,7 @@ public class ASTBuilder extends SFMLBaseVisitor<ASTNode> {
     private final Set<Label> USED_LABELS = new HashSet<>();
     private final Set<ResourceIdentifier<?, ?, ?>> USED_RESOURCES = new HashSet<>();
     private final List<Pair<ASTNode, ParserRuleContext>> AST_NODE_CONTEXTS = new LinkedList<>();
-    private final List<? extends String> DISALLOWED_RESOURCE_TYPES_FOR_TRANSFER = SFMConfig.getOrDefault(SFMConfig.COMMON.disallowedResourceTypesForTransfer);
+    private final List<? extends String> DISALLOWED_RESOURCE_TYPES_FOR_TRANSFER = SFMConfig.getOrDefault(SFMConfig.SERVER.disallowedResourceTypesForTransfer);
 
     public List<Pair<ASTNode, ParserRuleContext>> getNodesUnderCursor(int cursorPos) {
         return AST_NODE_CONTEXTS
@@ -141,8 +141,8 @@ public class ASTBuilder extends SFMLBaseVisitor<ASTNode> {
 
     @Override
     public Program visitProgram(SFMLParser.ProgramContext ctx) {
-        int configRevision = SFMConfig.COMMON.getRevision();
-        if (SFMConfig.COMMON.disableProgramExecution.get()) {
+        int configRevision = SFMConfig.SERVER.getRevision();
+        if (SFMConfig.getOrDefault(SFMConfig.SERVER.disableProgramExecution)) {
             throw new AssertionError("Program execution is disabled via config");
         }
         var name = visitName(ctx.name());
@@ -170,8 +170,8 @@ public class ASTBuilder extends SFMLBaseVisitor<ASTNode> {
 
         // get default min interval
         int minInterval = timerTrigger.usesOnlyForgeEnergyResourceIO()
-                          ? SFMConfig.getOrDefault(SFMConfig.COMMON.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO)
-                          : SFMConfig.getOrDefault(SFMConfig.COMMON.timerTriggerMinimumIntervalInTicks);
+                          ? SFMConfig.getOrDefault(SFMConfig.SERVER.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO)
+                          : SFMConfig.getOrDefault(SFMConfig.SERVER.timerTriggerMinimumIntervalInTicks);
 
         // validate interval
         if (time.ticks() < minInterval) {

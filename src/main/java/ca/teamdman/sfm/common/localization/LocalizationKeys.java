@@ -859,7 +859,18 @@ public final class LocalizationKeys {
             () -> SFMBlocks.BATTERY_BLOCK.get().getDescriptionId(),
             () -> "Battery (WIP)"
     );
-
+    public static final LocalizationEntry CONFIG_UPDATE_AND_SYNC_RESULT_SUCCESS = new LocalizationEntry(
+            "chat.sfm.config_update_and_sync_result.success",
+            "Successfully updated SFM config."
+    );
+    public static final LocalizationEntry CONFIG_UPDATE_AND_SYNC_RESULT_INVALID_CONFIG = new LocalizationEntry(
+            "chat.sfm.config_update_and_sync_result.invalid_config",
+            "The provided SFM config was invalid, no changes were made."
+    );
+    public static final LocalizationEntry CONFIG_UPDATE_AND_SYNC_RESULT_INTERNAL_FAILURE = new LocalizationEntry(
+            "chat.sfm.config_update_and_sync_result.internal_failure",
+            "Something went wrong while updating the SFM config, no changes were made."
+    );
     public static List<LocalizationEntry> getEntries() {
         // use reflection to get all the public static LocalizationEntry fields
         var rtn = new ArrayList<LocalizationEntry>();

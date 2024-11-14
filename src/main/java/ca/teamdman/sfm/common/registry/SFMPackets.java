@@ -74,8 +74,9 @@ public class SFMPackets {
         registerClientboundPacket(new ClientboundIfStatementInspectionResultsPacket.Daddy());
         registerServerboundPacket(new ServerboundBoolExprStatementInspectionRequestPacket.Daddy());
         registerClientboundPacket(new ClientboundBoolExprStatementInspectionResultsPacket.Daddy());
-        registerServerboundPacket(new ServerboundServerConfigRequestPacket.Daddy());
-        registerClientboundPacket(new ClientboundServerConfigResponsePacket.Daddy());
+        registerServerboundPacket(new ServerboundConfigRequestPacket.Daddy());
+        registerClientboundPacket(new ClientboundConfigResponsePacket.Daddy());
+        registerServerboundPacket(new ServerboundConfigUpdatePacket.Daddy());
         registerServerboundPacket(new ServerboundFacadePacket.Daddy());
     }
 

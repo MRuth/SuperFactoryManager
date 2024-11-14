@@ -86,7 +86,7 @@ public class ManagerBlockEntity extends BaseContainerBlockEntity {
     ) {
         long start = System.nanoTime();
         manager.tick++;
-        if (manager.program != null && manager.program.configRevision() != SFMConfig.COMMON.getRevision()) {
+        if (manager.program != null && manager.program.configRevision() != SFMConfig.SERVER.getRevision()) {
             manager.shouldRebuildProgram = true;
         }
         if (manager.shouldRebuildProgram) {

@@ -183,7 +183,7 @@ public record Program(
 
             // Perform tick
             if (context.getBehaviour() instanceof SimulateExploreAllPathsProgramBehaviour simulation) {
-                int maxConditionCount = SFMConfig.getOrDefault(SFMConfig.COMMON.maxIfStatementsInTriggerBeforeSimulationIsntAllowed);
+                int maxConditionCount = SFMConfig.getOrDefault(SFMConfig.SERVER.maxIfStatementsInTriggerBeforeSimulationIsntAllowed);
                 int conditionCount = Math.min(trigger.getConditionCount(), maxConditionCount);
                 int numPossibleStates = (int) Math.max(1, Math.pow(2, conditionCount));
                 for (int i = 0; i < numPossibleStates; i++) {

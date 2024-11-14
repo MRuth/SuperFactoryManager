@@ -310,8 +310,9 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerContainerMenu>
         status = MANAGER_GUI_STATUS_REBUILD.getComponent();
         statusCountdown = STATUS_DURATION;
     }
+
     private void onServerConfigButtonClicked() {
-        SFMPackets.sendToServer(new ServerboundServerConfigRequestPacket(false));
+        SFMPackets.sendToServer(new ServerboundConfigRequestPacket(ClientboundConfigResponsePacket.ConfigResponseUsage.SHOW));
     }
 
     private void sendAttemptFix() {

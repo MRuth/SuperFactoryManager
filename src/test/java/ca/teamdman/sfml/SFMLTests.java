@@ -194,7 +194,7 @@ public class SFMLTests {
 
     @Test
     public void badTimerIntervalCheckingConfig() {
-        var min = SFMConfig.COMMON.timerTriggerMinimumIntervalInTicks.getDefault();
+        var min = SFMConfig.SERVER.timerTriggerMinimumIntervalInTicks.getDefault();
         var template = """
                         name "hello world"
                     
@@ -215,7 +215,7 @@ public class SFMLTests {
 
     @Test
     public void forgeTimerIntervalPass() {
-        var min = SFMConfig.COMMON.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO.getDefault();
+        var min = SFMConfig.SERVER.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO.getDefault();
         assertEquals(min, 1);
         var input = """
                     name "hello world"
@@ -229,7 +229,7 @@ public class SFMLTests {
 
     @Test
     public void forgeTimerIntervalFail1() {
-        var min = SFMConfig.COMMON.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO.getDefault();
+        var min = SFMConfig.SERVER.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO.getDefault();
         assertEquals(min, 1);
         var input = """
                     name "hello world"
@@ -243,7 +243,7 @@ public class SFMLTests {
 
     @Test
     public void forgeTimerIntervalFail2() {
-        var min = SFMConfig.COMMON.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO.getDefault();
+        var min = SFMConfig.SERVER.timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO.getDefault();
         assertEquals(min, 1);
         var input = """
                     name "hello world"
