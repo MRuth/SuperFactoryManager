@@ -78,6 +78,8 @@ EVERY 20G+5 TICKS DO END
 -- Fix missing truncation on ctrl+space actions for label and output tokens
 -- Add tunnelled manager block, thanks @Qther
 -- Performance improvements by switching to imperative loops, thanks @Qther
+-- Add `/sfm config show` (anyone) and `/sfm config edit` (op) commands
+-- Add "show config" button to manager gui
 
 ---- 4.19.1 ----
 -- Fix 1.19.4 build failures due to Gradle hating me

@@ -90,7 +90,7 @@ public class SFMCommand {
                                       })
                         )
                         .then(Commands.literal("edit")
-                                      .requires(source -> source.hasPermission(Commands.LEVEL_ALL))
+                                      .requires(source -> source.hasPermission(Commands.LEVEL_OWNERS))
                                       .executes(ctx -> {
                                           SFM.LOGGER.info(
                                                   "Editing config - slash command used by {}",
