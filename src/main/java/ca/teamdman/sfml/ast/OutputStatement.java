@@ -7,6 +7,10 @@ import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -70,6 +74,7 @@ public class OutputStatement implements IOStatement {
                     .trace(x -> x.accept(LOG_PROGRAM_TICK_IO_STATEMENT_MOVE_TO_DESTINATION_TRACKER_REJECT.get()));
             return;
         }
+
         // find out how much we can fit
         STACK potentialRemainder = destination.insert(potential, true);
 
@@ -181,26 +186,70 @@ public class OutputStatement implements IOStatement {
         // THIS SHOULD NEVER HAPPEN
         // will void items if it does
         if (!destination.type.isEmpty(extractedRemainder)) {
-            context.getLogger().error(x -> x.accept(LOG_PROGRAM_VOIDED_RESOURCES.get(
-                    potential,
-                    SFMResourceTypes.DEFERRED_TYPES
-                            .get()
-                            .getKey(source.type),
-                    destination.type.getRegistryKey(
-                            potential),
-                    extracted,
-                    extractedRemainder
-            )));
-            SFM.LOGGER.error(
-                    "!!!RESOURCE LOSS HAS OCCURRED!!! Manager at {} in {} failed to move all promised items, found {} {}:{}, took {} but had {} left over after insertion.",
-                    context.getManager().getBlockPos(),
-                    context.getManager().getLevel(),
-                    potential,
-                    SFMResourceTypes.DEFERRED_TYPES.get().getKey(source.type),
-                    destination.type.getRegistryKey(potential),
-                    extracted,
-                    extractedRemainder
-            );
+            ResourceLocation resourceTypeName = SFMResourceTypes.DEFERRED_TYPES.get().getKey(source.type);
+            String stackName = destination.type.getItem(potential).toString();
+            Level level = context.getManager().getLevel();
+            assert level != null;
+            StringBuilder report = new StringBuilder();
+            report.append("!!!RESOURCE LOSS HAS OCCURRED!!!\n");
+            report.append("=== Summary ===\n");
+            report.append("Extractable          : ").append(potential).append("\n");
+            report.append("Extracted            : ").append(extracted).append("\n");
+            report.append("Remainder (potential): ").append(potentialRemainder).append(" <-- the output block lied here\n");
+            report.append("Inserted             : ").append(moved).append(" ").append(stackName).append("\n");
+            report.append("Remainder (lost)     : ")
+                    .append(extractedRemainder)
+                    .append(" (")
+                    .append(resourceTypeName)
+                    .append(":")
+                    .append(stackName)
+                    .append(")\n");
+
+            report.append("=== Manager ===\n");
+            report
+                    .append("Level: ")
+                    .append(level.dimensionTypeId().location())
+                    .append(" (")
+                    .append(level)
+                    .append(")\n");
+            report.append("Position: ").append(context.getManager().getBlockPos()).append("\n");
+
+            report.append("=== Input Slot ===\n");
+            report.append("Slot: ").append(source.slot).append("\n");
+            report.append("Position: ").append(source.pos).append("\n");
+            report
+                    .append("Capability: ")
+                    .append(source.handler)
+                    .append(" (")
+                    .append(source.handler.getClass().getName())
+                    .append(")\n");
+            BlockEntity inputBlockEntity = level.getBlockEntity(source.pos);
+            if (inputBlockEntity != null) {
+                ResourceLocation inputBlockEntityType = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(inputBlockEntity.getType());
+                report.append("Block Entity: ").append(inputBlockEntity.getClass().getName()).append(" (").append(inputBlockEntityType).append(")\n");
+            } else {
+                report.append("Block Entity: null\n");
+            }
+
+            report.append("=== Output Slot ===\n");
+            report.append("Position: ").append(destination.pos).append("\n");
+            report.append("Slot: ").append(destination.slot).append("\n");
+            report
+                    .append("Capability: ")
+                    .append(destination.handler)
+                    .append(" (")
+                    .append(destination.handler.getClass().getName())
+                    .append(")\n");
+            BlockEntity outputBlockEntity = level.getBlockEntity(destination.pos);
+            if (outputBlockEntity != null) {
+                ResourceLocation outputBlockEntityType = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(outputBlockEntity.getType());
+                report.append("Block Entity: ").append(outputBlockEntity.getClass().getName()).append(" (").append(outputBlockEntityType).append(")\n");
+            } else {
+                report.append("Block Entity: null\n");
+            }
+            String builtReport = report.toString();
+            context.getLogger().error(x -> x.accept(LOG_PROGRAM_VOIDED_RESOURCES.get(builtReport)));
+            SFM.LOGGER.error(builtReport);
         }
     }
 

@@ -441,7 +441,7 @@ public final class LocalizationKeys {
     );
     public static final LocalizationEntry LOG_PROGRAM_VOIDED_RESOURCES = new LocalizationEntry(
             "log.sfm.program.voided_resources",
-            "!!!RESOURCE LOSS HAS OCCURRED!!! Failed to move all promised items, found %s %s:%s, took %d but had %d left over after insertion"
+            "%s"
     );
     public static final LocalizationEntry LOG_PROGRAM_TICK_TRIGGER_STATEMENT = new LocalizationEntry(
             "log.sfm.statement.tick.trigger",

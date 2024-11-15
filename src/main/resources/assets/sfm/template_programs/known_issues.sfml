@@ -30,4 +30,11 @@ NAME "Known issues"
 
 -- scroll bar in the logs gui becomes inaccurate as logs grow
 
+-- CoFH inventories have integer overflow when moving items in large quantities
+EVERY 20 TICKS DO
+    INPUT seeds FROM mekanism_creative_bin
+    OUTPUT TO phyto SLOTS 0
+    -- sfm warning that resource loss has occurred because cofh returns erroneous values
+END
+
 -- Sorry for any inconveniences :(
