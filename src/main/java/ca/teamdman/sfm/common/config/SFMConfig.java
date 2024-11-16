@@ -44,14 +44,16 @@ then it should be server config
 public class SFMConfig {
     public static final ForgeConfigSpec SERVER_SPEC;
     public static final ForgeConfigSpec CLIENT_SPEC;
-    public static final Server SERVER;
-    public static final SFMConfig.Client CLIENT;
+    public static final SFMServerConfig SERVER;
+    public static final SFMClientConfig CLIENT;
 
     static {
-        final Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        final Pair<SFMServerConfig, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder()
+                .configure(SFMServerConfig::new);
         SERVER_SPEC = serverSpecPair.getRight();
         SERVER = serverSpecPair.getLeft();
-        final Pair<SFMConfig.Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(SFMConfig.Client::new);
+        final Pair<SFMClientConfig, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder()
+                .configure(SFMClientConfig::new);
         CLIENT_SPEC = clientSpecPair.getRight();
         CLIENT = clientSpecPair.getLeft();
     }
@@ -68,13 +70,14 @@ public class SFMConfig {
     }
 
     public static void register(ModLoadingContext context) {
-        context.registerConfig(ModConfig.Type.COMMON, SFMConfig.SERVER_SPEC);
+        context.registerConfig(ModConfig.Type.SERVER, SFMConfig.SERVER_SPEC);
         context.registerConfig(ModConfig.Type.CLIENT, SFMConfig.CLIENT_SPEC);
     }
 
-    @Mod.EventBusSubscriber(modid = SFM.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public static class Server {
+    @Mod.EventBusSubscriber(modid = SFM.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class SFMServerConfig {
         public final ForgeConfigSpec.BooleanValue disableProgramExecution;
+        public final ForgeConfigSpec.BooleanValue logResourceLossToConsole;
         public final ForgeConfigSpec.IntValue timerTriggerMinimumIntervalInTicks;
         public final ForgeConfigSpec.IntValue timerTriggerMinimumIntervalInTicksWhenOnlyForgeEnergyIO;
         public final ForgeConfigSpec.IntValue maxIfStatementsInTriggerBeforeSimulationIsntAllowed;
@@ -85,11 +88,15 @@ public class SFMConfig {
          */
         private int revision = 0;
 
-        Server(ForgeConfigSpec.Builder builder) {
+        SFMServerConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("This config is shown to clients, don't put anything secret in here");
             disableProgramExecution = builder
                     .comment("Prevents factory managers from compiling and running code (for emergencies)")
                     .define("disableProgramExecution", false);
+
+            logResourceLossToConsole = builder
+                    .comment("Log resource loss to console")
+                    .define("logResourceLossToConsole", true);
 
             timerTriggerMinimumIntervalInTicks = builder
                     .defineInRange("timerTriggerMinimumIntervalInTicks", 20, 1, Integer.MAX_VALUE);
@@ -121,18 +128,26 @@ public class SFMConfig {
         }
 
         @SubscribeEvent
-        public static void onConfigChanged(ModConfigEvent.Reloading event) {
+        public static void onConfigLoaded(ModConfigEvent.Loading event) {
             if (event.getConfig().getSpec() == SERVER_SPEC) {
                 SFMConfig.SERVER.revision++;
                 SFM.LOGGER.info("SFM config reloaded, now on revision {}", SFMConfig.SERVER.revision);
             }
         }
+
+        @SubscribeEvent
+        public static void onConfigReloaded(ModConfigEvent.Reloading event) {
+            if (event.getConfig().getSpec() == SERVER_SPEC) {
+                SFMConfig.SERVER.revision++;
+                SFM.LOGGER.info("SFM config loaded, now on revision {}", SFMConfig.SERVER.revision);
+            }
+        }
     }
 
-    public static class Client {
+    public static class SFMClientConfig {
         public final ForgeConfigSpec.BooleanValue showLineNumbers;
 
-        Client(ForgeConfigSpec.Builder builder) {
+        SFMClientConfig(ForgeConfigSpec.Builder builder) {
             showLineNumbers = builder.define("showLineNumbers", false);
         }
     }

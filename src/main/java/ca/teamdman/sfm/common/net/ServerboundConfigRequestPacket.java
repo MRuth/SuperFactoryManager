@@ -1,8 +1,8 @@
 package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.SFM;
-import ca.teamdman.sfm.common.config.ConfigExporter;
 import ca.teamdman.sfm.common.config.SFMConfig;
+import ca.teamdman.sfm.common.config.SFMConfigReadWriter;
 import ca.teamdman.sfm.common.net.ClientboundConfigResponsePacket.ConfigResponseUsage;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import net.minecraft.commands.Commands;
@@ -44,7 +44,12 @@ public record ServerboundConfigRequestPacket(
                 );
                 return;
             }
-            String configToml = ConfigExporter.getConfigToml(SFMConfig.SERVER_SPEC);
+            String configToml = SFMConfigReadWriter.getConfigToml(SFMConfig.SERVER_SPEC);
+            if (configToml == null) {
+                SFM.LOGGER.warn("Unable to get server config for player {}", player.getName().getString());
+                player.sendSystemMessage(SFMConfigReadWriter.ConfigSyncResult.INTERNAL_FAILURE.component());
+                return;
+            }
             configToml = configToml.replaceAll("(?m)^#", "--");
             configToml = configToml.replaceAll("\r", "");
             SFM.LOGGER.info("Sending config to player: {}", player.getName().getString());

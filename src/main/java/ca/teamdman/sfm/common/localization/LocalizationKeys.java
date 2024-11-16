@@ -867,9 +867,13 @@ public final class LocalizationKeys {
             "chat.sfm.config_update_and_sync_result.invalid_config",
             "The provided SFM config was invalid, no changes were made."
     );
+    public static final LocalizationEntry CONFIG_UPDATE_AND_SYNC_RESULT_FAILED_TO_FIND = new LocalizationEntry(
+            "chat.sfm.config_update_and_sync_result.failed_to_find",
+            "Failed to find the SFM config toml."
+    );
     public static final LocalizationEntry CONFIG_UPDATE_AND_SYNC_RESULT_INTERNAL_FAILURE = new LocalizationEntry(
             "chat.sfm.config_update_and_sync_result.internal_failure",
-            "Something went wrong while updating the SFM config, no changes were made."
+            "Something went wrong while updating the SFM config, I have no idea if changes were made. Check the server logs."
     );
     public static List<LocalizationEntry> getEntries() {
         // use reflection to get all the public static LocalizationEntry fields

@@ -1,6 +1,7 @@
 package ca.teamdman.sfml.ast;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.program.*;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
@@ -195,7 +196,10 @@ public class OutputStatement implements IOStatement {
             report.append("=== Summary ===\n");
             report.append("Extractable          : ").append(potential).append("\n");
             report.append("Extracted            : ").append(extracted).append("\n");
-            report.append("Remainder (potential): ").append(potentialRemainder).append(" <-- the output block lied here\n");
+            report
+                    .append("Remainder (potential): ")
+                    .append(potentialRemainder)
+                    .append(" <-- the output block lied here\n");
             report.append("Inserted             : ").append(moved).append(" ").append(stackName).append("\n");
             report.append("Remainder (lost)     : ")
                     .append(extractedRemainder)
@@ -226,7 +230,12 @@ public class OutputStatement implements IOStatement {
             BlockEntity inputBlockEntity = level.getBlockEntity(source.pos);
             if (inputBlockEntity != null) {
                 ResourceLocation inputBlockEntityType = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(inputBlockEntity.getType());
-                report.append("Block Entity: ").append(inputBlockEntity.getClass().getName()).append(" (").append(inputBlockEntityType).append(")\n");
+                report
+                        .append("Block Entity: ")
+                        .append(inputBlockEntity.getClass().getName())
+                        .append(" (")
+                        .append(inputBlockEntityType)
+                        .append(")\n");
             } else {
                 report.append("Block Entity: null\n");
             }
@@ -243,13 +252,20 @@ public class OutputStatement implements IOStatement {
             BlockEntity outputBlockEntity = level.getBlockEntity(destination.pos);
             if (outputBlockEntity != null) {
                 ResourceLocation outputBlockEntityType = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(outputBlockEntity.getType());
-                report.append("Block Entity: ").append(outputBlockEntity.getClass().getName()).append(" (").append(outputBlockEntityType).append(")\n");
+                report
+                        .append("Block Entity: ")
+                        .append(outputBlockEntity.getClass().getName())
+                        .append(" (")
+                        .append(outputBlockEntityType)
+                        .append(")\n");
             } else {
                 report.append("Block Entity: null\n");
             }
             String builtReport = report.toString();
             context.getLogger().error(x -> x.accept(LOG_PROGRAM_VOIDED_RESOURCES.get(builtReport)));
-            SFM.LOGGER.error(builtReport);
+            if (SFMConfig.SERVER.logResourceLossToConsole.get()) {
+                SFM.LOGGER.error("{}\nThis can be silenced in the SFM config.", builtReport);
+            }
         }
     }
 

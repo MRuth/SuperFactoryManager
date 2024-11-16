@@ -2,16 +2,13 @@ package ca.teamdman.sfm.common.command;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
-import ca.teamdman.sfm.common.config.ConfigExporter;
-import ca.teamdman.sfm.common.config.SFMConfig;
+import ca.teamdman.sfm.common.config.SFMConfigReadWriter;
 import ca.teamdman.sfm.common.net.ClientboundConfigResponsePacket;
-import ca.teamdman.sfm.common.registry.SFMPackets;
 import ca.teamdman.sfm.common.watertanknetwork.WaterNetworkManager;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -68,23 +65,9 @@ public class SFMCommand {
                         .then(Commands.literal("show")
                                       .requires(source -> source.hasPermission(Commands.LEVEL_ALL))
                                       .executes(ctx -> {
-                                          SFM.LOGGER.info(
-                                                  "Showing config - slash command used by {}",
-                                                  ctx.getSource().getTextName()
-                                          );
-                                          ServerPlayer player = ctx.getSource().getPlayer();
-                                          if (player == null) {
-                                              SFM.LOGGER.error(
-                                                      "Received ServerboundConfigRequestPacket (show) from null player"
-                                              );
-                                              return SINGLE_SUCCESS;
-                                          }
-                                          SFMPackets.sendToPlayer(
-                                                  player,
-                                                  new ClientboundConfigResponsePacket(
-                                                          ConfigExporter.getConfigToml(SFMConfig.SERVER_SPEC),
-                                                          ClientboundConfigResponsePacket.ConfigResponseUsage.SHOW
-                                                  )
+                                          SFMConfigReadWriter.handleConfigCommandUsed(
+                                                  ctx,
+                                                  ClientboundConfigResponsePacket.ConfigResponseUsage.SHOW
                                           );
                                           return SINGLE_SUCCESS;
                                       })
@@ -92,23 +75,9 @@ public class SFMCommand {
                         .then(Commands.literal("edit")
                                       .requires(source -> source.hasPermission(Commands.LEVEL_OWNERS))
                                       .executes(ctx -> {
-                                          SFM.LOGGER.info(
-                                                  "Editing config - slash command used by {}",
-                                                  ctx.getSource().getTextName()
-                                          );
-                                          ServerPlayer player = ctx.getSource().getPlayer();
-                                          if (player == null) {
-                                              SFM.LOGGER.error(
-                                                      "Received ServerboundConfigRequestPacket (edit) from null player"
-                                              );
-                                              return SINGLE_SUCCESS;
-                                          }
-                                          SFMPackets.sendToPlayer(
-                                                  player,
-                                                  new ClientboundConfigResponsePacket(
-                                                          ConfigExporter.getConfigToml(SFMConfig.SERVER_SPEC),
-                                                          ClientboundConfigResponsePacket.ConfigResponseUsage.EDIT
-                                                  )
+                                          SFMConfigReadWriter.handleConfigCommandUsed(
+                                                  ctx,
+                                                  ClientboundConfigResponsePacket.ConfigResponseUsage.EDIT
                                           );
                                           return SINGLE_SUCCESS;
                                       })
@@ -116,4 +85,5 @@ public class SFMCommand {
         );
         event.getDispatcher().register(command);
     }
+
 }

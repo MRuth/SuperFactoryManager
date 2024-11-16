@@ -38,10 +38,12 @@ public record ClientboundConfigResponsePacket(
                 ClientboundConfigResponsePacket msg,
                 SFMPacketHandlingContext context
         ) {
+            String configTomlString = msg.configToml();
+            configTomlString = configTomlString.replaceAll("\r", "");
             switch (msg.requestingEditMode()) {
-                case SHOW -> ClientStuff.showProgramEditScreen(msg.configToml());
+                case SHOW -> ClientStuff.showProgramEditScreen(configTomlString);
                 case EDIT -> ClientStuff.showProgramEditScreen(
-                        msg.configToml(),
+                        configTomlString,
                         (newContent) -> SFMPackets.sendToServer(new ServerboundConfigUpdatePacket(newContent))
                 );
             }
