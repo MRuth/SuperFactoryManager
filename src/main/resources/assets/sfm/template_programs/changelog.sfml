@@ -81,6 +81,7 @@ EVERY 20G+5 TICKS DO END
 -- Add `/sfm config show` (anyone) and `/sfm config edit` (op) commands
 -- Add "show config" button to manager gui
 -- Improve resource loss logging
+-- Add "(SFM)" to mod name in mods.toml so it shows up in searches for "SFM"
 
 ---- 4.19.1 ----
 -- Fix 1.19.4 build failures due to Gradle hating me
