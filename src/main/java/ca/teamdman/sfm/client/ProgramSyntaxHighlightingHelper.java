@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.client;
 
-import ca.teamdman.sfml.SFMLLexer;
+import ca.teamdman.langs.SFMLLexer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

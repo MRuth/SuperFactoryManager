@@ -1,5 +1,7 @@
 package ca.teamdman.sfml.ast;
 
+import ca.teamdman.langs.SFMLLexer;
+import ca.teamdman.langs.SFMLParser;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.config.SFMConfig;
@@ -7,8 +9,6 @@ import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.program.*;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import ca.teamdman.sfm.common.util.SFMUtils;
-import ca.teamdman.sfml.SFMLLexer;
-import ca.teamdman.sfml.SFMLParser;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;

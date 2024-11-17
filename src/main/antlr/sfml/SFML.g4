@@ -1,4 +1,7 @@
 grammar SFML;
+@header {
+package ca.teamdman.langs;
+}
 @lexer::members {
     public boolean INCLUDE_UNUSED = false; // we want syntax highlighting to not break on unexpected tokens
 }

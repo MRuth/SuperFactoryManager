@@ -1,10 +1,10 @@
 package ca.teamdman.sfm.client;
 
+import ca.teamdman.langs.SFMLLexer;
+import ca.teamdman.langs.SFMLParser;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.net.*;
 import ca.teamdman.sfm.common.registry.SFMPackets;
-import ca.teamdman.sfml.SFMLLexer;
-import ca.teamdman.sfml.SFMLParser;
 import ca.teamdman.sfml.ast.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;

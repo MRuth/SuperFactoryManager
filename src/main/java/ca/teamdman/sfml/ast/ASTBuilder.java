@@ -1,11 +1,11 @@
 package ca.teamdman.sfml.ast;
 
+import ca.teamdman.langs.SFMLBaseVisitor;
+import ca.teamdman.langs.SFMLParser;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
-import ca.teamdman.sfml.SFMLBaseVisitor;
-import ca.teamdman.sfml.SFMLParser;
 import com.mojang.datafixers.util.Pair;
 import cpw.mods.modlauncher.Launcher;
 import net.minecraft.resources.ResourceLocation;

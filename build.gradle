@@ -458,11 +458,23 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+
 generateGrammarSource {
-    arguments = ["-visitor", "-package", "ca.teamdman.sfml"]
-    outputDirectory = file("${project.buildDir}/generated-src/antlr/main/ca/teamdman/sfml")
+    arguments = [
+            "-visitor",
+            "-Xexact-output-dir" // https://stackoverflow.com/a/79058733/11141271 fixes "can't find .tokens file" error for TomlParser.g4
+    ]
+    outputDirectory = file("${project.buildDir}/generated-src/antlr/main/ca/teamdman/langs")
+
+//    include 'sfml/SFML.g4'
+//    // Include the lexer first
+//    include 'toml/TomlLexer.g4'
+//    include 'toml/TomlParser.g4'
 }
-compileJava.dependsOn generateGrammarSource
+
+compileJava{
+    dependsOn generateGrammarSource
+}
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 // However, this causes gradle to throw "Error getting artifact" so keep it commented out to retain your sanity
