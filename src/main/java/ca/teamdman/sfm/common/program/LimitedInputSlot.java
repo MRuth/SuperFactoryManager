@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
-public class LimitedInputSlot<STACK, ITEM, CAP> {
+public class LimitedInputSlot<STACK, ITEM, CAP> implements LimitedSlot<STACK, ITEM, CAP> {
     @SuppressWarnings("NotNullFieldNotInitialized") // done in init method in constructor
     public ResourceType<STACK, ITEM, CAP> type;
     @SuppressWarnings("NotNullFieldNotInitialized") // done in init method in constructor
@@ -114,5 +114,36 @@ public class LimitedInputSlot<STACK, ITEM, CAP> {
                + ", cap=" + type.displayAsCapabilityClass()
                + ", tracker=" + tracker
                + '}';
+    }
+
+
+    @Override
+    public ResourceType<STACK, ITEM, CAP> getType() {
+        return type;
+    }
+
+    @Override
+    public CAP getHandler() {
+        return handler;
+    }
+
+    @Override
+    public BlockPos getPos() {
+        return pos;
+    }
+
+    @Override
+    public Label getLabel() {
+        return label;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return direction;
+    }
+
+    @Override
+    public int getSlot() {
+        return slot;
     }
 }
