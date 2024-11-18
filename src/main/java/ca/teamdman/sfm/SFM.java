@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 public class SFM {
     public static final String MOD_ID = "sfm";
     public static final Logger LOGGER = LogManager.getLogger(SFM.MOD_ID);
+    public static final String ISSUE_TRACKER_URL = "https://github.com/TeamDman/SuperFactoryManager/issues";
     public SFM() {
         var bus = FMLJavaModLoadingContext
                 .get()
