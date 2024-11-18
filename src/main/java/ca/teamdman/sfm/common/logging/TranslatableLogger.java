@@ -128,6 +128,10 @@ public class TranslatableLogger {
         return toSend;
     }
 
+    public ArrayDeque<TranslatableLogEvent> getLogs() {
+        return new ArrayDeque<>(getContents());
+    }
+
     public void pruneSoWeDontEatAllTheRam() {
         List<TranslatableLogEvent> contents = getContents();
         if (contents.size() > 10_000) {
