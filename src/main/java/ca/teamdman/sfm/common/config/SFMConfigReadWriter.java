@@ -44,19 +44,24 @@ public class SFMConfigReadWriter {
      * which calls {@link ModConfig#acceptSyncedConfig(byte[])}
      */
     public static ConfigSyncResult updateAndSyncServerConfig(String newConfigToml) {
-        SFM.LOGGER.debug("Received config for update and sync:\n{}", newConfigToml);
-        CommentedConfig config = parseConfigToml(newConfigToml);
-        if (config == null) {
-            SFM.LOGGER.error("Received invalid config from player");
-            return ConfigSyncResult.INVALID_CONFIG;
-        }
-        if (!writeServerConfig(config)) {
-            SFM.LOGGER.error("Failed to write server config");
+        try {
+            SFM.LOGGER.debug("Received config for update and sync:\n{}", newConfigToml);
+            CommentedConfig config = parseConfigToml(newConfigToml);
+            if (config == null) {
+                SFM.LOGGER.error("Received invalid config from player");
+                return ConfigSyncResult.INVALID_CONFIG;
+            }
+            if (!writeServerConfig(config)) {
+                SFM.LOGGER.error("Failed to write server config");
+                return ConfigSyncResult.INTERNAL_FAILURE;
+            }
+            // Here is where SFM would distribute the new config to players.
+            // For now, we don't care if the client doesn't have the latest server config.
+            return ConfigSyncResult.SUCCESS;
+        } catch (Throwable t) {
+            SFM.LOGGER.error("Failed to update and sync server config", t);
             return ConfigSyncResult.INTERNAL_FAILURE;
         }
-        // Here is where SFM would distribute the new config to players.
-        // For now, we don't care if the client doesn't have the latest server config.
-        return ConfigSyncResult.SUCCESS;
     }
 
 
@@ -99,21 +104,27 @@ public class SFMConfigReadWriter {
             return false;
         }
 
-        // Close the old config
-        modConfig.getHandler().unload(configBasePath, modConfig);
+        // ~~Close the old config~~
+        // this is commented out because it actually unwatches the whole dir instead of just our file
+        // this causes "Failed to remove config {} from tracker!" warnings vvv
+        // java.lang.NullPointerException: Cannot read field "watchedFileCount" because "watchedDir" is null
+        // so do nothing to close the old config
+//        modConfig.getHandler().unload(configBasePath, modConfig);
 
         // Write the new config
         TomlFormat.instance().createWriter().write(config, configPath, WritingMode.REPLACE);
 
         // Load the new config
-        final CommentedFileConfig fileConfig = modConfig.getHandler().reader(configPath).apply(modConfig);
+        final CommentedFileConfig fileConfig = modConfig.getHandler().reader(configBasePath).apply(modConfig);
+        SFM.LOGGER.info("Setting up new config data");
         if (!setConfigData(modConfig, fileConfig)) {
             SFM.LOGGER.warn("Failed to set new config data");
             return false;
         }
 
+        SFM.LOGGER.info("Firing config changed event");
         if (!fireChangedEvent(modConfig)) {
-            SFM.LOGGER.warn("Failed to fire changed event");
+            SFM.LOGGER.warn("Failed to fire config changed event");
             return false;
         }
         return true;
