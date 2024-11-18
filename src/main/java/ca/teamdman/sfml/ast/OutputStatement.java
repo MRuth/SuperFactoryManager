@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayDeque;
@@ -192,22 +193,26 @@ public class OutputStatement implements IOStatement {
             Level level = context.getManager().getLevel();
             assert level != null;
             StringBuilder report = new StringBuilder();
-            report.append("!!!RESOURCE LOSS HAS OCCURRED!!!\n");
+            report.append("!!!RESOURCE LOSS HAS OCCURRED!!!");
+            String currentLine = Thread.currentThread().getStackTrace()[1].toString();
+            report.append("    ").append(currentLine).append("\n");
             report.append("=== Summary ===\n");
-            report.append("Extractable          : ").append(potential).append("\n");
-            report.append("Extracted            : ").append(extracted).append("\n");
+            int width = -32;
+            report.append(String.format("%"+width+"s", "Simulated extraction")).append(": ").append(potential).append("\n");
             report
-                    .append("Remainder (potential): ")
+                    .append(String.format("%"+width+"s", "Simulated insertion remainder")).append(": ")
                     .append(potentialRemainder)
+                    .append(" (moved=").append(resourceType.getAmountDifference(potential, potentialRemainder)).append(")")
                     .append(" <-- the output block lied here\n");
-            report.append("Inserted             : ").append(moved).append(" ").append(stackName).append("\n");
-            report.append("Remainder (lost)     : ")
+            report.append(String.format("%"+width+"s", "Actual extraction")).append(": ").append(extracted).append("\n");
+            report.append(String.format("%"+width+"s", "Actual insertion")).append(": ").append(moved).append(" ").append(stackName).append("\n");
+            report.append(String.format("%"+width+"s", "Actual insertion remainder")).append(": ")
                     .append(extractedRemainder)
                     .append(" (")
                     .append(resourceTypeName)
                     .append(":")
                     .append(stackName)
-                    .append(")\n");
+                    .append(") <-- this is what was lost\n");
 
             report.append("=== Manager ===\n");
             report
@@ -219,54 +224,57 @@ public class OutputStatement implements IOStatement {
             report.append("Position: ").append(context.getManager().getBlockPos()).append("\n");
 
             report.append("=== Input Slot ===\n");
-            report.append("Slot: ").append(source.slot).append("\n");
-            report.append("Position: ").append(source.pos).append("\n");
-            report
-                    .append("Capability: ")
-                    .append(source.handler)
-                    .append(" (")
-                    .append(source.handler.getClass().getName())
-                    .append(")\n");
-            BlockEntity inputBlockEntity = level.getBlockEntity(source.pos);
-            if (inputBlockEntity != null) {
-                ResourceLocation inputBlockEntityType = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(inputBlockEntity.getType());
-                report
-                        .append("Block Entity: ")
-                        .append(inputBlockEntity.getClass().getName())
-                        .append(" (")
-                        .append(inputBlockEntityType)
-                        .append(")\n");
-            } else {
-                report.append("Block Entity: null\n");
-            }
+            addSlotDetailsToReport(report, source, level);
 
             report.append("=== Output Slot ===\n");
-            report.append("Position: ").append(destination.pos).append("\n");
-            report.append("Slot: ").append(destination.slot).append("\n");
-            report
-                    .append("Capability: ")
-                    .append(destination.handler)
-                    .append(" (")
-                    .append(destination.handler.getClass().getName())
-                    .append(")\n");
-            BlockEntity outputBlockEntity = level.getBlockEntity(destination.pos);
-            if (outputBlockEntity != null) {
-                ResourceLocation outputBlockEntityType = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(outputBlockEntity.getType());
-                report
-                        .append("Block Entity: ")
-                        .append(outputBlockEntity.getClass().getName())
-                        .append(" (")
-                        .append(outputBlockEntityType)
-                        .append(")\n");
-            } else {
-                report.append("Block Entity: null\n");
-            }
-            String builtReport = report.toString();
-            context.getLogger().error(x -> x.accept(LOG_PROGRAM_VOIDED_RESOURCES.get(builtReport)));
+            addSlotDetailsToReport(report, destination, level);
+
+            context.getLogger().error(x -> x.accept(LOG_PROGRAM_VOIDED_RESOURCES.get(report.toString())));
             if (SFMConfig.SERVER.logResourceLossToConsole.get()) {
-                SFM.LOGGER.error("{}\nThis can be silenced in the SFM config.", builtReport);
+                report.append("\nThis can be silenced in the SFM config.\n");
+                report.append("Operators can use `/sfm config edit` to open a GUI to change the SFM config while the game is running.\n");
+                report.append("This can be caused by output inventory logic encountering an integer overflow when moving large quantities of items.\n");
+                report.append("The SFM issue tracker can be found at ").append(SFM.ISSUE_TRACKER_URL).append(" because this shouldn't be happening lol");
+                SFM.LOGGER.error(report.toString());
             }
         }
+    }
+
+    private static <STACK, ITEM, CAP> void addSlotDetailsToReport(
+            StringBuilder report,
+            LimitedSlot<STACK, ITEM, CAP> slot,
+            Level level
+    ) {
+        report.append("Slot: ").append(slot.getSlot()).append("\n");
+        report.append("Position: ").append(slot.getPos()).append("\n");
+        report.append("Direction: ").append(slot.getDirection()).append("\n");
+        report
+                .append("Capability: ")
+                .append(slot.getHandler())
+                .append(" (")
+                .append(slot.getHandler().getClass().getName())
+                .append(")\n");
+        BlockEntity inputBlockEntity = level.getBlockEntity(slot.getPos());
+        if (inputBlockEntity != null) {
+            ResourceLocation inputBlockEntityType = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(inputBlockEntity.getType());
+            report
+                    .append("Block Entity: ")
+                    .append(inputBlockEntity.getClass().getName())
+                    .append(" (")
+                    .append(inputBlockEntityType)
+                    .append(")\n");
+        } else {
+            report.append("Block Entity: null\n");
+        }
+        BlockState blockState = level.getBlockState(slot.getPos());
+        ResourceLocation blockType = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+        report
+                .append("Block: ")
+                .append(blockState.getBlock().getClass().getName())
+                .append(" (")
+                .append(blockType)
+                .append(")\n");
+        report.append("Block State: ").append(blockState).append("\n");
     }
 
     /**
