@@ -1,6 +1,5 @@
 package ca.teamdman.sfm.common.net;
 
-import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
 import ca.teamdman.sfml.ast.Program;
@@ -54,7 +53,8 @@ public record ClientboundManagerGuiUpdatePacket(
             if (player == null
                 || !(player.containerMenu instanceof ManagerContainerMenu menu)
                 || menu.containerId != msg.windowId()) {
-                SFM.LOGGER.error("Invalid logs packet received, ignoring.");
+                // we don't log here because this is a common occurrence when the player closes the menu
+//                SFM.LOGGER.error("Invalid manager gui packet received, ignoring.");
                 return;
             }
             menu.tickTimeNanos = msg.tickTimes();

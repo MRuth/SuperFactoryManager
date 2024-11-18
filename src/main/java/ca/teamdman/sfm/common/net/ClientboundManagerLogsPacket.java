@@ -1,6 +1,5 @@
 package ca.teamdman.sfm.common.net;
 
-import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
 import ca.teamdman.sfm.common.logging.TranslatableLogEvent;
 import ca.teamdman.sfm.common.logging.TranslatableLogger;
@@ -62,7 +61,8 @@ public record ClientboundManagerLogsPacket(
             if (player == null
                 || !(player.containerMenu instanceof ManagerContainerMenu menu)
                 || menu.containerId != msg.windowId()) {
-                SFM.LOGGER.error("Invalid logs packet received, ignoring.");
+                // We don't log here because this is a common occurrence when the player closes the menu
+//                SFM.LOGGER.error("Invalid logs packet received, ignoring.");
                 return;
             }
             var logs = TranslatableLogger.decode(msg.logsBuf);
