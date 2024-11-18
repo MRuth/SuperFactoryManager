@@ -131,7 +131,7 @@ public class SFMConfig {
         public static void onConfigLoaded(ModConfigEvent.Loading event) {
             if (event.getConfig().getSpec() == SERVER_SPEC) {
                 SFMConfig.SERVER.revision++;
-                SFM.LOGGER.info("SFM config reloaded, now on revision {}", SFMConfig.SERVER.revision);
+                SFM.LOGGER.info("SFM config loaded, now on revision {}", SFMConfig.SERVER.revision);
             }
         }
 
@@ -139,7 +139,7 @@ public class SFMConfig {
         public static void onConfigReloaded(ModConfigEvent.Reloading event) {
             if (event.getConfig().getSpec() == SERVER_SPEC) {
                 SFMConfig.SERVER.revision++;
-                SFM.LOGGER.info("SFM config loaded, now on revision {}", SFMConfig.SERVER.revision);
+                SFM.LOGGER.info("SFM config reloaded, now on revision {}", SFMConfig.SERVER.revision);
             }
         }
     }
