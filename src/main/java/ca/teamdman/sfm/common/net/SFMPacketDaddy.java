@@ -1,5 +1,6 @@
 package ca.teamdman.sfm.common.net;
 
+import ca.teamdman.sfm.SFM;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -25,6 +26,13 @@ public interface SFMPacketDaddy<T extends SFMPacket> {
             Supplier<NetworkEvent.Context> contextSupplier
     ) {
         SFMPacketHandlingContext context = new SFMPacketHandlingContext(contextSupplier);
-        context.enqueueAndFinish(() -> handle(msg, context));
+        context.enqueueAndFinish(() -> {
+            try {
+                handle(msg, context);
+            } catch (Throwable t) {
+                SFM.LOGGER.warn("Encountered exception while handling packet", t);
+                throw t;
+            }
+        });
     }
 }
