@@ -34,12 +34,21 @@ public class LabelGunItem extends Item {
     }
 
     public static void setActiveLabel(
-            ItemStack gun,
-            String label
+            ItemStack stack,
+            @Nullable String label
     ) {
-        if (label.isEmpty()) return;
-        LabelPositionHolder.from(gun).addReferencedLabel(label).save(gun);
-        gun.getOrCreateTag().putString("sfm:active_label", label);
+        if (label == null || label.isEmpty()) {
+            clearActiveLabel(stack);
+        } else {
+            LabelPositionHolder.from(stack).addReferencedLabel(label).save(stack);
+            stack.getOrCreateTag().putString("sfm:active_label", label);
+        }
+    }
+
+    public static void clearActiveLabel(
+            ItemStack gun
+    ) {
+        gun.getOrCreateTag().remove("sfm:active_label");
     }
 
     public static String getActiveLabel(ItemStack stack) {
@@ -167,5 +176,10 @@ public class LabelGunItem extends Item {
         return LocalizationKeys.LABEL_GUN_ITEM_NAME_WITH_LABEL
                 .getComponent(name)
                 .withStyle(ChatFormatting.AQUA);
+    }
+
+    public static void clearAll(ItemStack stack) {
+        LabelPositionHolder.clear(stack);
+        LabelGunItem.setActiveLabel(stack, null);
     }
 }

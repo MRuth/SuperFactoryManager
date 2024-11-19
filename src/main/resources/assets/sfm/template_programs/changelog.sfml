@@ -83,6 +83,9 @@ EVERY 20G+5 TICKS DO END
 -- Improve resource loss logging
 -- Add config variable to disable config loss logging in console
 -- Add "(SFM)" to mod name in mods.toml so it shows up in searches for "SFM"
+-- Add crafting recipe to clear label guns
+-- Fix label gun clear not resetting active label
+
 
 ---- 4.19.1 ----
 -- Fix 1.19.4 build failures due to Gradle hating me

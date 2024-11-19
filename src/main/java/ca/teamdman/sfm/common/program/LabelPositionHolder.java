@@ -91,6 +91,11 @@ public record LabelPositionHolder(Map<String, HashSet<BlockPos>> labels) {
         return this;
     }
 
+    public static void clear(ItemStack stack) {
+        stack.getOrCreateTag().remove("sfm:labels");
+        CACHE.remove(stack);
+    }
+
     public static void purge(ItemStack stack) {
         stack.getOrCreateTag().remove("sfm:labels");
         CACHE.remove(stack);

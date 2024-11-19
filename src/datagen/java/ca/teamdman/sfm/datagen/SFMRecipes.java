@@ -181,6 +181,9 @@ public class SFMRecipes extends RecipeProvider {
         SpecialRecipeBuilder
                 .special(SFMRecipeSerializers.DISK_RESET.get())
                 .save(consumer, SFMRecipeSerializers.DISK_RESET.getId().getPath());
+        SpecialRecipeBuilder
+                .special(SFMRecipeSerializers.LABEL_GUN_RESET.get())
+                .save(consumer, SFMRecipeSerializers.LABEL_GUN_RESET.getId().getPath());
     }
 
     private void addPrintingPressRecipe(

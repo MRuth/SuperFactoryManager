@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.recipe;
 
-import ca.teamdman.sfm.common.item.DiskItem;
+import ca.teamdman.sfm.common.item.LabelGunItem;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.registry.SFMRecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
@@ -13,46 +13,52 @@ import net.minecraft.world.level.Level;
 /**
  * Printing press copies a form using ink and paper.
  */
-public class DiskResetRecipe extends CustomRecipe {
-    public DiskResetRecipe(ResourceLocation id) {
+public class LabelGunResetRecipe extends CustomRecipe {
+    public LabelGunResetRecipe(ResourceLocation id) {
         super(id);
     }
 
     @Override
-    public boolean matches(CraftingContainer pContainer, Level pLevel) {
-        int foundDisks = 0;
+    public boolean matches(
+            CraftingContainer pContainer,
+            Level pLevel
+    ) {
+        int foundLabelGuns = 0;
         for (int i = 0; i < pContainer.getContainerSize(); i++) {
             ItemStack stack = pContainer.getItem(i);
-            if (stack.getItem() instanceof DiskItem) {
-                foundDisks++;
+            if (stack.getItem() instanceof LabelGunItem) {
+                foundLabelGuns++;
             } else if (!stack.isEmpty()) {
                 return false;
             }
         }
-        return foundDisks > 0;
+        return foundLabelGuns > 0;
     }
 
     @Override
     public ItemStack assemble(CraftingContainer pContainer) {
-        int foundDisks = 0;
+        int foundLabelGuns = 0;
         for (int i = 0; i < pContainer.getContainerSize(); i++) {
             ItemStack stack = pContainer.getItem(i);
-            if (stack.getItem() instanceof DiskItem) {
-                foundDisks++;
+            if (stack.getItem() instanceof LabelGunItem) {
+                foundLabelGuns++;
             } else if (!stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
         }
-        return foundDisks > 0 ? new ItemStack(SFMItems.DISK_ITEM.get(), foundDisks) : ItemStack.EMPTY;
+        return foundLabelGuns > 0 ? new ItemStack(SFMItems.LABEL_GUN_ITEM.get(), foundLabelGuns) : ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int pWidth, int pHeight) {
+    public boolean canCraftInDimensions(
+            int pWidth,
+            int pHeight
+    ) {
         return true;
     }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return SFMRecipeSerializers.DISK_RESET.get();
+        return SFMRecipeSerializers.LABEL_GUN_RESET.get();
     }
 }

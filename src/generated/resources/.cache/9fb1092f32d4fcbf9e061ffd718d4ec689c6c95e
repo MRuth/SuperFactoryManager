@@ -1,5 +1,6 @@
-// 1.19.2	2024-11-09T01:59:47.0547503	Recipes
+// 1.19.2	2024-11-18T21:28:35.3110205	Recipes
 1b709571a4d702e0d4da0cfbec3d5a7e51c68c2f data/minecraft/recipes/disk_reset.json
+3fe94198dd838649cc4b34bf9413bbaf95e5823e data/minecraft/recipes/label_gun_reset.json
 347a9db1dc51c336dab23358554282348afd7a8f data/sfm/advancements/recipes/sfm/cable.json
 3812a02ebe30dcd7536c329803d6a65d05a14800 data/sfm/advancements/recipes/sfm/disk.json
 b725fc4de1a90aaf2d01b0f35a1ce27f224c28d7 data/sfm/advancements/recipes/sfm/fancy_cable.json
