@@ -8,6 +8,7 @@ import ca.teamdman.sfm.common.net.ServerboundLabelGunUsePacket;
 import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.registry.SFMPackets;
+import ca.teamdman.sfm.common.util.SFMItemUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -22,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -127,30 +127,39 @@ public class LabelGunItem extends Item {
             List<Component> lines,
             TooltipFlag detail
     ) {
-        boolean isClient = FMLEnvironment.dist.isClient();
-        boolean isMoreInfoKeyDown = isClient && ClientStuff.isKeyDown(SFMKeyMappings.MORE_INFO_TOOLTIP_KEY);
-        if (isClient) {
-            if (isMoreInfoKeyDown) {
-                Options options = Minecraft.getInstance().options;
-                lines.add(LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_1.getComponent(
-                        options.keyAttack.getTranslatedKeyMessage().plainCopy().withStyle(ChatFormatting.AQUA)));
-                lines.add(LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_2.getComponent(
-                        options.keyAttack.getTranslatedKeyMessage().plainCopy().withStyle(ChatFormatting.AQUA)));
-                lines.add(LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_3.getComponent(
-                        Component.literal("Control").withStyle(ChatFormatting.AQUA)));
-                lines.add(LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_4.getComponent(
-                        options.keyPickItem.getTranslatedKeyMessage().plainCopy().withStyle(ChatFormatting.AQUA)));
-                lines.add(LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_5.getComponent(
-                        SFMKeyMappings.TOGGLE_LABEL_VIEW_KEY
-                                .get()
-                                .getTranslatedKeyMessage()
-                                .plainCopy()
-                                .withStyle(ChatFormatting.AQUA)));
-            } else {
-                lines.add(LocalizationKeys.GUI_ADVANCED_TOOLTIP_HINT
-                                  .getComponent(SFMKeyMappings.MORE_INFO_TOOLTIP_KEY.get().getTranslatedKeyMessage())
-                                  .withStyle(ChatFormatting.AQUA));
-            }
+        if (SFMItemUtils.isClientAndMoreInfoKeyPressed()) {
+            Options options = Minecraft.getInstance().options;
+            lines.add(
+                    LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_1.getComponent(
+                            options.keyUse.getTranslatedKeyMessage().plainCopy().withStyle(ChatFormatting.AQUA)
+                    ).withStyle(ChatFormatting.GRAY)
+            );
+            lines.add(
+                    LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_2.getComponent(
+                            options.keyUse.getTranslatedKeyMessage().plainCopy().withStyle(ChatFormatting.AQUA)
+                    ).withStyle(ChatFormatting.GRAY)
+            );
+            lines.add(
+                    LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_3.getComponent(
+                            Component.literal("Control").withStyle(ChatFormatting.AQUA)
+                    ).withStyle(ChatFormatting.GRAY)
+            );
+            lines.add(
+                    LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_4.getComponent(
+                            options.keyPickItem.getTranslatedKeyMessage().plainCopy().withStyle(ChatFormatting.AQUA)
+                    ).withStyle(ChatFormatting.GRAY)
+            );
+            lines.add(
+                    LocalizationKeys.LABEL_GUN_ITEM_TOOLTIP_5.getComponent(
+                            SFMKeyMappings.TOGGLE_LABEL_VIEW_KEY
+                                    .get()
+                                    .getTranslatedKeyMessage()
+                                    .plainCopy()
+                                    .withStyle(ChatFormatting.AQUA)
+                    ).withStyle(ChatFormatting.GRAY)
+            );
+        } else {
+            SFMItemUtils.appendMoreInfoKeyReminderTextIfOnClient(lines);
         }
 
         lines.addAll(LabelPositionHolder.from(stack).asHoverText());

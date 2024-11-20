@@ -3,7 +3,6 @@ package ca.teamdman.sfm.common.localization;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
-import net.minecraft.ChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,12 +170,7 @@ public final class LocalizationKeys {
     );
     public static final LocalizationEntry NETWORK_TOOL_ITEM_TOOLTIP_3 = new LocalizationEntry(
             () -> SFMItems.NETWORK_TOOL_ITEM.get().getDescriptionId() + ".tooltip.3",
-            () -> ChatFormatting.GRAY
-                  + "You might not need this, don't forget you can press "
-                  + ChatFormatting.AQUA
-                  + "%s"
-                  + ChatFormatting.GRAY
-                  + " in an inventory to toggle the inspector."
+            () -> "You might not need this, don't forget you can press %s in an inventory to toggle the inspector."
     );
     public static final LocalizationEntry NETWORK_TOOL_ITEM_TOOLTIP_4 = new LocalizationEntry(
             () -> SFMItems.NETWORK_TOOL_ITEM.get().getDescriptionId() + ".tooltip.4",
@@ -196,24 +190,23 @@ public final class LocalizationKeys {
     );
     public static final LocalizationEntry LABEL_GUN_ITEM_TOOLTIP_1 = new LocalizationEntry(
             () -> SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.1",
-            () -> ChatFormatting.AQUA + "%s" + ChatFormatting.GRAY  + " a Factory Manager to push labels."
+            () -> "%s a Factory Manager to push labels."
     );
     public static final LocalizationEntry LABEL_GUN_ITEM_TOOLTIP_2 = new LocalizationEntry(
             () -> SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.2",
-            () -> ChatFormatting.AQUA + "%s" + ChatFormatting.GRAY  + " a Factory Manager while sneaking to pull labels."
+            () -> "%s a Factory Manager while sneaking to pull labels."
     );
     public static final LocalizationEntry LABEL_GUN_ITEM_TOOLTIP_3 = new LocalizationEntry(
-            () -> ChatFormatting.GRAY + SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.3",
-            () -> ChatFormatting.GRAY + "Hold "+ ChatFormatting.AQUA + "%s" + ChatFormatting.GRAY  + " to apply labels to blocks of the same type adjacent to cables."
+            () -> SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.3",
+            () -> "Hold %s to apply labels to blocks of the same type adjacent to cables."
     );
     public static final LocalizationEntry LABEL_GUN_ITEM_TOOLTIP_4 = new LocalizationEntry(
-            () -> ChatFormatting.GRAY + SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.4",
-            () -> ChatFormatting.GRAY + "Press "+ ChatFormatting.AQUA + "%s" + ChatFormatting.GRAY  + " to pick label from block."
+            () -> SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.4",
+            () ->  "%s + %s to pick label from block."
     );
     public static final LocalizationEntry LABEL_GUN_ITEM_TOOLTIP_5 = new LocalizationEntry(
-            () -> ChatFormatting.GRAY + SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.5",
-            () -> ChatFormatting.GRAY + "Press " + ChatFormatting.AQUA + "%s" + ChatFormatting.GRAY
-                  + " to toggle label view."
+            () -> SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".tooltip.5",
+            () -> "Press " +  "%s to toggle label view."
     );
     public static final LocalizationEntry LABEL_GUN_LABEL_VIEW_REMINDER = new LocalizationEntry(
             () -> "sfm.label_gun.label_view_reminder",
@@ -733,12 +726,7 @@ public final class LocalizationKeys {
     );
     public static final LocalizationEntry GUI_ADVANCED_TOOLTIP_HINT = new LocalizationEntry(
             "gui.sfm.advanced.tooltip.hint",
-            ChatFormatting.GRAY
-            + "Hold "
-            + ChatFormatting.AQUA
-            + "%s"
-            + ChatFormatting.GRAY
-            + " to know more."
+            "Hold %s to know more."
     );
     public static final LocalizationEntry MORE_HOVER_INFO_KEY = new LocalizationEntry(
             "key.sfm.more_info",

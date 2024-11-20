@@ -10,6 +10,7 @@ import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.program.ProgramLinter;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.registry.SFMPackets;
+import ca.teamdman.sfm.common.util.SFMItemUtils;
 import ca.teamdman.sfm.common.util.SFMUtils;
 import ca.teamdman.sfml.ast.Program;
 import net.minecraft.ChatFormatting;
@@ -188,64 +189,34 @@ public class DiskItem extends Item {
     @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     public void appendHoverText(
-            ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag detail
+            ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag detail
     ) {
 
         if (stack.hasTag()) {
-            boolean isClient = FMLEnvironment.dist.isClient();
-            boolean isMoreInfoKeyDown = isClient && ClientStuff.isKeyDown(SFMKeyMappings.MORE_INFO_TOOLTIP_KEY);
-            boolean showProgram = isMoreInfoKeyDown;
-            if (!showProgram) {
-                list.addAll(LabelPositionHolder.from(stack).asHoverText());
+            if (SFMItemUtils.isClientAndMoreInfoKeyPressed()) {
+                // show the program
+                var program = getProgram(stack);
+                if (!program.isEmpty()) {
+                    lines.add(SFMItemUtils.getRainbow(getName(stack).getString().length()));
+                    lines.addAll(ProgramSyntaxHighlightingHelper.withSyntaxHighlighting(program, false));
+                }
+            } else {
+                lines.addAll(LabelPositionHolder.from(stack).asHoverText());
                 getErrors(stack)
                         .stream()
                         .map(MutableComponent::create)
                         .map(line -> line.withStyle(ChatFormatting.RED))
-                        .forEach(list::add);
+                        .forEach(lines::add);
                 getWarnings(stack)
                         .stream()
                         .map(MutableComponent::create)
                         .map(line -> line.withStyle(ChatFormatting.YELLOW))
-                        .forEach(list::add);
-                if (isClient) {
-                    list.add(LocalizationKeys.GUI_ADVANCED_TOOLTIP_HINT
-                                     .getComponent(SFMKeyMappings.MORE_INFO_TOOLTIP_KEY.get().getTranslatedKeyMessage())
-                                     .withStyle(ChatFormatting.AQUA));
-                }
-            } else {
-                var program = getProgram(stack);
-                if (!program.isEmpty()) {
-                    var start = Component.empty();
-                    ChatFormatting[] rainbowColors = new ChatFormatting[]{
-                            ChatFormatting.DARK_RED,
-                            ChatFormatting.RED,
-                            ChatFormatting.GOLD,
-                            ChatFormatting.YELLOW,
-                            ChatFormatting.DARK_GREEN,
-                            ChatFormatting.GREEN,
-                            ChatFormatting.DARK_AQUA,
-                            ChatFormatting.AQUA,
-                            ChatFormatting.DARK_BLUE,
-                            ChatFormatting.BLUE,
-                            ChatFormatting.DARK_PURPLE,
-                            ChatFormatting.LIGHT_PURPLE
-                    };
-                    int rainbowColorsLength = rainbowColors.length;
-                    int fullCycleLength = 2 * rainbowColorsLength - 2;
-                    for (int i = 0; i < getName(stack).getString().length() - 2; i++) {
-                        int cyclePosition = i % fullCycleLength;
-                        int adjustedIndex = cyclePosition < rainbowColorsLength
-                                            ? cyclePosition
-                                            : fullCycleLength - cyclePosition;
-                        ChatFormatting color = rainbowColors[adjustedIndex];
-                        start = start.append(Component.literal("=").withStyle(color));
-                    }
-                    list.add(start);
-                    list.addAll(ProgramSyntaxHighlightingHelper.withSyntaxHighlighting(program, false));
-                }
+                        .forEach(lines::add);
+                SFMItemUtils.appendMoreInfoKeyReminderTextIfOnClient(lines);
             }
         } else {
-            list.add(LocalizationKeys.DISK_EDIT_IN_HAND_TOOLTIP.getComponent().withStyle(ChatFormatting.GRAY));
+            lines.add(LocalizationKeys.DISK_EDIT_IN_HAND_TOOLTIP.getComponent().withStyle(ChatFormatting.GRAY));
         }
     }
+
 }
