@@ -254,21 +254,21 @@ public class SFMUtils {
      * If multiple {@link CapabilityProviderMapper}s match, the first one is returned.
      */
     @SuppressWarnings("UnstableApiUsage") // for the javadoc lol
-    public static Optional<ICapabilityProvider> discoverCapabilityProvider(
+    public static @Nullable ICapabilityProvider discoverCapabilityProvider(
             Level level,
             BlockPos pos
     ) {
-        if (!level.isLoaded(pos)) return Optional.empty();
+        if (!level.isLoaded(pos)) return null;
 
         Collection<CapabilityProviderMapper> mappers = SFMCapabilityProviderMappers.DEFERRED_MAPPERS.get().getValues();
         for (CapabilityProviderMapper mapper : mappers) {
-            Optional<ICapabilityProvider> capabilityProvider = mapper.getProviderFor(level, pos);
-            if (capabilityProvider.isPresent()) {
+            ICapabilityProvider capabilityProvider = mapper.getProviderFor(level, pos);
+            if (capabilityProvider != null) {
                 return capabilityProvider;
             }
         }
 
-        return Optional.empty();
+        return null;
     }
 
     public static Stream<BlockPos> get3DNeighboursIncludingKittyCorner(BlockPos pos) {

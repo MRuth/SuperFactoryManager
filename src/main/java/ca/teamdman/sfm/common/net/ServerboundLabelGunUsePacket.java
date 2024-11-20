@@ -68,7 +68,8 @@ public record ServerboundLabelGunUsePacket(
 
             // target is a manager, perform push or pull action
             if (level.getBlockEntity(pos) instanceof ManagerBlockEntity manager) {
-                manager.getDisk().ifPresent(disk -> {
+                var disk = manager.getDisk();
+                if (disk != null) {
                     if (msg.isShiftKeyDown) {
                         // start with labels from disk
                         var newLabels = LabelPositionHolder.from(disk).toOwned();
@@ -88,7 +89,7 @@ public record ServerboundLabelGunUsePacket(
                         // give feedback to player
                         sender.sendSystemMessage(LocalizationKeys.LABEL_GUN_CHAT_PUSHED.getComponent());
                     }
-                });
+                }
                 return;
             }
 

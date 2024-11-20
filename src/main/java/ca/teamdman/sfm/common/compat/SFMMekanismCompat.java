@@ -15,31 +15,31 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.DeferredRegister;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SFMMekanismCompat {
     @SuppressWarnings("DataFlowIssue")
-    public static Optional<ResourceType<?, ?, ?>> getResourceType(TransmissionType trans) {
+    public static @Nullable ResourceType<?, ?, ?> getResourceType(TransmissionType trans) {
         return switch (trans) {
-            case ITEM -> Optional.of(SFMResourceTypes.ITEM.get());
-            case FLUID -> Optional.of(SFMResourceTypes.FLUID.get());
-            case GAS -> Optional.of(SFMResourceTypes.DEFERRED_TYPES
-                                            .get()
-                                            .getValue(new ResourceLocation(SFM.MOD_ID, "gas")));
-            case INFUSION -> Optional.of(SFMResourceTypes.DEFERRED_TYPES
-                                                 .get()
-                                                 .getValue(new ResourceLocation(SFM.MOD_ID, "infusion")));
-            case PIGMENT -> Optional.of(SFMResourceTypes.DEFERRED_TYPES
-                                                .get()
-                                                .getValue(new ResourceLocation(SFM.MOD_ID, "pigment")));
-            case SLURRY -> Optional.of(SFMResourceTypes.DEFERRED_TYPES
-                                               .get()
-                                               .getValue(new ResourceLocation(SFM.MOD_ID, "slurry")));
-            default -> Optional.empty();
+            case ITEM -> SFMResourceTypes.ITEM.get();
+            case FLUID -> SFMResourceTypes.FLUID.get();
+            case GAS -> SFMResourceTypes.DEFERRED_TYPES
+                    .get()
+                    .getValue(new ResourceLocation(SFM.MOD_ID, "gas"));
+            case INFUSION -> SFMResourceTypes.DEFERRED_TYPES
+                    .get()
+                    .getValue(new ResourceLocation(SFM.MOD_ID, "infusion"));
+            case PIGMENT -> SFMResourceTypes.DEFERRED_TYPES
+                    .get()
+                    .getValue(new ResourceLocation(SFM.MOD_ID, "pigment"));
+            case SLURRY -> SFMResourceTypes.DEFERRED_TYPES
+                    .get()
+                    .getValue(new ResourceLocation(SFM.MOD_ID, "slurry"));
+            default -> null;
         };
     }
 
@@ -51,49 +51,58 @@ public class SFMMekanismCompat {
         sb.append("-- Mekanism stuff\n");
         TileComponentConfig config = sideConfiguration.getConfig();
         for (TransmissionType type : TransmissionType.values()) {
-            getResourceType(type)
-                    .flatMap(resourceType -> SFMResourceTypes.DEFERRED_TYPES.get().getResourceKey(resourceType))
-                    .ifPresent(resourceTypeKey -> {
-                        ConfigInfo info = config.getConfig(type);
-                        if (info != null) {
-                            Set<Direction> outputSides = info.getSides(DataType::canOutput);
-                            if (!outputSides.isEmpty()) {
-                                sb
-                                        .append("-- ")
-                                        .append(LocalizationKeys.CONTAINER_INSPECTOR_MEKANISM_MACHINE_OUTPUTS.getString())
-                                        .append("\n");
-                                sb.append("INPUT ").append(resourceTypeKey.location()).append(":: FROM target ");
-                                sb.append(outputSides
-                                                  .stream()
-                                                  .map(DirectionQualifier::directionToString)
-                                                  .collect(Collectors.joining(", ")));
-                                sb.append(" SIDE\n");
-                            }
+            var resourceType = getResourceType(type);
+            if (resourceType == null) {
+                continue;
+            }
 
-                            Set<Direction> inputSides = new HashSet<>();
-                            for (RelativeSide side : RelativeSide.values()) {
-                                DataType dataType = info.getDataType(side);
-                                if (dataType == DataType.INPUT
-                                    || dataType == DataType.INPUT_1
-                                    || dataType == DataType.INPUT_2
-                                    || dataType == DataType.INPUT_OUTPUT) {
-                                    inputSides.add(side.getDirection(sideConfiguration.getDirection()));
-                                }
-                            }
-                            if (!inputSides.isEmpty()) {
-                                sb
-                                        .append("-- ")
-                                        .append(LocalizationKeys.CONTAINER_INSPECTOR_MEKANISM_MACHINE_INPUTS.getString())
-                                        .append("\n");
-                                sb.append("OUTPUT ").append(resourceTypeKey.location()).append(":: TO target ");
-                                sb.append(inputSides
-                                                  .stream()
-                                                  .map(DirectionQualifier::directionToString)
-                                                  .collect(Collectors.joining(", ")));
-                                sb.append(" SIDE\n");
-                            }
-                        }
-                    });
+            var maybeResourceTypeKe = SFMResourceTypes.DEFERRED_TYPES.get().getResourceKey(resourceType);
+            if (maybeResourceTypeKe.isEmpty()) {
+                continue;
+            }
+            var resourceTypeKey = maybeResourceTypeKe.get();
+
+            ConfigInfo info = config.getConfig(type);
+            if (info == null) {
+                continue;
+            }
+
+            Set<Direction> outputSides = info.getSides(DataType::canOutput);
+            if (!outputSides.isEmpty()) {
+                sb
+                        .append("-- ")
+                        .append(LocalizationKeys.CONTAINER_INSPECTOR_MEKANISM_MACHINE_OUTPUTS.getString())
+                        .append("\n");
+                sb.append("INPUT ").append(resourceTypeKey.location()).append(":: FROM target ");
+                sb.append(outputSides
+                        .stream()
+                        .map(DirectionQualifier::directionToString)
+                        .collect(Collectors.joining(", ")));
+                sb.append(" SIDE\n");
+            }
+
+            Set<Direction> inputSides = new HashSet<>();
+            for (RelativeSide side : RelativeSide.values()) {
+                DataType dataType = info.getDataType(side);
+                if (dataType == DataType.INPUT
+                    || dataType == DataType.INPUT_1
+                    || dataType == DataType.INPUT_2
+                    || dataType == DataType.INPUT_OUTPUT) {
+                    inputSides.add(side.getDirection(sideConfiguration.getDirection()));
+                }
+            }
+            if (!inputSides.isEmpty()) {
+                sb
+                        .append("-- ")
+                        .append(LocalizationKeys.CONTAINER_INSPECTOR_MEKANISM_MACHINE_INPUTS.getString())
+                        .append("\n");
+                sb.append("OUTPUT ").append(resourceTypeKey.location()).append(":: TO target ");
+                sb.append(inputSides
+                        .stream()
+                        .map(DirectionQualifier::directionToString)
+                        .collect(Collectors.joining(", ")));
+                sb.append(" SIDE\n");
+            }
         }
         return sb.toString();
     }

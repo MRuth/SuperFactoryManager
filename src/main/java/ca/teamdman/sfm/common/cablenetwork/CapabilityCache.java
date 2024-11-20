@@ -109,8 +109,8 @@ public class CapabilityCache {
 
         // No capability found, discover it
         var provider = SFMUtils.discoverCapabilityProvider(level, pos);
-        if (provider.isPresent()) {
-            var lazyOptional = provider.get().getCapability(capKind, direction);
+        if (provider != null) {
+            var lazyOptional = provider.getCapability(capKind, direction);
             if (lazyOptional.isPresent()) {
                 putCapability(pos, capKind, direction, lazyOptional);
                 lazyOptional.addListener(x -> remove(pos, capKind, direction));

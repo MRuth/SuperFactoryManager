@@ -97,12 +97,17 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
     ) {
         if (level.getBlockEntity(pos) instanceof ManagerBlockEntity manager && player instanceof ServerPlayer sp) {
             // update warnings on disk as we open the gui
-            manager
-                    .getDisk()
-                    .ifPresent(disk -> manager
-                            .getProgram()
-                            .ifPresent(program -> DiskItem.setWarnings(disk, ProgramLinter.gatherWarnings(program,
-                                                                                                          LabelPositionHolder.from(disk), manager))));
+            var disk = manager.getDisk();
+            if (disk != null) {
+                var program = manager.getProgram();
+                if (program != null) {
+                    DiskItem.setWarnings(
+                            disk,
+                            ProgramLinter.gatherWarnings(program,
+                            LabelPositionHolder.from(disk), manager)
+                    );
+                }
+            }
             NetworkHooks.openScreen(sp, manager, buf -> ManagerContainerMenu.encode(manager, buf));
             return InteractionResult.CONSUME;
         }

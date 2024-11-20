@@ -67,13 +67,13 @@ public class SFMPerformanceGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .addAll("a", sourceBlocks.stream().map(helper::absolutePos).toList())
                 .addAll("b", destBlocks.stream().map(helper::absolutePos).toList())
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program);
         assertTrue(
                 manager.getState() == ManagerBlockEntity.State.RUNNING,
-                "Program did not start running " + DiskItem.getErrors(manager.getDisk().get())
+                "Program did not start running " + DiskItem.getErrors(manager.getDisk())
         );
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
@@ -143,13 +143,13 @@ public class SFMPerformanceGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .addAll("a", sourceBlocks.stream().map(helper::absolutePos).toList())
                 .addAll("b", destBlocks.stream().map(helper::absolutePos).toList())
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program);
         assertTrue(
                 manager.getState() == ManagerBlockEntity.State.RUNNING,
-                "Program did not start running " + DiskItem.getErrors(manager.getDisk().get())
+                "Program did not start running " + DiskItem.getErrors(manager.getDisk())
         );
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
@@ -237,7 +237,7 @@ public class SFMPerformanceGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .addAll("a", sourceBlocks.stream().map(helper::absolutePos).toList())
                 .addAll("b", destBlocks.stream().map(helper::absolutePos).toList())
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program);
@@ -348,7 +348,7 @@ public class SFMPerformanceGameTests extends SFMGameTestBase {
                 .add("b", helper.absolutePos(bPos))
                 .add("c", helper.absolutePos(cPos))
                 .add("d", helper.absolutePos(dPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program);
@@ -530,7 +530,7 @@ public class SFMPerformanceGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .addAll("storage", storage.stream().map(helper::absolutePos).toList())
                 .add("chest", helper.absolutePos(new BlockPos(0, 2, 0)))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program);

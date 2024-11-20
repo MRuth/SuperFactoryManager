@@ -18,10 +18,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -76,7 +73,7 @@ public abstract class SFMGameTestBase {
         var hasExecuted = new AtomicBoolean(false);
         var startTime = new AtomicLong();
         var endTime = new AtomicLong();
-        @SuppressWarnings("OptionalGetWithoutIsPresent") List<Trigger> triggers = manager.getProgram().get().triggers();
+        List<Trigger> triggers = Objects.requireNonNull(manager.getProgram()).triggers();
         var oldFirstTrigger = triggers.get(0);
         long timeoutTicks = 200;
 
@@ -143,10 +140,10 @@ public abstract class SFMGameTestBase {
     }
 
     protected static void assertManagerRunning(ManagerBlockEntity manager) {
-        SFMGameTestBase.assertTrue(manager.getDisk().isPresent(), "No disk in manager");
+        SFMGameTestBase.assertTrue(manager.getDisk() != null, "No disk in manager");
         SFMGameTestBase.assertTrue(
                 manager.getState() == ManagerBlockEntity.State.RUNNING,
-                "Program did not start running " + DiskItem.getErrors(manager.getDisk().get())
+                "Program did not start running " + DiskItem.getErrors(manager.getDisk())
         );
     }
 

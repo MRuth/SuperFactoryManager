@@ -38,15 +38,19 @@ public record ServerboundManagerFixPacket(
                     ManagerBlockEntity.class,
                     msg.pos,
                     msg.windowId,
-                    (menu, manager) -> manager
-                            .getDisk()
-                            .ifPresent(disk -> manager
-                                    .getProgram()
-                                    .ifPresent(program -> ProgramLinter.fixWarningsByRemovingBadLabelsFromDisk(
-                                            manager,
-                                            disk,
-                                            program
-                                    )))
+                    (menu, manager) -> {
+                        var disk = manager.getDisk();
+                        if (disk != null) {
+                            var program = manager.getProgram();
+                            if (program != null) {
+                                ProgramLinter.fixWarningsByRemovingBadLabelsFromDisk(
+                                        manager,
+                                        disk,
+                                        program
+                                );
+                            }
+                        }
+                    }
             );
         }
 

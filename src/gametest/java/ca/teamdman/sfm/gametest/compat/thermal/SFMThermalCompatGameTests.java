@@ -106,7 +106,7 @@ public class SFMThermalCompatGameTests extends SFMGameTestBase {
                 .addAll("ingredients", ingredientChestPositions.stream().map(helper::absolutePos).toList())
                 .addAll("results", resultChestPositions.stream().map(helper::absolutePos).toList())
                 .add("power", helper.absolutePos(powerPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program.stripIndent());
@@ -225,7 +225,7 @@ public class SFMThermalCompatGameTests extends SFMGameTestBase {
                 .addAll("results", resultChestPositions.stream().map(helper::absolutePos).toList())
                 .add("power", helper.absolutePos(powerPos))
                 .add("water", helper.absolutePos(waterPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program.stripIndent());
