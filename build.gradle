@@ -334,8 +334,7 @@ dependencies {
     gametestImplementation fg.deobf("com.teamcofh:thermal_expansion:1.19.2-10.2.0.+")
     runtimeOnly fg.deobf("com.teamcofh:thermal_expansion:1.19.2-10.2.0.+")
 
-    gametestImplementation fg.deobf("appeng:appliedenergistics2-forge:12.9.9")
-    runtimeOnly fg.deobf("appeng:appliedenergistics2-forge:12.9.9")
+    implementation fg.deobf("appeng:appliedenergistics2-forge:12.9.9")
     compileOnly fg.deobf("appeng:appliedenergistics2-forge:12.9.9:api")
 
 

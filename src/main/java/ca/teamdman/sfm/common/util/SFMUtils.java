@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.common.util;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.common.capabilityprovidermapper.BlockEntityCapabilityProviderMapper;
 import ca.teamdman.sfm.common.capabilityprovidermapper.CapabilityProviderMapper;
 import ca.teamdman.sfm.common.program.LimitedInputSlot;
 import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
@@ -261,14 +262,19 @@ public class SFMUtils {
         if (!level.isLoaded(pos)) return null;
 
         Collection<CapabilityProviderMapper> mappers = SFMCapabilityProviderMappers.DEFERRED_MAPPERS.get().getValues();
+        CapabilityProviderMapper beMapper = null;
         for (CapabilityProviderMapper mapper : mappers) {
+            if (mapper instanceof BlockEntityCapabilityProviderMapper) {
+                beMapper = mapper;
+                continue;
+            }
             ICapabilityProvider capabilityProvider = mapper.getProviderFor(level, pos);
             if (capabilityProvider != null) {
                 return capabilityProvider;
             }
         }
 
-        return null;
+        return beMapper != null ? beMapper.getProviderFor(level, pos) : null;
     }
 
     public static Stream<BlockPos> get3DNeighboursIncludingKittyCorner(BlockPos pos) {

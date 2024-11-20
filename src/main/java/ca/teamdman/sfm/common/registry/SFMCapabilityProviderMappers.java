@@ -4,6 +4,9 @@ import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.capabilityprovidermapper.BlockEntityCapabilityProviderMapper;
 import ca.teamdman.sfm.common.capabilityprovidermapper.CapabilityProviderMapper;
 import ca.teamdman.sfm.common.capabilityprovidermapper.CauldronCapabilityProviderMapper;
+import ca.teamdman.sfm.common.capabilityprovidermapper.ae2.InterfaceCapabilityProviderMapper;
+import ca.teamdman.sfm.common.compat.SFMCompat;
+import ca.teamdman.sfm.common.compat.SFMMekanismCompat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -39,5 +42,11 @@ public class SFMCapabilityProviderMappers {
 
     public static void register(IEventBus bus) {
         MAPPERS.register(bus);
+    }
+
+    static {
+        if (SFMCompat.isAE2Loaded()) {
+            MAPPERS.register("ae2/interface", InterfaceCapabilityProviderMapper::new);
+        }
     }
 }
