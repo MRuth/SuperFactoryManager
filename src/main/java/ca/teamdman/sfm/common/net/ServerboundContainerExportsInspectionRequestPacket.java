@@ -72,8 +72,7 @@ public record ServerboundContainerExportsInspectionRequestPacket(
             ResourceType<STACK, ITEM, CAP> resourceType,
             Level level,
             BlockPos pos,
-            @Nullable
-            Direction direction
+            @Nullable Direction direction
     ) {
         StringBuilder sb = new StringBuilder();
         ICapabilityProvider prov = SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos);

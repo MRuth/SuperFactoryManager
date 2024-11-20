@@ -131,8 +131,7 @@ public class ManagerBlockEntity extends BaseContainerBlockEntity {
         return tick;
     }
 
-    @Nullable
-    public Program getProgram() {
+    public @Nullable Program getProgram() {
         return program;
     }
 

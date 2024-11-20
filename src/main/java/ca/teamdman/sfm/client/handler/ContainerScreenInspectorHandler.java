@@ -28,8 +28,7 @@ import org.jetbrains.annotations.Nullable;
 @Mod.EventBusSubscriber(modid = SFM.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ContainerScreenInspectorHandler {
     private static boolean visible = false;
-    @Nullable
-    private static AbstractContainerScreen<?> lastScreen = null;
+    private static @Nullable AbstractContainerScreen<?> lastScreen = null;
     private static final ExtendedButton exportInspectorButton = new ExtendedButton(
             5,
             50,

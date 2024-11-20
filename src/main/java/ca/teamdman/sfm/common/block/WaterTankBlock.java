@@ -86,18 +86,16 @@ public class WaterTankBlock extends BaseEntityBlock implements EntityBlock, Buck
         return RenderShape.MODEL;
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(
+    public @Nullable BlockEntity newBlockEntity(
             BlockPos pos,
             BlockState state
     ) {
         return SFMBlockEntities.WATER_TANK_BLOCK_ENTITY.get().create(pos, state);
     }
 
-    @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return defaultBlockState().setValue(
                 IN_WATER,
                 hasWaterNeighbours(context.getLevel(), context.getClickedPos())

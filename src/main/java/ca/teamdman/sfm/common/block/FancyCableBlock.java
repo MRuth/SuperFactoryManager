@@ -70,9 +70,8 @@ public class FancyCableBlock extends Block implements ICableBlock {
         );
     }
 
-    @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext ctx) {
         return getState(defaultBlockState(), ctx.getLevel(), ctx.getClickedPos());
     }
 

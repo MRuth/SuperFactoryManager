@@ -114,9 +114,8 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
         return InteractionResult.SUCCESS;
     }
 
-    @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level,
             BlockState state,
             BlockEntityType<T> type

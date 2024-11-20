@@ -174,9 +174,8 @@ public class PrintingPressBlockEntity extends BlockEntity implements NotContaine
         return tag;
     }
 
-    @Nullable
     @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
