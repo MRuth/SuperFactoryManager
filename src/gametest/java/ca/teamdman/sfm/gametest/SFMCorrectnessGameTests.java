@@ -5,6 +5,8 @@ import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.blockentity.PrintingPressBlockEntity;
 import ca.teamdman.sfm.common.cablenetwork.CableNetwork;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
+import ca.teamdman.sfm.common.config.SFMConfig;
+import ca.teamdman.sfm.common.config.SFMConfig.SFMServerConfig.LevelsToShards;
 import ca.teamdman.sfm.common.item.DiskItem;
 import ca.teamdman.sfm.common.item.FormItem;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
@@ -14,6 +16,7 @@ import ca.teamdman.sfm.common.program.ProgramContext;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.util.SFMDirections;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -38,6 +41,7 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -1325,30 +1329,21 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
     public static void falling_anvil_xp_shard(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 1), Blocks.OBSIDIAN);
         var pos = helper.absoluteVec(new Vec3(1.5, 3.5, 1.5));
-        helper
-                .getLevel()
-                .addFreshEntity(new ItemEntity(
-                        helper.getLevel(),
-                        pos.x, pos.y, pos.z,
-                        EnchantedBookItem.createForEnchantment(new EnchantmentInstance(
-                                Enchantments.SHARPNESS,
-                                3
-                        )),
-                        0, 0, 0
-                ));
-        helper.setBlock(new BlockPos(1, 4, 1), Blocks.ANVIL);
-        helper.runAfterDelay(20, () -> {
-            List<ItemEntity> found = helper
-                    .getLevel()
-                    .getEntitiesOfClass(
-                            ItemEntity.class,
-                            new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3)
-                    );
-            assertTrue(found.size() == 1, "should only be one item");
-            assertTrue(found.get(0).getItem().is(SFMItems.EXPERIENCE_SHARD_ITEM.get()), "should be an xp shard");
-            assertTrue(found.get(0).getItem().getCount() == 1, "should only be one");
-            helper.succeed();
-        });
+        ItemStack enchBook = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(
+                Enchantments.SHARPNESS,
+                4
+        ));
+        EnchantedBookItem.addEnchantment(enchBook, new EnchantmentInstance(Enchantments.BLOCK_EFFICIENCY, 2));
+
+        var cases = List.of(
+                Pair.of(LevelsToShards.JustOne, 1),
+                Pair.of(LevelsToShards.EachOne, 2),
+                Pair.of(LevelsToShards.SumLevels, 6),
+                Pair.of(LevelsToShards.SumLevelsScaledExponentially, 10)
+        );
+
+        var currentConfig = SFMConfig.SERVER.levelsToShards.get();
+        falling_anvil_xp_shard_inner(helper, 1, currentConfig, pos, enchBook, cases.iterator());
     }
 
     @GameTest(template = "3x4x3")
@@ -1357,9 +1352,35 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         var pos = helper.absoluteVec(new Vec3(1.5, 3.5, 1.5));
         ItemStack enchBook = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(
                 Enchantments.SHARPNESS,
-                3
+                4
         ));
-        for (int i = 0; i < 10; i++) {
+        EnchantedBookItem.addEnchantment(enchBook, new EnchantmentInstance(Enchantments.BLOCK_EFFICIENCY, 2));
+
+        var cases = List.of(
+                Pair.of(LevelsToShards.JustOne, 10),
+                Pair.of(LevelsToShards.EachOne, 20),
+                Pair.of(LevelsToShards.SumLevels, 60),
+                Pair.of(LevelsToShards.SumLevelsScaledExponentially, 100)
+        );
+
+        var currentConfig = SFMConfig.SERVER.levelsToShards.get();
+        falling_anvil_xp_shard_inner(helper, 10, currentConfig, pos, enchBook, cases.iterator());
+    }
+
+    private static void falling_anvil_xp_shard_inner(GameTestHelper helper, int numBooks, LevelsToShards configToRestore, Vec3 pos, ItemStack enchBook, Iterator<Pair<LevelsToShards, Integer>> iter) {
+        if (!iter.hasNext()) {
+            // restore config to value before the test
+            SFMConfig.SERVER.levelsToShards.set(configToRestore);
+            helper.succeed();
+            return;
+        }
+        var c = iter.next();
+
+        SFMConfig.SERVER.levelsToShards.set(c.first());
+        // kill old item entities
+        helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3)).forEach(e -> e.discard());
+
+        for (int i = 0; i < numBooks; i++) {
             helper
                     .getLevel()
                     .addFreshEntity(new ItemEntity(
@@ -1369,7 +1390,10 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                             0, 0, 0
                     ));
         }
+
+        helper.setBlock(new BlockPos(1, 3, 1), Blocks.AIR);
         helper.setBlock(new BlockPos(1, 4, 1), Blocks.ANVIL);
+
         helper.runAfterDelay(20, () -> {
             List<ItemEntity> found = helper
                     .getLevel()
@@ -1381,8 +1405,11 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                     found.stream().allMatch(e -> e.getItem().is(SFMItems.EXPERIENCE_SHARD_ITEM.get())),
                     "should only be xp shards"
             );
-            assertTrue(found.stream().mapToInt(e -> e.getItem().getCount()).sum() == 10, "bad count");
-            helper.succeed();
+
+            var cnt = found.stream().mapToInt(e -> e.getItem().getCount()).sum();
+            assertTrue(cnt == c.second(), "bad count for " + c.first().name() + ": expected " + c.second() + " but got " + cnt);
+
+            falling_anvil_xp_shard_inner(helper, numBooks, configToRestore, pos, enchBook, iter);
         });
     }
 

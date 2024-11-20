@@ -1,11 +1,11 @@
 package ca.teamdman.sfm.common.handler;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.item.FormItem;
 import ca.teamdman.sfm.common.recipe.PrintingPressRecipe;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.registry.SFMRecipeTypes;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.EnchantedBookItem;
@@ -23,6 +23,7 @@ import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,12 +45,12 @@ public class FallingAnvilHandler {
                     List<PrintingPressRecipe> recipes = level
                             .getRecipeManager()
                             .getAllRecipesFor(SFMRecipeTypes.PRINTING_PRESS.get());
-                    var items = level
-                            .getEntitiesOfClass(ItemEntity.class, new AABB(landPosition))
-                            .stream()
-                            .filter(Entity::isAlive)
-                            .filter(e -> !e.getItem().isEmpty())
-                            .toList();
+                    List<ItemEntity> items = new ArrayList<>();
+                    for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, new AABB(landPosition))) {
+                        if (e.isAlive() && !e.getItem().isEmpty()) {
+                            items.add(e);
+                        }
+                    }
                     boolean didForm = false;
 
                     for (ItemEntity item : items) {
@@ -66,28 +67,77 @@ public class FallingAnvilHandler {
                         level.setBlockAndUpdate(landPosition.below(), Blocks.AIR.defaultBlockState());
                     }
                 } else if (block == Blocks.OBSIDIAN) { // crush and disenchant items
-                    List<ItemEntity> items = level
-                            .getEntitiesOfClass(ItemEntity.class, new AABB(landPosition))
-                            .stream()
-                            .filter(Entity::isAlive)
-                            .filter(e -> !e.getItem().isEmpty())
-                            .toList();
+                    List<ItemEntity> items = new ArrayList<>();
+                    for (ItemEntity itemEntity : level.getEntitiesOfClass(ItemEntity.class, new AABB(landPosition))) {
+                        if (itemEntity.isAlive() && !itemEntity.getItem().isEmpty()) {
+                            items.add(itemEntity);
+                        }
+                    }
+
                     { // crush enchanted books into xp shards
-                        items
-                                .stream()
-                                .filter(e -> e.getItem().is(Items.ENCHANTED_BOOK))
-                                .forEach(e -> e.setItem(new ItemStack(
+                        for (ItemEntity e : items) {
+                            if (!e.getItem().is(Items.ENCHANTED_BOOK)) {
+                                continue;
+                            }
+
+                            var item = e.getItem();
+                            var enchantments = EnchantedBookItem.getEnchantments(item);
+
+                            int shardsForEnchantments = switch (SFMConfig.SERVER.levelsToShards.get()) {
+                                case JustOne -> 1;
+                                case EachOne -> enchantments.size();
+                                case SumLevels -> {
+                                    int sum = 0;
+                                    for (int i = 0; i < enchantments.size(); i++) {
+                                        var ench = enchantments.getCompound(i);
+                                        sum += ench.getInt("lvl");
+                                    }
+                                    yield sum;
+                                }
+                                case SumLevelsScaledExponentially -> {
+                                    int sum = 0;
+                                    for (int i = 0; i < enchantments.size(); i++) {
+                                        var ench = enchantments.getCompound(i);
+                                        sum += 1 << Math.max(0, ench.getInt("lvl") - 1);
+                                    }
+                                    yield sum;
+                                }
+                            };
+                            int count = item.getCount() * shardsForEnchantments;
+
+                            e.setItem(new ItemStack(
+                                    SFMItems.EXPERIENCE_SHARD_ITEM.get(),
+                                    Math.min(64, count)
+                            ));
+
+                            count -= 64;
+                            while (count > 0) {
+                                e.spawnAtLocation(new ItemStack(
                                         SFMItems.EXPERIENCE_SHARD_ITEM.get(),
-                                        e.getItem().getCount()
-                                )));
+                                        Math.min(64, count)
+                                ));
+                                count -= 64;
+                            }
+                        }
                     }
                     { // remove enchantments from items
-                        List<ItemEntity> bookEntities = items.stream().filter(e -> e.getItem().is(Items.BOOK)).toList();
-                        int booksAvailable = bookEntities.stream().mapToInt(e -> e.getItem().getCount()).sum();
-                        List<ItemEntity> enchanted = items
-                                .stream()
-                                .filter(e -> !e.getItem().getEnchantmentTags().isEmpty())
-                                .toList();
+                        List<ItemEntity> bookEntities = new ArrayList<>();
+                        for (ItemEntity item : items) {
+                            if (item.getItem().is(Items.BOOK)) {
+                                bookEntities.add(item);
+                            }
+                        }
+                        int booksAvailable = 0;
+                        for (ItemEntity itemEntity : bookEntities) {
+                            int count = itemEntity.getItem().getCount();
+                            booksAvailable += count;
+                        }
+                        List<ItemEntity> enchanted = new ArrayList<>(items.size());
+                        for (ItemEntity e : items) {
+                            if (!e.getItem().getEnchantmentTags().isEmpty()) {
+                                enchanted.add(e);
+                            }
+                        }
 
 
                         for (ItemEntity enchItemEntity : enchanted) {
