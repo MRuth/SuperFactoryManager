@@ -26,27 +26,26 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 public class InterfaceCapabilityProviderMapper implements CapabilityProviderMapper {
     @Override
-    public Optional<ICapabilityProvider> getProviderFor(LevelAccessor level, BlockPos pos) {
+    public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, BlockPos pos) {
         var be = level.getBlockEntity(pos);
         if (!(be instanceof InterfaceBlockEntity in)) {
-            return Optional.empty();
+            return null;
         }
 
         if (!in.getConfig().isEmpty() || in.getMainNode() == null || in.getGridNode() == null || !in.getGridNode().isActive()) {
-            return Optional.empty();
+            return null;
         }
 
         var cap = be.getCapability(Capabilities.STORAGE_MONITORABLE_ACCESSOR);
         if (!cap.isPresent()) {
-            return Optional.empty();
+            return null;
         }
 
-        return Optional.of(new InterfaceCapabilityProvider(level, pos));
+        return new InterfaceCapabilityProvider(level, pos);
     }
 
     private record InterfaceCapabilityProvider(LevelAccessor level, BlockPos pos) implements ICapabilityProvider {
