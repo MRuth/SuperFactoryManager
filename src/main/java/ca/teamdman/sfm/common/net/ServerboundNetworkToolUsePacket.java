@@ -85,7 +85,7 @@ public record ServerboundNetworkToolUsePacket(
                         payload.append(entity).append("\n");
                     }
                     payload.append("---- capability directions ----\n");
-                    for (var cap : SFMModCompat.getCapabilities()) {
+                    for (var cap : SFMModCompat.getCapabilitiesUnsafe()) {
                         String directions = DirectionQualifier.EVERY_DIRECTION
                                 .stream()
                                 .filter(dir -> entity.getCapability(cap, dir).isPresent())

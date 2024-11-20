@@ -4,7 +4,6 @@ import ca.teamdman.sfm.common.resourcetype.GasResourceType;
 import ca.teamdman.sfm.common.resourcetype.InfuseResourceType;
 import ca.teamdman.sfm.common.resourcetype.PigmentResourceType;
 import ca.teamdman.sfm.common.resourcetype.SlurryResourceType;
-import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -16,7 +15,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class SFMModCompat {
     private static final List<Capability<?>> CAPABILITIES = new ArrayList<>();
@@ -33,27 +31,27 @@ public class SFMModCompat {
         return ModList.get().getModContainerById(modid).isPresent();
     }
 
-    public static List<Capability<?>> getCapabilities() {
-        if (!CAPABILITIES.isEmpty()) {
-            return new ArrayList<>(CAPABILITIES);
-        }
-
-        Set<Capability<?>> caps = Sets.newHashSet(
-                ForgeCapabilities.ITEM_HANDLER,
-                ForgeCapabilities.FLUID_HANDLER,
-                ForgeCapabilities.ENERGY
-        );
-
-        if (isMekanismLoaded()) {
-            caps.addAll(List.of(
-                    GasResourceType.CAP,
-                    InfuseResourceType.CAP,
-                    PigmentResourceType.CAP,
-                    SlurryResourceType.CAP
+    /**
+     * Do not modify the result of this since it returns a direct reference to the cache
+     */
+    public static List<Capability<?>> getCapabilitiesUnsafe() {
+        if (CAPABILITIES.isEmpty()) {
+            // populate cache
+            CAPABILITIES.addAll(List.of(
+                    ForgeCapabilities.ITEM_HANDLER,
+                    ForgeCapabilities.FLUID_HANDLER,
+                    ForgeCapabilities.ENERGY
             ));
-        }
 
-        CAPABILITIES.addAll(caps);
+            if (isMekanismLoaded()) {
+                CAPABILITIES.addAll(List.of(
+                        GasResourceType.CAP,
+                        InfuseResourceType.CAP,
+                        PigmentResourceType.CAP,
+                        SlurryResourceType.CAP
+                ));
+            }
+        }
         return CAPABILITIES;
     }
 
