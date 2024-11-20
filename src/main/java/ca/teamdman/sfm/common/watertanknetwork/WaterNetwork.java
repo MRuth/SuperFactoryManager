@@ -3,7 +3,7 @@ package ca.teamdman.sfm.common.watertanknetwork;
 import ca.teamdman.sfm.common.block.WaterTankBlock;
 import ca.teamdman.sfm.common.blockentity.WaterTankBlockEntity;
 import ca.teamdman.sfm.common.util.SFMDirections;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMStreamUtils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArraySet;
 import net.minecraft.core.BlockPos;
@@ -55,7 +55,7 @@ public record WaterNetwork(
     }
 
     public Stream<WaterTankBlockEntity> discoverMembers(BlockPos start) {
-        return SFMUtils.getRecursiveStream((current, next, results) -> {
+        return SFMStreamUtils.getRecursiveStream((current, next, results) -> {
             if (!(level.getBlockEntity(current) instanceof WaterTankBlockEntity blockEntity)) return;
             if (!current.equals(start)) {
                 BlockState blockState = level.getBlockState(current);
@@ -72,7 +72,7 @@ public record WaterNetwork(
             BlockPos start,
             WaterNetwork cache
     ) {
-        return SFMUtils.getRecursiveStream((current, next, results) -> {
+        return SFMStreamUtils.getRecursiveStream((current, next, results) -> {
             WaterTankBlockEntity blockEntity = cache.members.get(current.asLong());
             if (blockEntity == null) return;
             results.accept(blockEntity);

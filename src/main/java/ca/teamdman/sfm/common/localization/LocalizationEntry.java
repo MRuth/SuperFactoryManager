@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.localization;
 
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMTranslationUtils;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,11 +20,11 @@ public record LocalizationEntry(
     }
 
     public TranslatableContents get(Object... args) {
-        return SFMUtils.getTranslatableContents(key.get(), args);
+        return SFMTranslationUtils.getTranslatableContents(key.get(), args);
     }
 
     public TranslatableContents get() {
-        return SFMUtils.getTranslatableContents(key.get());
+        return SFMTranslationUtils.getTranslatableContents(key.get());
     }
 
     public String getString() {

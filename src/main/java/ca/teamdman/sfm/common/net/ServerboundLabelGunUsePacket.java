@@ -7,7 +7,7 @@ import ca.teamdman.sfm.common.item.LabelGunItem;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.util.SFMDirections;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMStreamUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
@@ -118,10 +118,10 @@ public record ServerboundLabelGunUsePacket(
                             .anyMatch(d -> cablePositions.contains(p.offset(d.getNormal())));
 
                     // get positions of all connected blocks of the same type
-                    List<BlockPos> positions = SFMUtils
+                    List<BlockPos> positions = SFMStreamUtils
                             .<BlockPos, BlockPos>getRecursiveStream((current, nextQueue, results) -> {
                                 results.accept(current);
-                                SFMUtils.get3DNeighboursIncludingKittyCorner(current)
+                                SFMStreamUtils.get3DNeighboursIncludingKittyCorner(current)
                                         .filter(p -> level.getBlockState(p).getBlock() == targetBlock)
                                         .filter(isAdjacentToCable)
                                         .forEach(nextQueue);

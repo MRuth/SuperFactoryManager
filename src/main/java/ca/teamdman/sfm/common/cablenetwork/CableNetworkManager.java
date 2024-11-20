@@ -3,7 +3,7 @@ package ca.teamdman.sfm.common.cablenetwork;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.util.SFMDirections;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMStreamUtils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -186,7 +186,7 @@ public class CableNetworkManager {
 
         // add any dangling cables to the result network
         Set<BlockPos> visitDebounce = new HashSet<>();
-        Set<BlockPos> allDanglingCables = SFMUtils.<BlockPos, BlockPos>getRecursiveStream(
+        Set<BlockPos> allDanglingCables = SFMStreamUtils.<BlockPos, BlockPos>getRecursiveStream(
                 (current, next, results) -> {
                     results.accept(current);
                     for (Direction d : SFMDirections.DIRECTIONS) {

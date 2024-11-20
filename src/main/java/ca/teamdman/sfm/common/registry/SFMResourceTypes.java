@@ -1,8 +1,8 @@
 package ca.teamdman.sfm.common.registry;
 
 import ca.teamdman.sfm.SFM;
-import ca.teamdman.sfm.common.compat.SFMCompat;
 import ca.teamdman.sfm.common.compat.SFMMekanismCompat;
+import ca.teamdman.sfm.common.compat.SFMModCompat;
 import ca.teamdman.sfm.common.resourcetype.FluidResourceType;
 import ca.teamdman.sfm.common.resourcetype.ForgeEnergyResourceType;
 import ca.teamdman.sfm.common.resourcetype.ItemResourceType;
@@ -51,7 +51,7 @@ public class SFMResourceTypes {
     private static final Int2ObjectArrayMap<ResourceType<?, ?, ?>> DEFERRED_TYPES_BY_ID = new Int2ObjectArrayMap<>();
 
     static {
-        if (SFMCompat.isMekanismLoaded()) {
+        if (SFMModCompat.isMekanismLoaded()) {
             SFMMekanismCompat.register(TYPES);
         }
     }

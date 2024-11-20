@@ -6,7 +6,7 @@ import ca.teamdman.sfm.common.blockentity.CableFacadeBlockEntity;
 import ca.teamdman.sfm.common.cablenetwork.CableNetwork;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.util.FacadeType;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMStreamUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
@@ -127,9 +127,9 @@ public record ServerboundFacadePacket(
                 Block check = (level.getBlockEntity(startCablePos) instanceof CableFacadeBlockEntity cableBlockEntity)
                               ? cableBlockEntity.getFacadeState().getBlock()
                               : null;
-                yield SFMUtils.getRecursiveStream((current, next, results) -> {
+                yield SFMStreamUtils.getRecursiveStream((current, next, results) -> {
                     results.accept(current);
-                    SFMUtils.get3DNeighboursIncludingKittyCorner(current).forEach(neighbour -> {
+                    SFMStreamUtils.get3DNeighboursIncludingKittyCorner(current).forEach(neighbour -> {
                         if (
                                 cablePositions.contains(neighbour)
                                 && (

@@ -11,7 +11,7 @@ import ca.teamdman.sfm.common.program.ProgramLinter;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import ca.teamdman.sfm.common.util.SFMItemUtils;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMTranslationUtils;
 import ca.teamdman.sfml.ast.Program;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +35,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -108,7 +107,7 @@ public class DiskItem extends Item {
                 .getList("sfm:errors", Tag.TAG_COMPOUND)
                 .stream()
                 .map(CompoundTag.class::cast)
-                .map(SFMUtils::deserializeTranslation)
+                .map(SFMTranslationUtils::deserializeTranslation)
                 .toList();
     }
 
@@ -119,7 +118,7 @@ public class DiskItem extends Item {
                         "sfm:errors",
                         errors
                                 .stream()
-                                .map(SFMUtils::serializeTranslation)
+                                .map(SFMTranslationUtils::serializeTranslation)
                                 .collect(ListTag::new, ListTag::add, ListTag::addAll)
                 );
     }
@@ -130,7 +129,7 @@ public class DiskItem extends Item {
                 .getList("sfm:warnings", Tag.TAG_COMPOUND)
                 .stream()
                 .map(CompoundTag.class::cast)
-                .map(SFMUtils::deserializeTranslation)
+                .map(SFMTranslationUtils::deserializeTranslation)
                 .collect(
                         Collectors.toList());
     }
@@ -142,7 +141,7 @@ public class DiskItem extends Item {
                         "sfm:warnings",
                         warnings
                                 .stream()
-                                .map(SFMUtils::serializeTranslation)
+                                .map(SFMTranslationUtils::serializeTranslation)
                                 .collect(ListTag::new, ListTag::add, ListTag::addAll)
                 );
     }

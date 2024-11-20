@@ -3,7 +3,6 @@ package ca.teamdman.sfm.common.net;
 import ca.teamdman.sfm.common.program.ProgramContext;
 import ca.teamdman.sfm.common.program.SimulateExploreAllPathsProgramBehaviour;
 import ca.teamdman.sfm.common.registry.SFMPackets;
-import ca.teamdman.sfm.common.util.SFMUtils;
 import ca.teamdman.sfml.ast.BoolExpr;
 import ca.teamdman.sfml.ast.Program;
 import net.minecraft.network.FriendlyByteBuf;
@@ -58,7 +57,7 @@ public record ServerboundBoolExprStatementInspectionRequestPacket(
                                         SFMPackets.sendToPlayer(
                                                 () -> player,
                                                 new ClientboundBoolExprStatementInspectionResultsPacket(
-                                                        SFMUtils.truncate(
+                                                        SFMPacketDaddy.truncate(
                                                                 payload.toString(),
                                                                 ClientboundBoolExprStatementInspectionResultsPacket.MAX_RESULTS_LENGTH
                                                         ))

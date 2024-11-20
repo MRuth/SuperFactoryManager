@@ -5,15 +5,20 @@ import ca.teamdman.sfm.common.capabilityprovidermapper.BlockEntityCapabilityProv
 import ca.teamdman.sfm.common.capabilityprovidermapper.CapabilityProviderMapper;
 import ca.teamdman.sfm.common.capabilityprovidermapper.CauldronCapabilityProviderMapper;
 import ca.teamdman.sfm.common.capabilityprovidermapper.ae2.InterfaceCapabilityProviderMapper;
-import ca.teamdman.sfm.common.compat.SFMCompat;
-import ca.teamdman.sfm.common.compat.SFMMekanismCompat;
+import ca.teamdman.sfm.common.compat.SFMModCompat;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.CapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.function.Supplier;
 
 public class SFMCapabilityProviderMappers {
@@ -45,8 +50,35 @@ public class SFMCapabilityProviderMappers {
     }
 
     static {
-        if (SFMCompat.isAE2Loaded()) {
+        if (SFMModCompat.isAE2Loaded()) {
             MAPPERS.register("ae2/interface", InterfaceCapabilityProviderMapper::new);
         }
+    }
+
+    /**
+     * Find a {@link CapabilityProvider} as provided by the registered capability provider mappers.
+     * If multiple {@link CapabilityProviderMapper}s match, the first one is returned.
+     */
+    @SuppressWarnings("UnstableApiUsage") // for the javadoc lol
+    public static @Nullable ICapabilityProvider discoverCapabilityProvider(
+            Level level,
+            BlockPos pos
+    ) {
+        if (!level.isLoaded(pos)) return null;
+
+        Collection<CapabilityProviderMapper> mappers = DEFERRED_MAPPERS.get().getValues();
+        CapabilityProviderMapper beMapper = null;
+        for (CapabilityProviderMapper mapper : mappers) {
+            if (mapper instanceof BlockEntityCapabilityProviderMapper) {
+                beMapper = mapper;
+                continue;
+            }
+            ICapabilityProvider capabilityProvider = mapper.getProviderFor(level, pos);
+            if (capabilityProvider != null) {
+                return capabilityProvider;
+            }
+        }
+
+        return beMapper != null ? beMapper.getProviderFor(level, pos) : null;
     }
 }

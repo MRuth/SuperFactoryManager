@@ -3,7 +3,6 @@ package ca.teamdman.sfm.common.net;
 import ca.teamdman.sfm.common.program.ProgramContext;
 import ca.teamdman.sfm.common.program.SimulateExploreAllPathsProgramBehaviour;
 import ca.teamdman.sfm.common.registry.SFMPackets;
-import ca.teamdman.sfm.common.util.SFMUtils;
 import ca.teamdman.sfml.ast.IfStatement;
 import ca.teamdman.sfml.ast.Program;
 import net.minecraft.network.FriendlyByteBuf;
@@ -55,7 +54,7 @@ public record ServerboundIfStatementInspectionRequestPacket(
                                 payload.append(result ? "TRUE" : "FALSE");
 
                                 SFMPackets.sendToPlayer(() -> player, new ClientboundIfStatementInspectionResultsPacket(
-                                        SFMUtils.truncate(
+                                        SFMPacketDaddy.truncate(
                                                 payload.toString(),
                                                 ClientboundIfStatementInspectionResultsPacket.MAX_RESULTS_LENGTH
                                         )));

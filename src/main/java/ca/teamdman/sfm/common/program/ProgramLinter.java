@@ -3,8 +3,9 @@ package ca.teamdman.sfm.common.program;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
+import ca.teamdman.sfm.common.compat.SFMModCompat;
 import ca.teamdman.sfm.common.item.DiskItem;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
 import ca.teamdman.sfml.ast.*;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
@@ -65,7 +66,7 @@ public class ProgramLinter {
                                     .labelAccess()
                                     .getLabelledPositions(labelPositionHolder)
                                     .stream()
-                                    .filter(pair -> SFMUtils.isMekanismBlock(level, pair.getSecond()))
+                                    .filter(pair -> SFMModCompat.isMekanismBlock(level, pair.getSecond()))
                                     .forEach(pair -> warnings.add(PROGRAM_WARNING_MEKANISM_USED_WITHOUT_DIRECTION.get(
                                             pair.getFirst(),
                                             statement.toStringPretty()
@@ -188,7 +189,7 @@ public class ProgramLinter {
                                 )
                         ));
                     }
-                    var viable = SFMUtils.discoverCapabilityProvider(level, pos) != null;
+                    var viable = SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos) != null;
                     if (!viable && adjacent) {
                         warnings.add(PROGRAM_WARNING_CONNECTED_BUT_NOT_VIABLE_LABEL.get(
                                 label,

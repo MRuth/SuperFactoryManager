@@ -2,11 +2,10 @@ package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.common.cablenetwork.CableNetwork;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
-import ca.teamdman.sfm.common.compat.SFMCompat;
+import ca.teamdman.sfm.common.compat.SFMModCompat;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.util.SFMDirections;
-import ca.teamdman.sfm.common.util.SFMUtils;
 import ca.teamdman.sfml.ast.DirectionQualifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -86,7 +85,7 @@ public record ServerboundNetworkToolUsePacket(
                         payload.append(entity).append("\n");
                     }
                     payload.append("---- capability directions ----\n");
-                    for (var cap : SFMCompat.getCapabilities()) {
+                    for (var cap : SFMModCompat.getCapabilities()) {
                         String directions = DirectionQualifier.EVERY_DIRECTION
                                 .stream()
                                 .filter(dir -> entity.getCapability(cap, dir).isPresent())
@@ -131,7 +130,7 @@ public record ServerboundNetworkToolUsePacket(
 
 
                 SFMPackets.sendToPlayer(() -> player, new ClientboundInputInspectionResultsPacket(
-                        SFMUtils.truncate(
+                        SFMPacketDaddy.truncate(
                                 payload.toString(),
                                 ClientboundInputInspectionResultsPacket.MAX_RESULTS_LENGTH
                         )));

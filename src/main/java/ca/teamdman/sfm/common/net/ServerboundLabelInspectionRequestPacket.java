@@ -5,7 +5,6 @@ import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
 import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.registry.SFMPackets;
-import ca.teamdman.sfm.common.util.SFMUtils;
 import ca.teamdman.sfml.ast.Program;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -115,7 +114,7 @@ public record ServerboundLabelInspectionRequestPacket(
                     player.getStringUUID()
             );
             SFMPackets.sendToPlayer(() -> player, new ClientboundLabelInspectionResultsPacket(
-                    SFMUtils.truncate(
+                    SFMPacketDaddy.truncate(
                             payload.toString(),
                             ServerboundLabelInspectionRequestPacket.MAX_RESULTS_LENGTH
                     )

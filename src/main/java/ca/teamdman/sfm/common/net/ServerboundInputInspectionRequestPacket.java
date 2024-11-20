@@ -3,7 +3,7 @@ package ca.teamdman.sfm.common.net;
 import ca.teamdman.sfm.common.program.ProgramContext;
 import ca.teamdman.sfm.common.program.SimulateExploreAllPathsProgramBehaviour;
 import ca.teamdman.sfm.common.registry.SFMPackets;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMASTUtils;
 import ca.teamdman.sfml.ast.InputStatement;
 import ca.teamdman.sfml.ast.Program;
 import net.minecraft.network.FriendlyByteBuf;
@@ -56,7 +56,7 @@ public record ServerboundInputInspectionRequestPacket(
                                         int preLen = payload.length();
                                         inputStatement.gatherSlots(
                                                 programContext,
-                                                slot -> SFMUtils
+                                                slot -> SFMASTUtils
                                                         .getInputStatementForSlot(
                                                                 slot,
                                                                 inputStatement.labelAccess()
@@ -72,7 +72,7 @@ public record ServerboundInputInspectionRequestPacket(
                                         SFMPackets.sendToPlayer(
                                                 () -> player,
                                                 new ClientboundInputInspectionResultsPacket(
-                                                        SFMUtils.truncate(
+                                                        SFMPacketDaddy.truncate(
                                                                 payload.toString(),
                                                                 ClientboundInputInspectionResultsPacket.MAX_RESULTS_LENGTH
                                                         ))

@@ -8,7 +8,7 @@ import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.program.*;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMTranslationUtils;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
@@ -100,9 +100,11 @@ public record Program(
                 if (!FMLEnvironment.production) {
                     var message = t.getMessage();
                     if (message != null) {
-                        errors.add(SFMUtils.getTranslatableContents(t.getClass().getSimpleName() + ": " + message));
+                        errors.add(SFMTranslationUtils.getTranslatableContents(
+                                t.getClass().getSimpleName() + ": " + message
+                        ));
                     } else {
-                        errors.add(SFMUtils.getTranslatableContents(t.getClass().getSimpleName()));
+                        errors.add(SFMTranslationUtils.getTranslatableContents(t.getClass().getSimpleName()));
                     }
                 }
             }

@@ -1,13 +1,14 @@
 package ca.teamdman.sfm.common.net;
 
-import ca.teamdman.sfm.common.compat.SFMCompat;
 import ca.teamdman.sfm.common.compat.SFMMekanismCompat;
+import ca.teamdman.sfm.common.compat.SFMModCompat;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
+import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
+import ca.teamdman.sfm.common.util.SFMASTUtils;
 import ca.teamdman.sfm.common.util.SFMDirections;
-import ca.teamdman.sfm.common.util.SFMUtils;
 import ca.teamdman.sfml.ast.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -56,7 +57,7 @@ public record ServerboundContainerExportsInspectionRequestPacket(
             sb.append("\n");
         }
 
-        if (SFMCompat.isMekanismLoaded()) {
+        if (SFMModCompat.isMekanismLoaded()) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be != null) {
                 sb.append(SFMMekanismCompat.gatherInspectionResults(be)).append("\n");
@@ -75,7 +76,7 @@ public record ServerboundContainerExportsInspectionRequestPacket(
             Direction direction
     ) {
         StringBuilder sb = new StringBuilder();
-        ICapabilityProvider prov = SFMUtils.discoverCapabilityProvider(level, pos);
+        ICapabilityProvider prov = SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos);
 
         if (prov != null) {
             prov.getCapability(resourceType.CAPABILITY_KIND, direction).ifPresent(cap -> {
@@ -90,7 +91,7 @@ public record ServerboundContainerExportsInspectionRequestPacket(
 
                 if (!slotContents.isEmpty()) {
                     slotContents.forEach((slot, stack) -> {
-                        InputStatement inputStatement = SFMUtils.getInputStatementForStack(
+                        InputStatement inputStatement = SFMASTUtils.getInputStatementForStack(
                                 resourceTypeResourceKey,
                                 resourceType,
                                 stack,
@@ -188,7 +189,7 @@ public record ServerboundContainerExportsInspectionRequestPacket(
 
                         SFMPackets.sendToPlayer(() -> player, new ClientboundContainerExportsInspectionResultsPacket(
                                 msg.windowId,
-                                SFMUtils.truncate(
+                                SFMPacketDaddy.truncate(
                                         payload,
                                         ClientboundContainerExportsInspectionResultsPacket.MAX_RESULTS_LENGTH
                                 )

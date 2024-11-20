@@ -3,7 +3,7 @@ package ca.teamdman.sfm.common.cablenetwork;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.logging.TranslatableLogger;
 import ca.teamdman.sfm.common.util.SFMDirections;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMStreamUtils;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockPos;
@@ -57,7 +57,7 @@ public class CableNetwork {
         CAPABILITY_CACHE.clear();
 
         // discover connected cables
-        var cables = SFMUtils.<BlockPos, BlockPos>getRecursiveStream((current, next, results) -> {
+        var cables = SFMStreamUtils.<BlockPos, BlockPos>getRecursiveStream((current, next, results) -> {
             results.accept(current);
             for (Direction d : SFMDirections.DIRECTIONS) {
                 BlockPos offset = current.offset(d.getNormal());
@@ -82,7 +82,7 @@ public class CableNetwork {
             Level level,
             BlockPos startPos
     ) {
-        return SFMUtils.getRecursiveStream((current, next, results) -> {
+        return SFMStreamUtils.getRecursiveStream((current, next, results) -> {
             results.accept(current);
             for (Direction d : SFMDirections.DIRECTIONS) {
                 BlockPos offset = current.offset(d.getNormal());

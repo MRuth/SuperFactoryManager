@@ -35,4 +35,21 @@ public interface SFMPacketDaddy<T extends SFMPacket> {
             }
         });
     }
+
+    static String truncate(
+            String input,
+            int maxLength
+    ) {
+        if (input.length() > maxLength) {
+            SFM.LOGGER.warn(
+                    "input too big, truncation has occurred! (len={}, max={}, over={})",
+                    input.length(),
+                    maxLength,
+                    maxLength - input.length()
+            );
+            String truncationWarning = "\n...truncated";
+            return input.substring(0, maxLength - truncationWarning.length()) + truncationWarning;
+        }
+        return input;
+    }
 }

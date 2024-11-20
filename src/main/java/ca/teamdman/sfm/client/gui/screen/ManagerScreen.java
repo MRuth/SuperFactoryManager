@@ -10,7 +10,6 @@ import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.net.*;
 import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.registry.SFMPackets;
-import ca.teamdman.sfm.common.util.SFMUtils;
 import ca.teamdman.sfml.ast.Program;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -325,7 +324,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerContainerMenu>
     }
 
     private void sendProgram(String program) {
-        program = SFMUtils.truncate(program, Program.MAX_PROGRAM_LENGTH);
+        program = SFMPacketDaddy.truncate(program, Program.MAX_PROGRAM_LENGTH);
         SFMPackets.sendToServer(new ServerboundManagerProgramPacket(
                 menu.containerId,
                 menu.MANAGER_POSITION,

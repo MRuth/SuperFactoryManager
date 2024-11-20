@@ -9,7 +9,7 @@ import ca.teamdman.sfm.common.program.SimulateExploreAllPathsProgramBehaviour.Br
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
-import ca.teamdman.sfm.common.util.SFMUtils;
+import ca.teamdman.sfm.common.util.SFMASTUtils;
 import ca.teamdman.sfml.ast.Number;
 import ca.teamdman.sfml.ast.*;
 import net.minecraft.network.FriendlyByteBuf;
@@ -95,7 +95,7 @@ public record ServerboundOutputInspectionRequestPacket(
                                 ))
                         ));
                 List<InputStatement> inputStatements = inputSlots.stream()
-                        .map(slot -> SFMUtils.getInputStatementForSlot(slot.a, slot.b))
+                        .map(slot -> SFMASTUtils.getInputStatementForSlot(slot.a, slot.b))
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .toList();
@@ -299,7 +299,7 @@ public record ServerboundOutputInspectionRequestPacket(
                                         program,
                                         outputStatement
                                 );
-                                payload = SFMUtils.truncate(
+                                payload = SFMPacketDaddy.truncate(
                                         payload,
                                         ServerboundOutputInspectionRequestPacket.MAX_RESULTS_LENGTH
                                 );

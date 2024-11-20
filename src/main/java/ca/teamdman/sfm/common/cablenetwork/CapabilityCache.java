@@ -2,8 +2,8 @@ package ca.teamdman.sfm.common.cablenetwork;
 
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.logging.TranslatableLogger;
+import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
 import ca.teamdman.sfm.common.util.SFMDirections;
-import ca.teamdman.sfm.common.util.SFMUtils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArraySet;
@@ -108,7 +108,7 @@ public class CapabilityCache {
         }
 
         // No capability found, discover it
-        var provider = SFMUtils.discoverCapabilityProvider(level, pos);
+        var provider = SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos);
         if (provider != null) {
             var lazyOptional = provider.getCapability(capKind, direction);
             if (lazyOptional.isPresent()) {
