@@ -70,7 +70,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
 
         // ensure it can move into an empty tank
@@ -110,7 +110,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
 
         // ensure it can move when there's already some in the destination
@@ -150,7 +150,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // ensure it can move into a nearly full tank
         leftTank.getInfusionTank().setStack(new InfusionStack(MekanismInfuseTypes.REDSTONE.get(), 2_000_000L));
@@ -198,7 +198,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         left.getBinSlot().setStack(new ItemStack(Items.COAL, BinTier.ULTIMATE.getStorage()));
         right.getBinSlot().setEmpty();
@@ -239,7 +239,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         left.getBinSlot().setStack(new ItemStack(Items.DIAMOND, 100));
         right.getBinSlot().setStack(new ItemStack(Items.DIAMOND, 100));
@@ -280,7 +280,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         left.getBinSlot().setStack(new ItemStack(Items.STICK, BinTier.ULTIMATE.getStorage()));
         right.getBinSlot().setStack(new ItemStack(Items.STICK, BinTier.ULTIMATE.getStorage() - 32));
@@ -321,7 +321,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         left.setEnergy(0, EnergyCubeTier.ULTIMATE.getMaxEnergy());
         right.setEnergy(0, FloatingLong.ZERO);
@@ -361,7 +361,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         left.setEnergy(0, FloatingLong.create(1_000));
         right.setEnergy(0, FloatingLong.create(1_000));
@@ -401,7 +401,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         left.setEnergy(0, EnergyCubeTier.ULTIMATE.getMaxEnergy());
         right.setEnergy(0, EnergyCubeTier.ULTIMATE.getMaxEnergy().subtract(1_000));
@@ -444,7 +444,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         left.setEnergy(0, FloatingLong.create(100));
         right.setEnergy(0, FloatingLong.ZERO);
@@ -508,7 +508,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .addAll("source", sourceBlocks.stream().map(helper::absolutePos).toList())
                 .addAll("dest", destBlocks.stream().map(helper::absolutePos).toList())
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram(program);
@@ -580,7 +580,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
                 .add("a", helper.absolutePos(a2Pos))
                 .add("b", helper.absolutePos(b1Pos))
                 .add("b", helper.absolutePos(b2Pos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(a1.getFluidInTank(0).isEmpty(), "a1 did not empty");
@@ -648,7 +648,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .addAll("source", List.of(helper.absolutePos(powerCubePos)))
                 .addAll("dest", List.of(helper.absolutePos(inductionInput)))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // we can't prefill since we can't wait a delay AND use succeedIfManagerDidThing
         // pre-fill the matrix by a little bit

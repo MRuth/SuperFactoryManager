@@ -56,7 +56,7 @@ public class DiskItem extends Item {
 
     }
 
-    public static Optional<Program> compileAndUpdateErrorsAndWarnings(ItemStack stack, @Nullable ManagerBlockEntity manager) {
+    public static @Nullable Program compileAndUpdateErrorsAndWarnings(ItemStack stack, @Nullable ManagerBlockEntity manager) {
         if (manager != null) {
             manager.logger.info(x -> x.accept(LocalizationKeys.PROGRAM_COMPILE_FROM_DISK_BEGIN.get()));
         }
@@ -98,7 +98,7 @@ public class DiskItem extends Item {
                     setErrors(stack, errors);
                 }
         );
-        return Optional.ofNullable(rtn.get());
+        return rtn.get();
     }
 
     public static List<TranslatableContents> getErrors(ItemStack stack) {

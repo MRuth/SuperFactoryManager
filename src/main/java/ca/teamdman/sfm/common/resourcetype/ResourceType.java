@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public abstract class ResourceType<STACK, ITEM, CAP> {
                         labelAccess
                 )));
 
+        DirectionQualifier directions = labelAccess.directions();
         LabelPositionHolder labelPositionHolder = programContext.getLabelPositionHolder();
         ArrayList<Pair<Label, BlockPos>> positions = labelAccess.getLabelledPositions(labelPositionHolder);
 
@@ -124,7 +126,7 @@ public abstract class ResourceType<STACK, ITEM, CAP> {
             BlockPos pos = pair.getSecond();
             forEachDirectionalCapability(
                     programContext,
-                    labelAccess.directions(),
+                    directions,
                     pos,
                     (dir, cap) -> consumer.accept(label, pos, dir, cap)
             );
@@ -149,6 +151,7 @@ public abstract class ResourceType<STACK, ITEM, CAP> {
                                 pos,
                                 dir
                         )));
+                //noinspection OptionalGetWithoutIsPresent
                 CAP cap = maybeCap.get();
                 consumer.accept(dir, cap);
             } else {

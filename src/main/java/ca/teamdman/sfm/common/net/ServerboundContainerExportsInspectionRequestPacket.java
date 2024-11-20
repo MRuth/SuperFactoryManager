@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,65 +75,67 @@ public record ServerboundContainerExportsInspectionRequestPacket(
             Direction direction
     ) {
         StringBuilder sb = new StringBuilder();
-        SFMUtils
-                .discoverCapabilityProvider(level, pos)
-                .ifPresent(prov -> prov.getCapability(resourceType.CAPABILITY_KIND, direction).ifPresent(cap -> {
-                    int slots = resourceType.getSlots(cap);
-                    Int2ObjectMap<STACK> slotContents = new Int2ObjectArrayMap<>(slots);
-                    for (int slot = 0; slot < slots; slot++) {
-                        STACK stack = resourceType.getStackInSlot(cap, slot);
-                        if (!resourceType.isEmpty(stack)) {
-                            slotContents.put(slot, stack);
-                        }
+        ICapabilityProvider prov = SFMUtils.discoverCapabilityProvider(level, pos);
+
+        if (prov != null) {
+            prov.getCapability(resourceType.CAPABILITY_KIND, direction).ifPresent(cap -> {
+                int slots = resourceType.getSlots(cap);
+                Int2ObjectMap<STACK> slotContents = new Int2ObjectArrayMap<>(slots);
+                for (int slot = 0; slot < slots; slot++) {
+                    STACK stack = resourceType.getStackInSlot(cap, slot);
+                    if (!resourceType.isEmpty(stack)) {
+                        slotContents.put(slot, stack);
                     }
+                }
 
-                    if (!slotContents.isEmpty()) {
-                        slotContents.forEach((slot, stack) -> {
-                            InputStatement inputStatement = SFMUtils.getInputStatementForStack(
-                                    resourceTypeResourceKey,
-                                    resourceType,
-                                    stack,
-                                    "target",
-                                    slot,
-                                    false,
-                                    direction
-                            );
-                            sb.append(inputStatement.toStringPretty()).append("\n");
-                        });
-
-                        List<ResourceLimit> resourceLimitList = new ArrayList<>();
-                        slotContents.forEach((slot, stack) -> {
-                            ResourceLocation stackId = resourceType.getRegistryKey(stack);
-                            ResourceIdentifier<STACK, ITEM, CAP> resourceIdentifier = new ResourceIdentifier<>(
-                                    resourceTypeResourceKey.location().getNamespace(),
-                                    resourceTypeResourceKey.location().getPath(),
-                                    stackId.getNamespace(),
-                                    stackId.getPath()
-                            );
-                            ResourceLimit resourceLimit = new ResourceLimit(
-                                    new ResourceIdSet(List.of(resourceIdentifier)),
-                                    Limit.MAX_QUANTITY_NO_RETENTION, With.ALWAYS_TRUE
-                            );
-                            resourceLimitList.add(resourceLimit);
-                        });
-                        InputStatement inputStatement = new InputStatement(
-                                new LabelAccess(
-                                        List.of(new Label("target")),
-                                        new DirectionQualifier(direction == null
-                                                               ? EnumSet.noneOf(Direction.class)
-                                                               : EnumSet.of(direction)),
-                                        NumberRangeSet.MAX_RANGE,
-                                        RoundRobin.disabled()
-                                ),
-                                new ResourceLimits(
-                                        resourceLimitList.stream().distinct().toList(),
-                                        ResourceIdSet.EMPTY
-                                ),
-                                false
+                if (!slotContents.isEmpty()) {
+                    slotContents.forEach((slot, stack) -> {
+                        InputStatement inputStatement = SFMUtils.getInputStatementForStack(
+                                resourceTypeResourceKey,
+                                resourceType,
+                                stack,
+                                "target",
+                                slot,
+                                false,
+                                direction
                         );
-                        sb.append(inputStatement.toStringPretty());
-                    }
-                }));
+                        sb.append(inputStatement.toStringPretty()).append("\n");
+                    });
+
+                    List<ResourceLimit> resourceLimitList = new ArrayList<>();
+                    slotContents.forEach((slot, stack) -> {
+                        ResourceLocation stackId = resourceType.getRegistryKey(stack);
+                        ResourceIdentifier<STACK, ITEM, CAP> resourceIdentifier = new ResourceIdentifier<>(
+                                resourceTypeResourceKey.location().getNamespace(),
+                                resourceTypeResourceKey.location().getPath(),
+                                stackId.getNamespace(),
+                                stackId.getPath()
+                        );
+                        ResourceLimit resourceLimit = new ResourceLimit(
+                                new ResourceIdSet(List.of(resourceIdentifier)),
+                                Limit.MAX_QUANTITY_NO_RETENTION, With.ALWAYS_TRUE
+                        );
+                        resourceLimitList.add(resourceLimit);
+                    });
+                    InputStatement inputStatement = new InputStatement(
+                            new LabelAccess(
+                                    List.of(new Label("target")),
+                                    new DirectionQualifier(direction == null
+                                            ? EnumSet.noneOf(Direction.class)
+                                            : EnumSet.of(direction)),
+                                    NumberRangeSet.MAX_RANGE,
+                                    RoundRobin.disabled()
+                            ),
+                            new ResourceLimits(
+                                    resourceLimitList.stream().distinct().toList(),
+                                    ResourceIdSet.EMPTY
+                            ),
+                            false
+                    );
+                    sb.append(inputStatement.toStringPretty());
+                }
+            });
+        }
         String result = sb.toString();
         if (!result.isBlank()) {
             BlockEntity be = level.getBlockEntity(pos);

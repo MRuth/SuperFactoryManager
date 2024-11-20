@@ -57,7 +57,7 @@ public class SFMWithGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(count(leftChest, Items.DIRT) == 0, "dirt should depart");
@@ -105,7 +105,7 @@ public class SFMWithGameTests extends SFMGameTestBase {
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
                 .add("top", helper.absolutePos(topPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(count(leftChest, null) == 128, "stuff should depart");
@@ -149,7 +149,7 @@ public class SFMWithGameTests extends SFMGameTestBase {
 //        LabelPositionHolder.empty()
 //                .add("a", helper.absolutePos(leftPos))
 //                .add("b", helper.absolutePos(rightPos))
-//                .save(manager.getDisk().get());
+//                .save(manager.getDisk());
 //
 //        succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
 //            assertTrue(count(leftChest, Items.DIRT) == 64, "dirt should depart");

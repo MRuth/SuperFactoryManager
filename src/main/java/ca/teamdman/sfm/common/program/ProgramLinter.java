@@ -188,7 +188,7 @@ public class ProgramLinter {
                                 )
                         ));
                     }
-                    var viable = SFMUtils.discoverCapabilityProvider(level, pos).isPresent();
+                    var viable = SFMUtils.discoverCapabilityProvider(level, pos) != null;
                     if (!viable && adjacent) {
                         warnings.add(PROGRAM_WARNING_CONNECTED_BUT_NOT_VIABLE_LABEL.get(
                                 label,

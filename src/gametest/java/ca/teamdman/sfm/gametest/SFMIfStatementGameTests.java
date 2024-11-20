@@ -84,7 +84,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             int leftDiamondCount = count(left, Items.DIAMOND);
@@ -158,7 +158,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             int leftDiamondCount = count(left, Items.DIAMOND);
@@ -233,7 +233,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             int leftDiamondCount = count(left, Items.DIAMOND);
@@ -308,7 +308,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             int leftDiamondCount = count(left, Items.DIAMOND);
@@ -383,7 +383,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             int leftDiamondCount = count(left, Items.DIAMOND);
@@ -438,7 +438,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(leftChest.getStackInSlot(0).getCount() == 64, "Dirt should not depart");
@@ -479,7 +479,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
                 .add("b", helper.absolutePos(leftPos))
                 .add("c", helper.absolutePos(leftPos))
                 .add("dest", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(leftChest.getStackInSlot(0).getCount() == 64, "Dirt should not depart");
@@ -521,7 +521,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
                 .add("a", helper.absolutePos(leftPos))
                 .add("c", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(leftChest.getStackInSlot(0).isEmpty(), "Dirt should depart");
@@ -549,7 +549,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder labelPositionHolder = LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram("""
@@ -561,10 +561,10 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
                                        END
                                    """.stripTrailing().stripIndent());
         assertManagerRunning(manager);
-        var program = manager.getProgram().get();
+        var program = manager.getProgram();
 
         // ensure no warnings
-        var warnings = DiskItem.getWarnings(manager.getDisk().get());
+        var warnings = DiskItem.getWarnings(manager.getDisk());
         assertTrue(warnings.isEmpty(), "expected 0 warning, got " + warnings.size());
 
         // count the execution paths
@@ -610,7 +610,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         // set the labels
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram("""
@@ -623,7 +623,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         assertManagerRunning(manager);
 
         // assert expected warnings
-        var warnings = DiskItem.getWarnings(manager.getDisk().get());
+        var warnings = DiskItem.getWarnings(manager.getDisk());
         assertTrue(warnings.size() == 1, "expected 1 warning, got " + warnings.size());
         assertTrue(warnings
                            .get(0)
@@ -652,7 +652,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
                 .add("left1", helper.absolutePos(leftPos))
                 .add("left2", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // load the program
         manager.setProgram("""
@@ -667,10 +667,10 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
                                        END
                                    """.stripTrailing().stripIndent());
         assertManagerRunning(manager);
-        var program = manager.getProgram().get();
+        var program = manager.getProgram();
 
         // ensure no warnings
-        var warnings = DiskItem.getWarnings(manager.getDisk().get());
+        var warnings = DiskItem.getWarnings(manager.getDisk());
         assertTrue(warnings.isEmpty(), "expected 0 warning, got " + warnings.size());
 
         // count the execution paths
@@ -721,7 +721,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("a", helper.absolutePos(leftPos))
                 .add("b", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         // set the program
         String code = """
@@ -840,7 +840,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(count(leftChest, null) == 0, "everything should depart");
@@ -881,7 +881,7 @@ public class SFMIfStatementGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             // left should be empty

@@ -17,18 +17,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 public class CauldronCapabilityProviderMapper implements CapabilityProviderMapper {
     @Override
-    public Optional<ICapabilityProvider> getProviderFor(LevelAccessor level, BlockPos pos) {
+    public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, BlockPos pos) {
         var state = level.getBlockState(pos);
         if (state.getBlock() == Blocks.CAULDRON
             || state.getBlock() == Blocks.WATER_CAULDRON
             || state.getBlock() == Blocks.LAVA_CAULDRON) {
-            return Optional.of(new CauldronCapabilityProvider(level, pos));
+            return new CauldronCapabilityProvider(level, pos);
         }
-        return Optional.empty();
+        return null;
     }
 
     private static class CauldronCapabilityProvider implements ICapabilityProvider {

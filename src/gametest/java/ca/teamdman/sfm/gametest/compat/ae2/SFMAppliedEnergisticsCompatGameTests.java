@@ -164,7 +164,7 @@ public class SFMAppliedEnergisticsCompatGameTests extends SFMGameTestBase {
                 .add("last", helper.absolutePos(lastPos3))
                 .add("materials", helper.absolutePos(materialsPos))
                 .add("results", helper.absolutePos(resultsPos))
-                .save(manager.getDisk().get());
+                .save(manager.getDisk());
 
         manager.setProgram("""
                                    EVERY 20 TICKS DO
