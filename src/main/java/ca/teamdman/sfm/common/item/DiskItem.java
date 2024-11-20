@@ -185,7 +185,6 @@ public class DiskItem extends Item {
         return Component.literal(name).withStyle(ChatFormatting.AQUA);
     }
 
-    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     public void appendHoverText(
             ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag detail

@@ -38,6 +38,7 @@ public record Program(
      * This comes from {@link java.io.DataOutputStream#writeUTF(String, DataOutput)}
      * and {@link NetworkHooks#openScreen(ServerPlayer, MenuProvider, Consumer)}
      */
+    @SuppressWarnings("JavadocReference")
     public static final int MAX_PROGRAM_LENGTH = 32600 // from openScreen
                                                  - 8 * TICK_TIME_HISTORY_SIZE
                                                  - MAX_LOG_LEVEL_NAME_LENGTH
