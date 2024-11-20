@@ -24,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayDeque;
+import java.util.Objects;
 
 @GameTestHolder(SFM.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -67,7 +68,7 @@ public class SFMThermalMekanismGameTests extends SFMGameTestBase {
         LabelPositionHolder.empty()
                 .add("left", helper.absolutePos(leftPos))
                 .add("right", helper.absolutePos(rightPos))
-                .save(manager.getDisk().get());
+                .save(Objects.requireNonNull(manager.getDisk()));
 
         // load the program
         manager.setProgram(program);
