@@ -83,7 +83,7 @@ public class FallingAnvilHandler {
                             var item = e.getItem();
                             var enchantments = EnchantedBookItem.getEnchantments(item);
 
-                            int shardsForEnchantments = switch (SFMConfig.SERVER.levelsToShards.get()) {
+                            long shardsForEnchantments = switch (SFMConfig.SERVER.levelsToShards.get()) {
                                 case JustOne -> 1;
                                 case EachOne -> enchantments.size();
                                 case SumLevels -> {
@@ -98,23 +98,28 @@ public class FallingAnvilHandler {
                                     int sum = 0;
                                     for (int i = 0; i < enchantments.size(); i++) {
                                         var ench = enchantments.getCompound(i);
-                                        sum += 1 << Math.max(0, ench.getInt("lvl") - 1);
+                                        int incr = 1 << Math.max(0, ench.getInt("lvl") - 1);
+                                        if (sum + incr > 0) {
+                                            sum += incr;
+                                        } else {
+                                            sum = Integer.MAX_VALUE; // lol
+                                        }
                                     }
                                     yield sum;
                                 }
                             };
-                            int count = item.getCount() * shardsForEnchantments;
+                            long count = (long) item.getCount() * shardsForEnchantments;
 
                             e.setItem(new ItemStack(
                                     SFMItems.EXPERIENCE_SHARD_ITEM.get(),
-                                    Math.min(64, count)
+                                    (int) Math.min(64, count)
                             ));
 
                             count -= 64;
                             while (count > 0) {
                                 e.spawnAtLocation(new ItemStack(
                                         SFMItems.EXPERIENCE_SHARD_ITEM.get(),
-                                        Math.min(64, count)
+                                        (int) Math.min(64, count)
                                 ));
                                 count -= 64;
                             }
