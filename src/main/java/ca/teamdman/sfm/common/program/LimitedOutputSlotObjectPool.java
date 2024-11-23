@@ -5,6 +5,7 @@ import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import ca.teamdman.sfml.ast.Label;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.IdentityHashMap;
  */
 public class LimitedOutputSlotObjectPool {
     public static final IdentityHashMap<LimitedOutputSlot<?, ?, ?>, Boolean> LEASED = new IdentityHashMap<>();
+    private static final boolean TRACKING_ENABLED = !FMLEnvironment.production;
     @SuppressWarnings("rawtypes")
     private static LimitedOutputSlot[] pool = new LimitedOutputSlot[27];
     private static int index = -1;
@@ -34,7 +36,7 @@ public class LimitedOutputSlotObjectPool {
     ) {
         if (index == -1) {
             var rtn = new LimitedOutputSlot<>(label, pos, direction, slot, handler, tracker, stack, type);
-            if (LEASED.put(rtn, true) != null) {
+            if (TRACKING_ENABLED && LEASED.put(rtn, true) != null) {
                 SFM.LOGGER.warn("new output slot was somehow already leased, this should literally never happen: {}", rtn);
             }
             return rtn;
@@ -42,7 +44,7 @@ public class LimitedOutputSlotObjectPool {
             @SuppressWarnings("unchecked") LimitedOutputSlot<STACK, ITEM, CAP> obj = pool[index];
             index--;
             obj.init(handler, label, pos, direction, slot, tracker, stack, type);
-            if (LEASED.put(obj, true) != null) {
+            if (TRACKING_ENABLED && LEASED.put(obj, true) != null) {
                 SFM.LOGGER.warn("tried to lease output slot a second time: {}", obj);
             }
             return obj;
@@ -58,7 +60,7 @@ public class LimitedOutputSlotObjectPool {
             return;
         }
         slot.freed = true;
-        if (LEASED.remove(slot) == null) {
+        if (TRACKING_ENABLED && LEASED.remove(slot) == null) {
             SFM.LOGGER.warn("Freed an output slot that wasn't tracked as leased: {}", slot);
         }
         if (index == pool.length - 1) {
@@ -90,14 +92,14 @@ public class LimitedOutputSlotObjectPool {
             slot.freed = true;
             index++;
             pool[index] = slot;
-            if (LEASED.remove(slot) == null) {
+            if (TRACKING_ENABLED && LEASED.remove(slot) == null) {
                 SFM.LOGGER.warn("Freed in batch an output slot that wasn't tracked as leased: {}", slot);
             }
         }
     }
 
     public static void checkInvariant() {
-        if (!LEASED.isEmpty()) {
+        if (TRACKING_ENABLED && !LEASED.isEmpty()) {
             SFM.LOGGER.warn("Leased objects not released: {}", LEASED);
             LEASED.clear();
         }
