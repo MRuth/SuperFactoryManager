@@ -756,6 +756,10 @@ public final class LocalizationKeys {
             "gui.sfm.item_inspector.copied_to_clipboard",
             "Copied {} characters to clipboard!"
     );
+    public static final LocalizationEntry PROGRAM_WARNING_TOO_MANY_CONDITIONS = new LocalizationEntry(
+            "program.sfm.warnings.too_many_conditions",
+            "Too many conditions for simulation, some linter warnings may be missed."
+    );
     @SuppressWarnings("unused") // used by minecraft without us having to directly reference
     public static LocalizationEntry MOD_NAME = new LocalizationEntry(
             "mod.name",

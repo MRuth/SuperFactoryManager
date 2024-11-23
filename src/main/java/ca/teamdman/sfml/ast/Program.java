@@ -187,13 +187,21 @@ public record Program(
             // Perform tick
             if (context.getBehaviour() instanceof SimulateExploreAllPathsProgramBehaviour simulation) {
                 int maxConditionCount = SFMConfig.getOrDefault(SFMConfig.SERVER.maxIfStatementsInTriggerBeforeSimulationIsntAllowed);
-                int conditionCount = Math.min(trigger.getConditionCount(), maxConditionCount);
-                int numPossibleStates = (int) Math.max(1, Math.pow(2, conditionCount));
-                for (int i = 0; i < numPossibleStates; i++) {
-                    ProgramContext forkedContext = context.fork();
-                    trigger.tick(forkedContext);
-                    forkedContext.free();
-                    ((SimulateExploreAllPathsProgramBehaviour) forkedContext.getBehaviour()).terminatePathAndBeginAnew();
+                int conditionCount = trigger.getConditionCount();
+                if (conditionCount <= maxConditionCount) {
+                    int numPossibleStates = (int) Math.max(1, Math.pow(2, conditionCount));
+                    for (int i = 0; i < numPossibleStates; i++) {
+                        ProgramContext forkedContext = context.fork();
+                        trigger.tick(forkedContext);
+                        forkedContext.free();
+                        ((SimulateExploreAllPathsProgramBehaviour) forkedContext.getBehaviour()).terminatePathAndBeginAnew();
+                    }
+                } else {
+                    context.getLogger().warn(LocalizationKeys.PROGRAM_WARNING_TOO_MANY_CONDITIONS.get(
+                            trigger.toString(),
+                            conditionCount,
+                            maxConditionCount
+                    ));
                 }
                 simulation.prepareNextTrigger();
             } else {
