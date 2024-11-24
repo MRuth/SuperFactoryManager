@@ -6,7 +6,10 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
@@ -181,7 +184,7 @@ public class SimulateExploreAllPathsProgramBehaviour implements ProgramBehaviour
     public record IO(
             IOStatement statement,
             IOKind kind,
-            Set<ResourceType<?,?,?>> usedResourceTypes,
+            ResourceType<?,?,?>[] usedResourceTypes,
             Set<Label> usedLabels
     ) implements ExecutionPathElement {
         public IO(IOStatement statement) {
@@ -191,7 +194,7 @@ public class SimulateExploreAllPathsProgramBehaviour implements ProgramBehaviour
                     statement instanceof InputStatement
                     ? IOKind.INPUT
                     : (statement instanceof OutputStatement ? IOKind.OUTPUT : null),
-                    new HashSet<>(statement.resourceLimits().getReferencedResourceTypes()),
+                    statement.resourceLimits().getReferencedResourceTypes(),
                     new HashSet<>(statement.labelAccess().labels())
             );
             if (kind == null) {

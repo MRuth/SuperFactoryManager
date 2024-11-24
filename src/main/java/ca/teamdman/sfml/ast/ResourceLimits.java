@@ -5,12 +5,13 @@ import ca.teamdman.sfm.common.program.IOutputResourceTracker;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -18,9 +19,9 @@ import java.util.stream.Collectors;
  * Do NOT modify this after creation since the {@link this#referencedResourceTypes} will become inaccurate.
  */
 public final class ResourceLimits implements ASTNode, ToStringPretty {
-    private @Nullable LinkedHashSet<ResourceType<?,?,?>> referencedResourceTypes = null;
     private final List<ResourceLimit> resourceLimitList;
     private final ResourceIdSet exclusions;
+    private @NotNull ResourceType<?, ?, ?> @Nullable [] referencedResourceTypes = null;
 
     /**
      *
@@ -67,11 +68,13 @@ public final class ResourceLimits implements ASTNode, ToStringPretty {
     /**
      * See also: {@link ResourceIdSet#getReferencedResourceTypes()}
      */
-    public Set<ResourceType<?, ?, ?>> getReferencedResourceTypes() {
+    public ResourceType<?, ?, ?>[] getReferencedResourceTypes() {
         if (referencedResourceTypes == null) {
-            referencedResourceTypes = new LinkedHashSet<>(SFMResourceTypes.getResourceTypeCount());
+            var found = new LinkedHashSet<>(SFMResourceTypes.getResourceTypeCount());
             for (ResourceLimit resourceLimit : resourceLimitList) {
-                referencedResourceTypes.addAll(resourceLimit.resourceIds().getReferencedResourceTypes());
+                found.addAll(Arrays.asList(resourceLimit.resourceIds().getReferencedResourceTypes()));
+                //noinspection SuspiciousToArrayCall
+                referencedResourceTypes = found.toArray(new ResourceType[0]);
             }
         }
         return referencedResourceTypes;

@@ -3,6 +3,7 @@ package ca.teamdman.sfml.ast;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -14,44 +15,44 @@ import java.util.stream.Stream;
  * Do NOT modify this after creation since the {@link this#referencedResourceTypes} will become inaccurate.
  */
 public final class ResourceIdSet implements ASTNode {
-    public static final ResourceIdSet EMPTY = new ResourceIdSet(new LinkedHashSet<>());
-    public static final ResourceIdSet MATCH_ALL = new ResourceIdSet(new LinkedHashSet<>(List.of(ResourceIdentifier.MATCH_ALL)));
-    private final LinkedHashSet<ResourceIdentifier<?, ?, ?>> resourceIds;
-    private @Nullable LinkedHashSet<ResourceType<?,?,?>> referencedResourceTypes = null;
+    public static final ResourceIdSet EMPTY = new ResourceIdSet(List.of());
+    public static final ResourceIdSet MATCH_ALL = new ResourceIdSet(List.of(ResourceIdentifier.MATCH_ALL));
+    private final ResourceIdentifier<?, ?, ?>[] resourceIds;
+    private @NotNull ResourceType<?,?,?> @Nullable [] referencedResourceTypes = null;
+
+    public ResourceIdSet(ResourceIdentifier<?, ?, ?>[] resourceIds) {
+        this.resourceIds = resourceIds;
+    }
 
     public ResourceIdSet(Collection<ResourceIdentifier<?, ?, ?>> contents) {
-        this(new LinkedHashSet<>(contents));
+        this(contents.toArray(new ResourceIdentifier[0]));
     }
 
     /**
      * See also: {@link ResourceLimits#getReferencedResourceTypes()}
      */
-    public Set<ResourceType<?,?,?>> getReferencedResourceTypes() {
+    public ResourceType<?,?,?>[] getReferencedResourceTypes() {
         if (referencedResourceTypes == null) {
-            referencedResourceTypes = new LinkedHashSet<>(SFMResourceTypes.getResourceTypeCount());
+            var found = new LinkedHashSet<>(SFMResourceTypes.getResourceTypeCount());
             for (ResourceIdentifier<?, ?, ?> resourceId : resourceIds) {
-                referencedResourceTypes.add(resourceId.getResourceType());
+                found.add(resourceId.getResourceType());
             }
+            //noinspection SuspiciousToArrayCall
+            referencedResourceTypes = found.toArray(new ResourceType[0]);
         }
         return referencedResourceTypes;
     }
 
     public boolean couldMatchMoreThanOne() {
-        return resourceIds.size() > 1 || stream().anyMatch(ResourceIdentifier::usesRegex);
+        return size() > 1 || stream().anyMatch(ResourceIdentifier::usesRegex);
     }
 
     public int size() {
-        return resourceIds.size();
+        return resourceIds.length;
     }
 
     public boolean isEmpty() {
-        return resourceIds.isEmpty();
-    }
-
-    public ResourceIdSet(
-            LinkedHashSet<ResourceIdentifier<?, ?, ?>> resourceIds
-    ) {
-        this.resourceIds = resourceIds;
+        return size() == 0;
     }
 
     public @Nullable ResourceIdentifier<?, ?, ?> getMatchingFromStack(Object stack) {
@@ -68,22 +69,22 @@ public final class ResourceIdSet implements ASTNode {
     }
 
     public boolean anyMatchResourceLocation(ResourceLocation location) {
-        return resourceIds.stream().anyMatch(x -> x.matchesResourceLocation(location));
+        return this.stream().anyMatch(x -> x.matchesResourceLocation(location));
     }
 
     @Override
     public String toString() {
         return "ResourceIdSet{" +
-               resourceIds.stream().map(ResourceIdentifier::toString).collect(Collectors.joining(", ")) +
+               this.stream().map(ResourceIdentifier::toString).collect(Collectors.joining(", ")) +
                '}';
     }
 
     public String toStringCondensed() {
-        return resourceIds.stream().map(ResourceIdentifier::toStringCondensed).collect(Collectors.joining(" OR "));
+        return this.stream().map(ResourceIdentifier::toStringCondensed).collect(Collectors.joining(" OR "));
     }
 
     public Stream<ResourceIdentifier<?,?,?>> stream() {
-        return resourceIds.stream();
+        return Arrays.stream(resourceIds);
     }
 
     @Override
