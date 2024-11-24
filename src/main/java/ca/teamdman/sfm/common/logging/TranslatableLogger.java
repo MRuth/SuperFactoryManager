@@ -142,7 +142,7 @@ public class TranslatableLogger {
     }
 
     public void info(TranslatableContents contents) {
-        if (!this.active || !logger.isEnabled(Level.INFO)) return;
+        if (!this.active) return;
         logger.info(contents.getKey(), contents.getArgs());
     }
 
@@ -152,7 +152,7 @@ public class TranslatableLogger {
     }
 
     public void warn(TranslatableContents contents) {
-        if (!this.active || !logger.isEnabled(Level.WARN)) return;
+        if (!this.active) return;
         logger.warn(contents.getKey(), contents.getArgs());
     }
 
@@ -162,7 +162,7 @@ public class TranslatableLogger {
     }
 
     public void error(TranslatableContents contents) {
-        if (!this.active || !logger.isEnabled(Level.ERROR)) return;
+        if (!this.active) return;
         logger.error(contents.getKey(), contents.getArgs());
     }
 
@@ -172,7 +172,7 @@ public class TranslatableLogger {
     }
 
     public void debug(TranslatableContents contents) {
-        if (!this.active || !logger.isEnabled(Level.DEBUG)) return;
+        if (!this.active) return;
         logger.debug(contents.getKey(), contents.getArgs());
     }
 
@@ -182,7 +182,7 @@ public class TranslatableLogger {
     }
 
     public void trace(TranslatableContents contents) {
-        if (!this.active || !logger.isEnabled(Level.TRACE)) return;
+        if (!this.active) return;
         logger.trace(contents.getKey(), contents.getArgs());
     }
 
