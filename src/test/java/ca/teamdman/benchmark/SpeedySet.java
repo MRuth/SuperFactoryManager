@@ -7,6 +7,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Set;
 
+/// Ended up not using this because a primitive array was easier lol
+/// This was intended to allow iteration but avoiding the object allocations that LinkedHashSet and HashSet perform
 public class SpeedySet<T> {
     private final Set<T> set;
     private final Class<T> clazz;
