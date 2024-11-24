@@ -1,5 +1,6 @@
 package ca.teamdman.sfm.common.program;
 
+import ca.teamdman.sfm.SFMPerformanceTweaks;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.Map;
@@ -29,12 +30,21 @@ public class RegexCache {
     }
 
     public static Predicate<String> buildPredicate(String possiblePattern) {
-        return isRegexPattern(possiblePattern)
-               ? patternCache.computeIfAbsent(possiblePattern, RegexCache::getPredicateFromRegex)
-               : possiblePattern::equalsIgnoreCase;
+        if (SFMPerformanceTweaks.REGEX_CACHE_ENABLED) {
+            return isRegexPattern(possiblePattern)
+                   ? patternCache.computeIfAbsent(possiblePattern, RegexCache::getPredicateFromRegex)
+                   : possiblePattern::equalsIgnoreCase;
+        } else {
+            return isRegexPattern(possiblePattern)
+                   ? Pattern.compile(possiblePattern).asMatchPredicate()
+                   : possiblePattern::equalsIgnoreCase;
+        }
     }
 
     private static Predicate<String> getPredicateFromRegex(String x) {
+        if (!SFMPerformanceTweaks.REGEX_PREDICATE_OPTIMIZATION) {
+            return Pattern.compile(x).asMatchPredicate();
+        }
         // Special cases for common patterns
         if (x.startsWith(".*") && x.endsWith(".*")) {
             String substring = x.substring(2, x.length() - 2);

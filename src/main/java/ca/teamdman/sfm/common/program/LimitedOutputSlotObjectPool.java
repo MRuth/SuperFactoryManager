@@ -1,11 +1,11 @@
 package ca.teamdman.sfm.common.program;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.SFMPerformanceTweaks;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import ca.teamdman.sfml.ast.Label;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,9 +14,9 @@ import java.util.IdentityHashMap;
 /**
  * A pool of {@link LimitedOutputSlot} objects to avoid the garbage collector
  */
+@SuppressWarnings("DuplicatedCode")
 public class LimitedOutputSlotObjectPool {
     public static final IdentityHashMap<LimitedOutputSlot<?, ?, ?>, Boolean> LEASED = new IdentityHashMap<>();
-    private static final boolean TRACKING_ENABLED = !FMLEnvironment.production;
     @SuppressWarnings("rawtypes")
     private static LimitedOutputSlot[] pool = new LimitedOutputSlot[27];
     private static int index = -1;
@@ -34,9 +34,12 @@ public class LimitedOutputSlotObjectPool {
             STACK stack,
             ResourceType<STACK, ITEM, CAP> type
     ) {
+        if (!SFMPerformanceTweaks.OBJECT_POOL_ENABLED) {
+            return new LimitedOutputSlot<>(label, pos, direction, slot, handler, tracker, stack, type);
+        }
         if (index == -1) {
             var rtn = new LimitedOutputSlot<>(label, pos, direction, slot, handler, tracker, stack, type);
-            if (TRACKING_ENABLED && LEASED.put(rtn, true) != null) {
+            if (SFMPerformanceTweaks.OBJECT_POOL_VALIDATION && LEASED.put(rtn, true) != null) {
                 SFM.LOGGER.warn("new output slot was somehow already leased, this should literally never happen: {}", rtn);
             }
             return rtn;
@@ -44,7 +47,7 @@ public class LimitedOutputSlotObjectPool {
             @SuppressWarnings("unchecked") LimitedOutputSlot<STACK, ITEM, CAP> obj = pool[index];
             index--;
             obj.init(handler, label, pos, direction, slot, tracker, stack, type);
-            if (TRACKING_ENABLED && LEASED.put(obj, true) != null) {
+            if (SFMPerformanceTweaks.OBJECT_POOL_VALIDATION && LEASED.put(obj, true) != null) {
                 SFM.LOGGER.warn("tried to lease output slot a second time: {}", obj);
             }
             return obj;
@@ -55,12 +58,15 @@ public class LimitedOutputSlotObjectPool {
      * Release a {@link LimitedOutputSlot} back into the pool for it to be reused instead of garbage collected
      */
     public static void release(LimitedOutputSlot<?, ?, ?> slot) {
+        if (!SFMPerformanceTweaks.OBJECT_POOL_ENABLED) {
+            return;
+        }
         if (slot.freed) {
             SFM.LOGGER.warn("Release called on already freed output slot {}", slot);
             return;
         }
         slot.freed = true;
-        if (TRACKING_ENABLED && LEASED.remove(slot) == null) {
+        if (SFMPerformanceTweaks.OBJECT_POOL_VALIDATION && LEASED.remove(slot) == null) {
             SFM.LOGGER.warn("Freed an output slot that wasn't tracked as leased: {}", slot);
         }
         if (index == pool.length - 1) {
@@ -77,6 +83,9 @@ public class LimitedOutputSlotObjectPool {
      */
     @SuppressWarnings("rawtypes")
     public static void release(Collection<LimitedOutputSlot> slots) {
+        if (!SFMPerformanceTweaks.OBJECT_POOL_ENABLED) {
+            return;
+        }
         // handle resizing
         if (index + slots.size() >= pool.length) {
             int slotsFree = pool.length - index - 1;
@@ -92,14 +101,14 @@ public class LimitedOutputSlotObjectPool {
             slot.freed = true;
             index++;
             pool[index] = slot;
-            if (TRACKING_ENABLED && LEASED.remove(slot) == null) {
+            if (SFMPerformanceTweaks.OBJECT_POOL_VALIDATION && LEASED.remove(slot) == null) {
                 SFM.LOGGER.warn("Freed in batch an output slot that wasn't tracked as leased: {}", slot);
             }
         }
     }
 
     public static void checkInvariant() {
-        if (TRACKING_ENABLED && !LEASED.isEmpty()) {
+        if (SFMPerformanceTweaks.OBJECT_POOL_VALIDATION && !LEASED.isEmpty()) {
             SFM.LOGGER.warn("Leased objects not released: {}", LEASED);
             LEASED.clear();
         }
