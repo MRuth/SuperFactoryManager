@@ -16,7 +16,7 @@ import java.util.IdentityHashMap;
  */
 public class LimitedInputSlotObjectPool {
     public static final IdentityHashMap<LimitedInputSlot<?, ?, ?>, Boolean> LEASED = new IdentityHashMap<>();
-    private static final boolean TRACKING_ENABLED = !FMLEnvironment.production;
+    private static final boolean TRACKING_ENABLED = !FMLEnvironment.production; // TODO: find better way to determine this
     @SuppressWarnings("rawtypes")
     private static LimitedInputSlot[] pool = new LimitedInputSlot[27];
     private static int index = -1;
