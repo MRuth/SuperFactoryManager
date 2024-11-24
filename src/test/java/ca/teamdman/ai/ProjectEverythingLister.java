@@ -12,6 +12,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class ProjectEverythingLister {
     public static void main(String[] args) throws IOException {
         Path projectPath = Paths.get("src/"); // Replace with your source directory

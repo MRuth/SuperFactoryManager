@@ -28,7 +28,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 
-@SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue"})
+@SuppressWarnings({"DataFlowIssue"})
 @GameTestHolder(SFM.MOD_ID)
 @PrefixGameTestTemplate(false)
 public class SFMThermalCompatGameTests extends SFMGameTestBase {
@@ -171,6 +171,7 @@ public class SFMThermalCompatGameTests extends SFMGameTestBase {
         }
 
         // set up ingredients
+        //noinspection NonStrictComparisonCanBeEquality
         for (int i = 6; i <= 6; i++) {
             BlockPos pos = new BlockPos(i, 2, 0);
             helper.setBlock(pos, SFMBlocks.TEST_BARREL_BLOCK.get());

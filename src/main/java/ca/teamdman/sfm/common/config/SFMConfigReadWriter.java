@@ -43,6 +43,7 @@ public class SFMConfigReadWriter {
      * which calls {@link ConfigSync#receiveSyncedConfig(HandshakeMessages.S2CConfigData, Supplier)}
      * which calls {@link ModConfig#acceptSyncedConfig(byte[])}
      */
+    @SuppressWarnings("JavadocReference")
     public static ConfigSyncResult updateAndSyncServerConfig(String newConfigToml) {
         try {
             SFM.LOGGER.debug("Received config for update and sync:\n{}", newConfigToml);

@@ -5,8 +5,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public class BlockEntityCapabilityProviderMapper implements CapabilityProviderMapper {
     @Override
     public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, BlockPos pos) {

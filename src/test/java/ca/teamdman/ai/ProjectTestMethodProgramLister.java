@@ -15,6 +15,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@SuppressWarnings({"CallToPrintStackTrace", "CodeBlock2Expr", "ExtractMethodRecommender"})
 public class ProjectTestMethodProgramLister {
     public static void main(String[] args) throws IOException {
         Path projectPath = Paths.get("src/gametest/java/ca/teamdman/sfm/gametest"); // Replace with your source directory
@@ -42,7 +43,7 @@ public class ProjectTestMethodProgramLister {
                                     System.out.println("  Class: " + cls.getName());
                                     System.out.println("    Test Method:  " + method.getName());
                                     // now we want to find the program
-                                    var body = method.getBody().get();
+                                    @SuppressWarnings("OptionalGetWithoutIsPresent") var body = method.getBody().get();
                                     var statements = body.getStatements();
                                     AtomicBoolean foundProgram = new AtomicBoolean(false);
                                     for (var statement : statements) {
@@ -56,6 +57,7 @@ public class ProjectTestMethodProgramLister {
                                                         while (value instanceof MethodCallExpr methodCallExpr) {
                                                             value = methodCallExpr.getChildNodes().get(0);
                                                         }
+                                                        //noinspection StatementWithEmptyBody
                                                         if (value instanceof LiteralStringValueExpr literal) {
                                                             if (literal.getValue().toLowerCase(Locale.ROOT).contains("every")) {
                                                                 System.out.println("      Program (variable=" + variable.getName()+"):\n" + literal.getValue().stripTrailing().stripIndent());
@@ -79,6 +81,7 @@ public class ProjectTestMethodProgramLister {
                                                     while (arg instanceof MethodCallExpr methodCallExpr) {
                                                         arg = methodCallExpr.getChildNodes().get(0);
                                                     }
+                                                    //noinspection StatementWithEmptyBody
                                                     if (arg instanceof LiteralStringValueExpr literal) {
                                                         System.out.println("      Program:\n" + literal.getValue().stripTrailing().stripIndent());
                                                         if (foundProgram.getAndSet(true)) {

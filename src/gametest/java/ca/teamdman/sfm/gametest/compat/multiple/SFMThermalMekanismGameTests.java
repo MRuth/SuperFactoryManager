@@ -46,6 +46,7 @@ public class SFMThermalMekanismGameTests extends SFMGameTestBase {
         assert phytoBlock != null;
         helper.setBlock(rightPos, phytoBlock);
         MachineInsolatorTile phyto = (MachineInsolatorTile) helper.getBlockEntity(rightPos);
+        assert phyto != null;
         phyto.getItemInv().set(0, new ItemStack(Items.WHEAT_SEEDS, 63));
 
         // create the manager block and add the disk

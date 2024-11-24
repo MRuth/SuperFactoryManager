@@ -8,11 +8,11 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("NotNullFieldNotInitialized")
 @BenchmarkMode(Mode.AverageTime) // Measure average execution time
 @OutputTimeUnit(TimeUnit.MILLISECONDS) // Use milliseconds as time unit
 @State(Scope.Thread) // One instance per thread
 public class SampleBenchmark {
-
     private int[] array;
 
     @Setup(Level.Iteration)

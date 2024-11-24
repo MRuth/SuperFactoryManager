@@ -1,7 +1,7 @@
 package ca.teamdman.benchmark;
 
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public class SpeedySet<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean add(@NotNull T item) {
+    public boolean add(@Nullable T item) {
         if (set.contains(item)) {
             return false;
         }

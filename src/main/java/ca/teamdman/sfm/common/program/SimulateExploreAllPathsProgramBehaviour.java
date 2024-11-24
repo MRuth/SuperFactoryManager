@@ -2,7 +2,6 @@ package ca.teamdman.sfm.common.program;
 
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import ca.teamdman.sfml.ast.*;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
@@ -99,7 +98,7 @@ public class SimulateExploreAllPathsProgramBehaviour implements ProgramBehaviour
 
     public void onTriggerDropped(
             ProgramContext context,
-            Trigger trigger
+            @SuppressWarnings("unused") Trigger trigger
     ) {
         context.getInputs().forEach(inputStatement -> onInputStatementDropped(context, inputStatement));
     }
@@ -157,22 +156,6 @@ public class SimulateExploreAllPathsProgramBehaviour implements ProgramBehaviour
         public Stream<Branch> streamBranches() {
             return history.stream().filter(Branch.class::isInstance).map(Branch.class::cast);
         }
-
-        public Stream<IO> streamInputs() {
-            return history
-                    .stream()
-                    .filter(IO.class::isInstance)
-                    .map(IO.class::cast)
-                    .filter(io -> io.kind == IOKind.INPUT);
-        }
-
-        public Stream<IO> streamOutputs() {
-            return history
-                    .stream()
-                    .filter(IO.class::isInstance)
-                    .map(IO.class::cast)
-                    .filter(io -> io.kind == IOKind.OUTPUT);
-        }
     }
 
     public record Branch(
@@ -201,10 +184,5 @@ public class SimulateExploreAllPathsProgramBehaviour implements ProgramBehaviour
                 throw new IllegalArgumentException("Unknown IO statement type: " + statement);
             }
         }
-    }
-
-    public record Warning(
-            TranslatableContents message
-    ) implements ExecutionPathElement {
     }
 }

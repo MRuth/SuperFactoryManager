@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
+@SuppressWarnings({"CallToPrintStackTrace", "CodeBlock2Expr"})
 public class ProjectTestMethodLister {
     public static void main(String[] args) throws IOException {
         Path projectPath = Paths.get("src/gametest/java/ca/teamdman/sfm/gametest"); // Replace with your source directory

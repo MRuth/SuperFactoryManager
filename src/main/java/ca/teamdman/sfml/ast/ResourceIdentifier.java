@@ -40,7 +40,7 @@ public class ResourceIdentifier<STACK, ITEM, CAP> implements ASTNode, ToStringCo
     ) {
         // prevent crash on ctrl+space on "Gas::" (capital)
         // we could throw an exception and let it get bubbled to the user
-        // but why bother when we know we know lowercasing it fixes it
+        // but why bother when we know lowercasing it fixes it
         resourceTypeNamespace = resourceTypeNamespace.toLowerCase(Locale.ROOT);
         resourceTypeName = resourceTypeName.toLowerCase(Locale.ROOT);
 

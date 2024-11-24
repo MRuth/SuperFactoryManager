@@ -14,9 +14,6 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +22,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SFMMekanismCompat {
-    @SuppressWarnings("DataFlowIssue")
     public static @Nullable ResourceType<?, ?, ?> getResourceType(TransmissionType trans) {
         return switch (trans) {
             case ITEM -> SFMResourceTypes.ITEM.get();

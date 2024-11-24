@@ -45,6 +45,7 @@ public class SFMConfigTracker {
          * <p>
          * See {@link ConfigTracker#openConfig(ModConfig, Path)}
          */
+        @SuppressWarnings("JavadocReference")
         @SubscribeEvent
         public static void onConfigLoaded(ModConfigEvent.Loading event) {
             handleConfigEvent(event);

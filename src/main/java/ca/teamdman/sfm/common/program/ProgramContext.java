@@ -81,7 +81,6 @@ public class ProgramContext {
         LEVEL = MANAGER.getLevel();
         REDSTONE_PULSES = MANAGER.getUnprocessedRedstonePulseCount();
         BEHAVIOUR = executionBehaviour;
-        //noinspection OptionalGetWithoutIsPresent
         LABEL_POSITIONS = LabelPositionHolder.from(Objects.requireNonNull(manager.getDisk()));
         LOGGER = manager.logger;
     }

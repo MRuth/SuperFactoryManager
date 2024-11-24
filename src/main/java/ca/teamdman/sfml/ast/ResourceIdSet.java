@@ -92,12 +92,12 @@ public final class ResourceIdSet implements ASTNode {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (ResourceIdSet) obj;
-        return Objects.equals(this.resourceIds, that.resourceIds);
+        return Arrays.equals(this.resourceIds, that.resourceIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(resourceIds);
+        return Objects.hash((Object[]) resourceIds);
     }
 
 }
