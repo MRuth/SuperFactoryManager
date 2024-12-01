@@ -29,6 +29,15 @@ import java.util.stream.LongStream;
 
 public abstract class SFMGameTestBase {
 
+    public static ItemStack enchant(
+            ItemStack stack,
+            Enchantment enchantment,
+            int level
+    ) {
+        EnchantmentHelper.setEnchantments(Map.of(enchantment, level), stack);
+        return stack;
+    }
+
     protected static void assertTrue(
             boolean condition,
             String message
@@ -63,17 +72,19 @@ public abstract class SFMGameTestBase {
         // to
         // EVERY REDSTONE PULSE DO
         // and it will patiently wait
-        assertManagerDidThingWithoutLagging(helper, manager, () -> {
-            assertion.run();
-            helper.succeed();
-        });
+        assertManagerDidThingWithoutLagging(
+                helper,
+                manager,
+                assertion,
+                helper::succeed
+        );
     }
-
 
     protected static void assertManagerDidThingWithoutLagging(
             GameTestHelper helper,
             ManagerBlockEntity manager,
-            Runnable assertion
+            Runnable assertion,
+            Runnable onSuccess
     ) {
         SFMGameTestBase.assertManagerRunning(manager); // the program should already be compiled so we can monkey patch it
         var hasExecuted = new AtomicBoolean(false);
@@ -127,6 +138,7 @@ public abstract class SFMGameTestBase {
         triggers.add(0, startTimerTrigger);
         triggers.add(endTimerTrigger);
 
+
         LongStream
                 .range(helper.getTick() + 1, timeoutTicks - helper.getTick())
                 .forEach(i -> helper.runAfterDelay(i, () -> {
@@ -141,6 +153,7 @@ public abstract class SFMGameTestBase {
                                         .format(endTime.get() - startTime.get()) + "ns"
                         );
                         hasExecuted.set(false); // prevent the assertion from running again
+                        onSuccess.run();
                     }
                 }));
     }
@@ -187,10 +200,5 @@ public abstract class SFMGameTestBase {
                 .resolve();
         SFMGameTestBase.assertTrue(found.isPresent(), "No item handler found at " + pos);
         return found.get();
-    }
-
-    public static ItemStack enchant(ItemStack stack, Enchantment enchantment, int level) {
-        EnchantmentHelper.setEnchantments(Map.of(enchantment, level), stack);
-        return stack;
     }
 }
