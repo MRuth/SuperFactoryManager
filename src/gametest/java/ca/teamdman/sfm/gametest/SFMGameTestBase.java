@@ -12,6 +12,8 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
@@ -26,7 +28,11 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 public abstract class SFMGameTestBase {
-    protected static void assertTrue(boolean condition, String message) {
+
+    protected static void assertTrue(
+            boolean condition,
+            String message
+    ) {
         if (!condition) {
             throw new GameTestAssertException(message);
         }
@@ -147,7 +153,10 @@ public abstract class SFMGameTestBase {
         );
     }
 
-    protected static int count(Container chest, @Nullable Item item) {
+    protected static int count(
+            Container chest,
+            @Nullable Item item
+    ) {
         return IntStream.range(0, chest.getContainerSize())
                 .mapToObj(chest::getItem)
                 .filter(stack -> item == null || stack.getItem() == item)
@@ -155,7 +164,10 @@ public abstract class SFMGameTestBase {
                 .sum();
     }
 
-    protected static int count(IItemHandler chest, @Nullable Item item) {
+    protected static int count(
+            IItemHandler chest,
+            @Nullable Item item
+    ) {
         return IntStream.range(0, chest.getSlots())
                 .mapToObj(chest::getStackInSlot)
                 .filter(stack -> item == null || stack.getItem() == item)
@@ -163,7 +175,10 @@ public abstract class SFMGameTestBase {
                 .sum();
     }
 
-    protected static IItemHandler getItemHandler(GameTestHelper helper, BlockPos pos) {
+    protected static IItemHandler getItemHandler(
+            GameTestHelper helper,
+            BlockPos pos
+    ) {
         BlockEntity blockEntity = helper
                 .getBlockEntity(pos);
         SFMGameTestBase.assertTrue(blockEntity != null, "No block entity found at " + pos);
@@ -172,5 +187,10 @@ public abstract class SFMGameTestBase {
                 .resolve();
         SFMGameTestBase.assertTrue(found.isPresent(), "No item handler found at " + pos);
         return found.get();
+    }
+
+    public static ItemStack enchant(ItemStack stack, Enchantment enchantment, int level) {
+        EnchantmentHelper.setEnchantments(Map.of(enchantment, level), stack);
+        return stack;
     }
 }
