@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@SuppressWarnings({"DataFlowIssue", "DuplicatedCode"})
+@SuppressWarnings({"DataFlowIssue", "DuplicatedCode", "DefaultAnnotationParam"})
 @GameTestHolder(SFM.MOD_ID)
-@PrefixGameTestTemplate(false)
+@PrefixGameTestTemplate(value=true)
 public class SFMPerformanceGameTests extends SFMGameTestBase {
     @GameTest(template = "25x3x25", batch = "laggy")
     public static void move_many_inventories(GameTestHelper helper) {

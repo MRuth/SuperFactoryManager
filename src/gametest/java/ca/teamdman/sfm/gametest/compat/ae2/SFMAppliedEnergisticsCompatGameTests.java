@@ -20,13 +20,11 @@ import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import java.util.stream.Stream;
 
 @SuppressWarnings({"OptionalGetWithoutIsPresent", "DataFlowIssue"})
 @GameTestHolder(SFM.MOD_ID)
-@PrefixGameTestTemplate(false)
 public class SFMAppliedEnergisticsCompatGameTests extends SFMGameTestBase {
 
     @GameTest(template = "7x3x3", timeoutTicks = 20 * 20)

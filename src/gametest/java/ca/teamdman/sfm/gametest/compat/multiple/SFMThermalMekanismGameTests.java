@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 
@@ -27,7 +26,6 @@ import java.util.ArrayDeque;
 import java.util.Objects;
 
 @GameTestHolder(SFM.MOD_ID)
-@PrefixGameTestTemplate(false)
 public class SFMThermalMekanismGameTests extends SFMGameTestBase {
     @GameTest(template = "3x4x3")
     public static void resource_loss_regression(GameTestHelper helper) {

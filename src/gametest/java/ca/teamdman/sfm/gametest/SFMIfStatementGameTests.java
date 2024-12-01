@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ import java.util.List;
         "DuplicatedCode",
 })
 @GameTestHolder(SFM.MOD_ID)
-@PrefixGameTestTemplate(false)
 public class SFMIfStatementGameTests extends SFMGameTestBase {
 
     @GameTest(template = "3x2x1")

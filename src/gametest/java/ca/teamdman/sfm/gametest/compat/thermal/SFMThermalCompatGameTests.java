@@ -23,14 +23,12 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 
 @SuppressWarnings({"DataFlowIssue"})
 @GameTestHolder(SFM.MOD_ID)
-@PrefixGameTestTemplate(false)
 public class SFMThermalCompatGameTests extends SFMGameTestBase {
 
     @GameTest(template = "25x3x25", timeoutTicks = 20 * 20)
