@@ -20,9 +20,11 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -37,6 +39,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
@@ -1365,52 +1368,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         falling_anvil_xp_shard_inner(helper, 10, currentConfig, pos, enchBook, cases.iterator());
     }
 
-    private static void falling_anvil_xp_shard_inner(GameTestHelper helper, int numBooks, LevelsToShards configToRestore, Vec3 pos, ItemStack enchBook, Iterator<Pair<LevelsToShards, Integer>> iter) {
-        if (!iter.hasNext()) {
-            // restore config to value before the test
-            SFMConfig.SERVER.levelsToShards.set(configToRestore);
-            helper.succeed();
-            return;
-        }
-        var c = iter.next();
-
-        SFMConfig.SERVER.levelsToShards.set(c.first());
-        // kill old item entities
-        helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3)).forEach(e -> e.discard());
-
-        for (int i = 0; i < numBooks; i++) {
-            helper
-                    .getLevel()
-                    .addFreshEntity(new ItemEntity(
-                            helper.getLevel(),
-                            pos.x, pos.y, pos.z,
-                            enchBook,
-                            0, 0, 0
-                    ));
-        }
-
-        helper.setBlock(new BlockPos(1, 3, 1), Blocks.AIR);
-        helper.setBlock(new BlockPos(1, 4, 1), Blocks.ANVIL);
-
-        helper.runAfterDelay(20, () -> {
-            List<ItemEntity> found = helper
-                    .getLevel()
-                    .getEntitiesOfClass(
-                            ItemEntity.class,
-                            new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3)
-                    );
-            assertTrue(
-                    found.stream().allMatch(e -> e.getItem().is(SFMItems.EXPERIENCE_SHARD_ITEM.get())),
-                    "should only be xp shards"
-            );
-
-            var cnt = found.stream().mapToInt(e -> e.getItem().getCount()).sum();
-            assertTrue(cnt == c.second(), "bad count for " + c.first().name() + ": expected " + c.second() + " but got " + cnt);
-
-            falling_anvil_xp_shard_inner(helper, numBooks, configToRestore, pos, enchBook, iter);
-        });
-    }
-
     @GameTest(template = "1x2x1")
     public static void disk_item_clientside_regression(GameTestHelper helper) {
         var stack = new ItemStack(SFMItems.DISK_ITEM.get());
@@ -1449,7 +1406,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
             ));
         }
     }
-
 
     @GameTest(template = "3x2x1")
     public static void pattern_cache_regression_1(GameTestHelper helper) {
@@ -1605,7 +1561,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "3x2x1")
     public static void each_src_quantity_retain(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 0), SFMBlocks.MANAGER_BLOCK.get());
@@ -1648,7 +1603,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "3x2x1")
     public static void each_src_quantity_each_retain(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 0), SFMBlocks.MANAGER_BLOCK.get());
@@ -1690,7 +1644,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
 
         });
     }
-
 
     @GameTest(template = "3x2x1")
     public static void each_src_retain(GameTestHelper helper) {
@@ -1737,7 +1690,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "3x2x1")
     public static void each_dest_quantity(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 0), SFMBlocks.MANAGER_BLOCK.get());
@@ -1781,7 +1733,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "3x2x1")
     public static void each_dest_quantity_retain(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 0), SFMBlocks.MANAGER_BLOCK.get());
@@ -1822,7 +1773,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "3x2x1")
     public static void each_dest_quantity_each_retain(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 0), SFMBlocks.MANAGER_BLOCK.get());
@@ -1862,7 +1812,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
 
         });
     }
-
 
     @GameTest(template = "3x2x1")
     public static void each_dest_retain(GameTestHelper helper) {
@@ -1906,7 +1855,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
 
         });
     }
-
 
     @GameTest(template = "3x2x1")
     public static void sfm_v4_12_0_changelog(GameTestHelper helper) {
@@ -1989,7 +1937,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
 
         });
     }
-
 
     @GameTest(template = "3x2x1")
     public static void forget_input_count_state(GameTestHelper helper) {
@@ -2143,7 +2090,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "3x4x3")
     public static void round_robin_by_block_1(GameTestHelper helper) {
         BlockPos managerPos = new BlockPos(1, 2, 1);
@@ -2193,7 +2139,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
 
         });
     }
-
 
     @GameTest(template = "3x4x3")
     public static void round_robin_by_block_2(GameTestHelper helper) {
@@ -2357,7 +2302,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
             assertTrue(condition1 || condition2, "Arrival counts bad");
         });
     }
-
 
     @GameTest(template = "3x2x1")
     public static void wireless_regression(GameTestHelper helper) {
@@ -2642,7 +2586,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         helper.succeed();
     }
 
-
     @GameTest(template = "3x2x1", batch = "linting")
     public static void unused_io_warning_output_label_not_presnet_in_input(GameTestHelper helper) {
         // place inventories
@@ -2677,7 +2620,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         helper.succeed();
     }
 
-
     @GameTest(template = "3x2x1", batch = "linting")
     public static void unused_io_warning_input_label_not_present_in_output(GameTestHelper helper) {
         // place inventories
@@ -2711,7 +2653,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                                            .get()), "expected output without matching input warning");
         helper.succeed();
     }
-
 
     @GameTest(template = "1x2x1")
     public static void disk_name(GameTestHelper helper) {
@@ -2864,7 +2805,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "7x3x3")
     public static void regression_input_retain_b_expanded_shared(GameTestHelper helper) {
         BlockPos managerPos = new BlockPos(1, 2, 1);
@@ -2920,7 +2860,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         });
     }
 
-
     @GameTest(template = "7x3x3")
     public static void regression_input_retain_b_expanded_expanded(GameTestHelper helper) {
         BlockPos managerPos = new BlockPos(1, 2, 1);
@@ -2975,7 +2914,6 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
             assertTrue(bDirt == 5, "dirt should depart from b");
         });
     }
-
 
     @GameTest(template = "3x2x1")
     public static void move_using_or(GameTestHelper helper) {
@@ -3111,6 +3049,106 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(hopper.getStackInSlot(0).getCount() == 1, "Dirt did not move");
             assertTrue(barrel.getStackInSlot(0).isEmpty(), "Dirt did not move");
+        });
+    }
+
+    @GameTest(template = "1x1x1")
+    public static void inv_wrapper_investigation(GameTestHelper helper) {
+        try {
+            for (int stackSize : new int[]{200, 64}) {
+                InvWrapper inv = new InvWrapper(new SimpleContainer(1));
+                ItemStack insertParam = new ItemStack(Items.DIRT, stackSize);
+                ItemStack insertParamCopy = insertParam.copy();
+                ItemStack ignoredInsertResult = inv.insertItem(0, insertParam, false);
+                assertTrue(
+                        ItemStack.isSame(insertParam, insertParamCopy),
+                        "stackSize="
+                        + stackSize
+                        + " insert param should not be modified after insertion, is now "
+                        + insertParam
+                );
+                assertTrue(
+                        inv.getStackInSlot(0) != insertParam,
+                        "stackSize="
+                        + stackSize
+                        + " the inventory shouldn't take ownership of the reference after insertion"
+                );
+                ItemStack extractResult = inv.extractItem(0, stackSize, false);
+                assertTrue(
+                        ItemStack.isSame(insertParam, insertParamCopy),
+                        "stackSize="
+                        + stackSize
+                        + " insert param should not be modified after extraction, is now "
+                        + insertParam
+                );
+                assertTrue(
+                        ItemStack.isSame(insertParam, extractResult),
+                        "stackSize=" + stackSize + " extract result should match insertion param"
+                );
+            }
+        } catch (GameTestAssertException e) {
+            helper.succeed();
+            // we expect this to fail because it is taking ownership on insertion when stack fits in slot
+            // this isn't correct behaviour but we have to succeed the test when our expectations are met
+        }
+    }
+
+    private static void falling_anvil_xp_shard_inner(
+            GameTestHelper helper,
+            int numBooks,
+            LevelsToShards configToRestore,
+            Vec3 pos,
+            ItemStack enchBook,
+            Iterator<Pair<LevelsToShards, Integer>> iter
+    ) {
+        if (!iter.hasNext()) {
+            // restore config to value before the test
+            SFMConfig.SERVER.levelsToShards.set(configToRestore);
+            helper.succeed();
+            return;
+        }
+        var c = iter.next();
+
+        SFMConfig.SERVER.levelsToShards.set(c.first());
+        // kill old item entities
+        helper
+                .getLevel()
+                .getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3))
+                .forEach(e -> e.discard());
+
+        for (int i = 0; i < numBooks; i++) {
+            helper
+                    .getLevel()
+                    .addFreshEntity(new ItemEntity(
+                            helper.getLevel(),
+                            pos.x, pos.y, pos.z,
+                            enchBook,
+                            0, 0, 0
+                    ));
+        }
+
+        helper.setBlock(new BlockPos(1, 3, 1), Blocks.AIR);
+        helper.setBlock(new BlockPos(1, 4, 1), Blocks.ANVIL);
+
+        helper.runAfterDelay(20, () -> {
+            List<ItemEntity> found = helper
+                    .getLevel()
+                    .getEntitiesOfClass(
+                            ItemEntity.class,
+                            new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3)
+                    );
+            assertTrue(
+                    found.stream().allMatch(e -> e.getItem().is(SFMItems.EXPERIENCE_SHARD_ITEM.get())),
+                    "should only be xp shards"
+            );
+
+            var cnt = found.stream().mapToInt(e -> e.getItem().getCount()).sum();
+            assertTrue(
+                    cnt == c.second(),
+                    "bad count for " + c.first().name() + ": expected " + c.second() + " but got " + cnt
+            );
+
+            falling_anvil_xp_shard_inner(helper, numBooks, configToRestore, pos, enchBook, iter);
         });
     }
 }

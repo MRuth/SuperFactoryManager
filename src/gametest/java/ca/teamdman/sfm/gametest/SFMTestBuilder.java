@@ -9,7 +9,6 @@ import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -117,25 +116,14 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                         // find a chest to move it to
                         Map.Entry<String, IItemHandler> dest = chests.remove(0);
 
-                        // perform the chaos
+                        // take out an item
                         ItemStack taken = ItemStack.EMPTY;
                         int takenSlot = -1;
-                        for (int slot = 0; slot < source.getValue().getSlots(); slot++) {
-                            taken = source.getValue().extractItem(slot, 1, false);
+                        int destSlot = -1;
+                        for (int trySourceSlot = 0; trySourceSlot < source.getValue().getSlots(); trySourceSlot++) {
+                            taken = source.getValue().extractItem(trySourceSlot, 1, false);
                             if (!taken.isEmpty()) {
-                                takenSlot = slot;
-                                ItemStack remainder = ItemHandlerHelper.insertItem(dest.getValue(), taken, false);
-                                assertTrue(
-                                        remainder.isEmpty(),
-                                        "Chaos failed to insert the taken item, took "
-                                        + taken
-                                        + " from "
-                                        + source.getKey()
-                                        + " slot "
-                                        + takenSlot
-                                        + " to "
-                                        + dest.getKey()
-                                );
+                                takenSlot = trySourceSlot;
                                 break;
                             }
                         }
@@ -145,6 +133,30 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                                 + source.getKey()
                                 + " slot "
                                 + takenSlot
+                        );
+
+                        // insert the item
+                        for (int tryDestSlot = 0; tryDestSlot < dest.getValue().getSlots(); tryDestSlot++) {
+                            ItemStack remainder = dest.getValue().insertItem(tryDestSlot, taken, false);
+                            if (remainder.isEmpty()) {
+                                assertTrue(dest.getValue().getStackInSlot(tryDestSlot) == taken, "ownership of the reference is taken here last time I checked uwu");
+                                taken = taken.copy(); // because we pass the ownership, we should copy before we call extract which will mutate
+                                destSlot = tryDestSlot;
+                                break;
+                            }
+                        }
+
+                        // assert a move occurred
+                        assertTrue(
+                                destSlot != -1,
+                                "Chaos failed to insert the taken item, took "
+                                + taken
+                                + " from "
+                                + source.getKey()
+                                + " slot "
+                                + takenSlot
+                                + " to put in"
+                                + dest.getKey()
                         );
 
                         // assert that the assertions fail
@@ -168,6 +180,33 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                                 + " to "
                                 + dest.getKey()
                         );
+
+                        // take out the moved item
+                        ItemStack undo = dest.getValue().extractItem(destSlot, taken.getCount(), false);
+                        assertTrue(
+                                ItemStack.isSame(undo, taken),
+                                "Chaos failed to take the moved item, took "
+                                + undo
+                                + " from "
+                                + dest.getKey()
+                                + " slot "
+                                + destSlot
+                                + " instead of "
+                                + taken
+                        );
+
+                        // put the item back
+                        ItemStack remainder = source.getValue().insertItem(takenSlot, taken, false);
+                        assertTrue(
+                                remainder.isEmpty(),
+                                "Chaos failed to put the taken item back, took "
+                                + taken
+                                + " from "
+                                + source.getKey()
+                                + " slot "
+                                + takenSlot
+                        );
+
                     }
                 },
                 helper::succeed
