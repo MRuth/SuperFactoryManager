@@ -121,19 +121,22 @@ public record ServerboundNetworkToolUsePacket(
                     int index = i;
                     payload.append(messages[i]).append("\n");
                     MutableBoolean foundExports = new MutableBoolean(false);
+                    //noinspection unchecked,rawtypes
                     SFMResourceTypes.DEFERRED_TYPES
                             .get()
                             .getEntries()
-                            .forEach(entry -> {
+                            .stream()
+                            .map(entry -> ServerboundContainerExportsInspectionRequestPacket.buildInspectionResults(
+                                    (ResourceKey) entry.getKey(),
+                                    entry.getValue(),
+                                    level,
+                                    pos,
+                                    directions[index]
+                            ))
+                            .filter(s -> !s.isBlank())
+                            .forEach(results -> {
                                 foundExports.setTrue();
-                                //noinspection unchecked,rawtypes
-                                payload.append(ServerboundContainerExportsInspectionRequestPacket.buildInspectionResults(
-                                        (ResourceKey) entry.getKey(),
-                                        entry.getValue(),
-                                        level,
-                                        pos,
-                                        directions[index]
-                                ));
+                                payload.append(results).append("\n");
                             });
                     if (foundExports.isFalse()) {
                         payload.append("No exports found");

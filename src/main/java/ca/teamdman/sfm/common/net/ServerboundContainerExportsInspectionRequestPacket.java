@@ -43,14 +43,15 @@ public record ServerboundContainerExportsInspectionRequestPacket(
             //noinspection unchecked,rawtypes
             SFMResourceTypes.DEFERRED_TYPES
                     .get()
-                    .getEntries()
-                    .forEach(entry -> sb.append(buildInspectionResults(
+                    .getEntries().stream().map(entry -> buildInspectionResults(
                             (ResourceKey) entry.getKey(),
                             entry.getValue(),
                             level,
                             pos,
                             direction
-                    )));
+                    ))
+                    .filter(s -> !s.isBlank())
+                    .forEach(results -> sb.append(results).append("\n"));
             if (sb.length() == len) {
                 sb.append("No exports found");
             }
