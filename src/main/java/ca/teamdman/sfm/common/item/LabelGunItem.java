@@ -1,7 +1,7 @@
 package ca.teamdman.sfm.common.item;
 
 import ca.teamdman.sfm.client.ClientStuff;
-import ca.teamdman.sfm.client.gui.LabelGunReminderOverlay;
+import ca.teamdman.sfm.client.handler.LabelGunKeyMappingHandler;
 import ca.teamdman.sfm.client.registry.SFMKeyMappings;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.net.ServerboundLabelGunUsePacket;
@@ -113,7 +113,7 @@ public class LabelGunItem extends Item {
             ));
             if (pickBlock) {
                 // we don't want to toggle the overlay if we're using pick-block
-                LabelGunReminderOverlay.setExternalDebounce();
+                LabelGunKeyMappingHandler.setExternalDebounce();
             }
             return InteractionResult.SUCCESS;
         }
@@ -191,4 +191,5 @@ public class LabelGunItem extends Item {
         LabelPositionHolder.clear(stack);
         LabelGunItem.setActiveLabel(stack, null);
     }
+
 }

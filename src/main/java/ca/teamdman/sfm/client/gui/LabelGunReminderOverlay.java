@@ -1,36 +1,21 @@
 package ca.teamdman.sfm.client.gui;
 
-import ca.teamdman.sfm.SFM;
-import ca.teamdman.sfm.client.ClientStuff;
 import ca.teamdman.sfm.client.registry.SFMKeyMappings;
 import ca.teamdman.sfm.common.item.LabelGunItem;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
-import ca.teamdman.sfm.common.net.ServerboundLabelGunToggleLabelViewPacket;
 import ca.teamdman.sfm.common.registry.SFMItems;
-import ca.teamdman.sfm.common.registry.SFMPackets;
+import ca.teamdman.sfm.common.util.SFMHandUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.FastColor;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.Nullable;
 
-@Mod.EventBusSubscriber(modid = SFM.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class LabelGunReminderOverlay implements IGuiOverlay {
-    private static AltState altState = AltState.Idle;
-    public static void setExternalDebounce() {
-        altState = AltState.PressCancelledExternally;
-    }
 
 
     @Override
@@ -70,62 +55,13 @@ public class LabelGunReminderOverlay implements IGuiOverlay {
         );
     }
 
-    public static @Nullable InteractionHand getHandHoldingLabelGun(Player player) {
-        if (player.getMainHandItem().getItem() == SFMItems.LABEL_GUN_ITEM.get()) {
-            return InteractionHand.MAIN_HAND;
-        } else if (player.getOffhandItem().getItem() == SFMItems.LABEL_GUN_ITEM.get()) {
-            return InteractionHand.OFF_HAND;
-        }
-        return null;
-    }
-
-    private enum AltState {
-        Idle,
-        Pressed,
-        PressCancelledExternally,
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        Minecraft minecraft = Minecraft.getInstance();
-
-        // don't do anything if a screen is open
-        if (minecraft.screen != null) return;
-
-        // only do something if the key was pressed
-        boolean alt_down = ClientStuff.isKeyDown(SFMKeyMappings.TOGGLE_LABEL_VIEW_KEY);
-        switch(altState) {
-            case Idle -> {
-                if (alt_down) {
-                    altState = AltState.Pressed;
-                }
-            }
-            case Pressed -> {
-                if (!alt_down) {
-                    altState = AltState.Idle;
-                    assert minecraft.player != null;
-                    InteractionHand hand = getHandHoldingLabelGun(minecraft.player);
-                    if (hand == null) return;
-                    // send packet to server to toggle mode
-                    SFMPackets.sendToServer(new ServerboundLabelGunToggleLabelViewPacket(hand));
-                }
-            }
-            case PressCancelledExternally -> {
-                if (!alt_down) {
-                    altState = AltState.Idle;
-                }
-            }
-        }
-    }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean shouldRender(Minecraft minecraft) {
         LocalPlayer player = minecraft.player;
         if (player == null) return false;
-        InteractionHand validHand = getHandHoldingLabelGun(player);
-        if (validHand == null) return false;
-        ItemStack stack = player.getItemInHand(validHand);
-        return LabelGunItem.getOnlyShowActiveLabel(stack);
+        ItemStack labelGun = SFMHandUtils.getItemInEitherHand(player, SFMItems.LABEL_GUN_ITEM.get());
+        if (labelGun.isEmpty()) return false;
+        return LabelGunItem.getOnlyShowActiveLabel(labelGun);
     }
 }

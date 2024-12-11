@@ -86,6 +86,9 @@ EVERY 20G+5 TICKS DO END
 -- Add crafting recipe to clear label guns
 -- Fix label gun clear not resetting active label
 -- Add label cleanup support for labels on blocks that are not detected as valid inventories
+-- Fix inspection results missing line endings when multiple resource types present
+-- Add exports for all side to network tool, listing selected side first
+-- Add hotkeys for label gun next/prev for people with no scroll wheel, unbound by default
 
 ---- 4.19.1 ----
 -- Fix 1.19.4 build failures due to Gradle hating me
