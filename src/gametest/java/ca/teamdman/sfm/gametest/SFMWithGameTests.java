@@ -263,4 +263,217 @@ public class SFMWithGameTests extends SFMGameTestBase {
                 ))
                 .run();
     }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_tag_mineable(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT TAG minecraft:mineable/pickaxe FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        enchant(new ItemStack(Items.DIRT, 64), Enchantments.SHARPNESS, 100),
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        ItemStack.EMPTY,
+                        ItemStack.EMPTY,
+                        new ItemStack(Items.STONE, 64)
+                ))
+                .postContents("right", Arrays.asList(
+                        enchant(new ItemStack(Items.DIRT, 64), Enchantments.SHARPNESS, 100),
+                        new ItemStack(Items.DIRT, 64)
+                ))
+                .run();
+    }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_tag_ingots(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT NOT TAG ingots FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.IRON_INGOT, 64),
+                        new ItemStack(Items.GOLD_INGOT, 64),
+                        new ItemStack(Items.GOLD_NUGGET, 64),
+                        new ItemStack(Items.CHEST, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.DIRT, 64),
+                        ItemStack.EMPTY,
+                        ItemStack.EMPTY,
+                        new ItemStack(Items.GOLD_NUGGET, 64),
+                        new ItemStack(Items.CHEST, 64)
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.IRON_INGOT, 64),
+                        new ItemStack(Items.GOLD_INGOT, 64)
+                ))
+                .run();
+    }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_tag_disjunction(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT (NOT TAG minecraft:mineable/shovel AND NOT TAG minecraft:mineable/pickaxe) FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        ItemStack.EMPTY,
+                        ItemStack.EMPTY,
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64)
+                ))
+                .run();
+    }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_tag_negation(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT TAG minecraft:mineable/pickaxe FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        ItemStack.EMPTY,
+                        new ItemStack(Items.STONE, 64),
+                        ItemStack.EMPTY
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .run();
+    }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_tag_conjunction(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT (NOT TAG minecraft:planks OR NOT TAG minecraft:mineable/axe) FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64),
+                        ItemStack.EMPTY
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .run();
+    }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_complex_withClause(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT ((NOT TAG minecraft:planks) AND (NOT TAG minecraft:mineable/shovel OR TAG minecraft:mineable/axe)) FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        ItemStack.EMPTY,
+                        new ItemStack(Items.STONE, 64),
+                        ItemStack.EMPTY
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .run();
+    }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_nested_withClause(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT (((NOT TAG minecraft:mineable/shovel) OR TAG minecraft:mineable/pickaxe) AND ((NOT TAG minecraft:planks) OR (NOT TAG minecraft:mineable/axe))) FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.STONE, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        ItemStack.EMPTY,
+                        new ItemStack(Items.STONE, 64),
+                        ItemStack.EMPTY
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .run();
+    }
+
+    @GameTest(template = "3x2x1")
+    public static void move_without_not_and_or_combination(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                                    EVERY 20 TICKS DO
+                                        INPUT WITHOUT ((TAG minecraft:mineable/shovel OR NOT TAG minecraft:mineable/axe) AND (NOT TAG minecraft:planks)) FROM left
+                                        OUTPUT TO right
+                                    END
+                                    """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        new ItemStack(Items.OAK_PLANKS, 64),
+                        new ItemStack(Items.STONE, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        new ItemStack(Items.DIRT, 64),
+                        ItemStack.EMPTY,
+                        new ItemStack(Items.STONE, 64)
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.OAK_PLANKS, 64)
+                ))
+                .run();
+    }
+
 }
