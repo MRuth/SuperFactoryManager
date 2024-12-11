@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,25 +102,44 @@ public record ServerboundNetworkToolUsePacket(
                     }
                 }
 
-
-                payload.append("---- exports ----\n");
-                int len = payload.length();
-                //noinspection unchecked,rawtypes
-                SFMResourceTypes.DEFERRED_TYPES
-                        .get()
-                        .getEntries()
-                        .forEach(entry -> payload.append(ServerboundContainerExportsInspectionRequestPacket.buildInspectionResults(
-                                (ResourceKey) entry.getKey(),
-                                entry.getValue(),
-                                level,
-                                pos,
-                                msg.blockFace
-                        )));
-                if (payload.length() == len) {
-                    payload.append("No exports found");
+                Direction[] directions = new Direction[Direction.values().length + 1];
+                directions[0] = msg.blockFace;
+                directions[1] = null;
+                int assignmentIndex = 2;
+                for (int i = 0; i < Direction.values().length; i++) {
+                    Direction dir = Direction.values()[i];
+                    if (dir == msg.blockFace) continue;
+                    directions[assignmentIndex++] = dir;
                 }
-                payload.append("\n");
 
+                String[] messages = new String[directions.length];
+                messages[0] = String.format("---- exports for selected face: %s ----", msg.blockFace);
+                for (int i = 1; i < directions.length; i++) {
+                    messages[i] = String.format("---- exports for face: %s ----", directions[i]);
+                }
+                for (int i = 0; i < directions.length; i++) {
+                    int index = i;
+                    payload.append(messages[i]).append("\n");
+                    MutableBoolean foundExports = new MutableBoolean(false);
+                    SFMResourceTypes.DEFERRED_TYPES
+                            .get()
+                            .getEntries()
+                            .forEach(entry -> {
+                                foundExports.setTrue();
+                                //noinspection unchecked,rawtypes
+                                payload.append(ServerboundContainerExportsInspectionRequestPacket.buildInspectionResults(
+                                        (ResourceKey) entry.getKey(),
+                                        entry.getValue(),
+                                        level,
+                                        pos,
+                                        directions[index]
+                                ));
+                            });
+                    if (foundExports.isFalse()) {
+                        payload.append("No exports found");
+                    }
+                    payload.append("\n");
+                }
 
                 if (entity != null) {
                     if (player.hasPermissions(2)) {
