@@ -92,6 +92,13 @@ public class ProgramLinter {
         CableNetworkManager
                 .getOrRegisterNetworkFromManagerPosition(manager)
                 .ifPresent(network -> labels.removeIf((label, pos) -> !network.isAdjacentToCable(pos)));
+
+        // remove labels with no viable capability provider
+        var level = manager.getLevel();
+        assert level != null;
+        labels.removeIf((label, pos) -> SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos) == null);
+
+        // save new labels
         labels.save(disk);
 
         // update warnings

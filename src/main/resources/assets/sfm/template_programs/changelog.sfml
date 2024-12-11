@@ -85,7 +85,7 @@ EVERY 20G+5 TICKS DO END
 -- Add "(SFM)" to mod name in mods.toml so it shows up in searches for "SFM"
 -- Add crafting recipe to clear label guns
 -- Fix label gun clear not resetting active label
-
+-- Add label cleanup support for labels on blocks that are not detected as valid inventories
 
 ---- 4.19.1 ----
 -- Fix 1.19.4 build failures due to Gradle hating me
