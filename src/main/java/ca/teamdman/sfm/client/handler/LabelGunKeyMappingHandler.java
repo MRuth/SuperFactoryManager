@@ -38,12 +38,6 @@ public class LabelGunKeyMappingHandler {
         handleLabelSwitchKeyLogic(player);
     }
 
-
-    @SubscribeEvent
-    public static void onClientTick() {
-
-    }
-
     private static void handleLabelSwitchKeyLogic(Player player) {
         boolean nextLabelKeyDown = ClientStuff.isKeyDown(SFMKeyMappings.LABEL_GUN_NEXT_LABEL_KEY);
         boolean prevLabelKeyDown = ClientStuff.isKeyDown(SFMKeyMappings.LABEL_GUN_PREVIOUS_LABEL_KEY);
