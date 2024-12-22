@@ -1,7 +1,8 @@
 package ca.teamdman.sfm.client.handler;
 
 import ca.teamdman.sfm.SFM;
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientRaycastHelpers;
+import ca.teamdman.sfm.client.ClientScreenHelpers;
 import ca.teamdman.sfm.client.registry.SFMKeyMappings;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.net.ServerboundContainerExportsInspectionRequestPacket;
@@ -36,7 +37,7 @@ public class ContainerScreenInspectorHandler {
             20,
             LocalizationKeys.CONTAINER_INSPECTOR_SHOW_EXPORTS_BUTTON.getComponent(),
             (button) -> {
-                BlockEntity lookBlockEntity = ClientStuff.getLookBlockEntity();
+                BlockEntity lookBlockEntity = ClientRaycastHelpers.getLookBlockEntity();
                 if (lastScreen != null && lookBlockEntity != null) {
                     SFMPackets.sendToServer(new ServerboundContainerExportsInspectionRequestPacket(
                             lastScreen.getMenu().containerId,
@@ -152,7 +153,7 @@ public class ContainerScreenInspectorHandler {
                 if (hoveredSlot != null) {
                     ItemStack hoveredStack = hoveredSlot.getItem();
                     if (!hoveredStack.isEmpty()) {
-                        ClientStuff.showItemInspectorScreen(hoveredStack);
+                        ClientScreenHelpers.showItemInspectorScreen(hoveredStack);
                     }
                 }
             }

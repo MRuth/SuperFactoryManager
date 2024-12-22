@@ -1,9 +1,10 @@
 package ca.teamdman.sfm.common.block;
 
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientFacadeHelpers;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
 import ca.teamdman.sfm.common.cablenetwork.ICableBlock;
 import ca.teamdman.sfm.common.net.ServerboundFacadePacket;
+import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -17,8 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class CableBlock extends Block implements ICableBlock {
-
+public class CableBlock extends Block implements ICableBlock, IFacadableBlock {
     public CableBlock() {
         super(Block.Properties
                       .of(Material.METAL)
@@ -74,9 +74,11 @@ public class CableBlock extends Block implements ICableBlock {
             if (pLevel.isClientSide() && pHand == InteractionHand.MAIN_HAND) {
                 ServerboundFacadePacket msg = new ServerboundFacadePacket(
                         pHit,
-                        ServerboundFacadePacket.SpreadLogic.fromParts(Screen.hasControlDown(), Screen.hasAltDown())
+                        ServerboundFacadePacket.SpreadLogic.fromParts(Screen.hasControlDown(), Screen.hasAltDown()),
+                        pPlayer.getMainHandItem(),
+                        InteractionHand.MAIN_HAND
                 );
-                ClientStuff.sendFacadePacketFromClientWithConfirmationIfNecessary(msg);
+                ClientFacadeHelpers.sendFacadePacketFromClientWithConfirmationIfNecessary(msg);
                 return InteractionResult.CONSUME;
             }
             return InteractionResult.SUCCESS;
@@ -84,4 +86,13 @@ public class CableBlock extends Block implements ICableBlock {
         return InteractionResult.PASS;
     }
 
+    @Override
+    public Block getNonFacadeBlock() {
+        return SFMBlocks.CABLE_BLOCK.get();
+    }
+
+    @Override
+    public Block getFacadeBlock() {
+        return SFMBlocks.CABLE_FACADE_BLOCK.get();
+    }
 }

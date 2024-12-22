@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class CableFacadeBlockColor implements BlockColor {
+public class FancyCableFacadeBlockColor implements BlockColor {
 
     @Override
     public int getColor(
@@ -25,7 +25,7 @@ public class CableFacadeBlockColor implements BlockColor {
         if (!(blockEntity instanceof FancyCableFacadeBlockEntity facadeBlockEntity)) return -1;
 
         BlockState facadeState = facadeBlockEntity.getFacadeState();
-        if (facadeState.getBlock() == SFMBlocks.CABLE_FACADE_BLOCK.get()) return -1;
+        if (facadeState.getBlock() == SFMBlocks.FANCY_CABLE_FACADE_BLOCK.get()) return -1;
 
         return Minecraft.getInstance().getBlockColors().getColor(facadeState, blockAndTintGetter, blockPos, tintIndex);
     }

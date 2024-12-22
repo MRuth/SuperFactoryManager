@@ -786,12 +786,17 @@ public final class LocalizationKeys {
     @SuppressWarnings("unused") // used by minecraft without us having to directly reference
     public static final LocalizationEntry CABLE_FACADE_BLOCK = new LocalizationEntry(
             () -> SFMBlocks.CABLE_FACADE_BLOCK.get().getDescriptionId(),
-            () -> "Facade Inventory Cable"
+            () -> "Inventory Cable Facade"
     );
     @SuppressWarnings("unused") // used by minecraft without us having to directly reference
     public static final LocalizationEntry FANCY_CABLE_BLOCK = new LocalizationEntry(
             () -> SFMBlocks.FANCY_CABLE_BLOCK.get().getDescriptionId(),
             () -> "Fancy Inventory Cable"
+    );
+    @SuppressWarnings("unused") // used by minecraft without us having to directly reference
+    public static final LocalizationEntry FANCY_CABLE_FACADE_BLOCK = new LocalizationEntry(
+            () -> SFMBlocks.FANCY_CABLE_FACADE_BLOCK.get().getDescriptionId(),
+            () -> "Fancy Inventory Cable Facade"
     );
     @SuppressWarnings("unused") // used by minecraft without us having to directly reference
     public static final LocalizationEntry MANAGER_BLOCK = new LocalizationEntry(

@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.net;
 
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientScreenHelpers;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record ClientboundLabelInspectionResultsPacket(
@@ -29,7 +29,7 @@ public record ClientboundLabelInspectionResultsPacket(
                 ClientboundLabelInspectionResultsPacket msg,
                 SFMPacketHandlingContext context
         ) {
-            ClientStuff.showProgramEditScreen(msg.results());
+            ClientScreenHelpers.showProgramEditScreen(msg.results());
         }
 
         @Override

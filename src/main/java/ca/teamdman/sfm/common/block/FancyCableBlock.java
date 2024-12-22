@@ -1,8 +1,8 @@
 package ca.teamdman.sfm.common.block;
 
 import ca.teamdman.sfm.common.block.shape.ShapeCache;
-import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
 import ca.teamdman.sfm.common.cablenetwork.ICableBlock;
+import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
@@ -12,12 +12,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -27,13 +25,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class FancyCableBlock extends Block implements ICableBlock {
-
+public class FancyCableBlock extends CableBlock implements IFacadableBlock {
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
     public static final BooleanProperty SOUTH = BooleanProperty.create("south");
     public static final BooleanProperty EAST = BooleanProperty.create("east");
     public static final BooleanProperty WEST = BooleanProperty.create("west");
     public static final BooleanProperty UP = BooleanProperty.create("up");
+
+
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
 
     public static final VoxelShape SHAPE_CORE = Block.box(4, 4, 4, 12, 12, 12);
@@ -54,11 +53,7 @@ public class FancyCableBlock extends Block implements ICableBlock {
     );
 
     public FancyCableBlock() {
-        super(Block.Properties
-                      .of(Material.METAL)
-                      .destroyTime(1f)
-                      .sound(SoundType.METAL));
-
+        super();
         registerDefaultState(
                 defaultBlockState()
                         .setValue(NORTH, false)
@@ -68,6 +63,22 @@ public class FancyCableBlock extends Block implements ICableBlock {
                         .setValue(UP, false)
                         .setValue(DOWN, false)
         );
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
+    }
+
+    @Override
+    public Block getNonFacadeBlock() {
+        return SFMBlocks.FANCY_CABLE_BLOCK.get();
+    }
+
+    @Override
+    public Block getFacadeBlock() {
+        return SFMBlocks.FANCY_CABLE_FACADE_BLOCK.get();
     }
 
     @Override
@@ -114,30 +125,6 @@ public class FancyCableBlock extends Block implements ICableBlock {
         return getState(state, world, pos);
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onPlace(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            BlockState oldState,
-            boolean isMoving
-    ) {
-        CableNetworkManager.onCablePlaced(level, pos);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onRemove(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            BlockState newState,
-            boolean isMoving
-    ) {
-        CableNetworkManager.onCableRemoved(level, pos);
-    }
-
     protected static VoxelShape getShape(BlockState state) {
         var shape = SHAPE_CORE;
 
@@ -157,13 +144,6 @@ public class FancyCableBlock extends Block implements ICableBlock {
             Supplier<Boolean> condition
     ) {
         return condition.get() ? Shapes.or(shape1, shape2) : shape1;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-
-        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
     }
 
     protected BlockState getState(

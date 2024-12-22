@@ -1,8 +1,9 @@
 {
   "block.sfm.battery": "Battery (WIP)",
   "block.sfm.cable": "Inventory Cable",
-  "block.sfm.cable_facade": "Facade Inventory Cable",
+  "block.sfm.cable_facade": "Inventory Cable Facade",
   "block.sfm.fancy_cable": "Fancy Inventory Cable",
+  "block.sfm.fancy_cable_facade": "Fancy Inventory Cable Facade",
   "block.sfm.manager": "Factory Manager",
   "block.sfm.printing_press": "Printing Press",
   "block.sfm.printing_press.tooltip": "Place with an air gap below a downward facing piston. Extend the piston to use.",

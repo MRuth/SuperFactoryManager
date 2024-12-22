@@ -11,20 +11,15 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.Nullable;
 
+import static ca.teamdman.sfm.common.block.CableFacadeBlock.FACADE_TYPE_PROP;
 
-public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacadableBlock {
-    public static final ModelProperty<BlockState> FACADE_BLOCK_STATE = new ModelProperty<>();
-    public static final EnumProperty<FacadeType> FACADE_TYPE_PROP = FacadeType.FACADE_TYPE;
-
-    public CableFacadeBlock() {
+public class FancyCableFacadeBlock extends FancyCableBlock implements EntityBlock, IFacadableBlock {
+    public FancyCableFacadeBlock() {
         super();
-        registerDefaultState(getStateDefinition().any().setValue(FACADE_TYPE_PROP, FacadeType.OPAQUE));
+        registerDefaultState(defaultBlockState().setValue(FACADE_TYPE_PROP, FacadeType.TRANSLUCENT));
     }
 
     @Override
@@ -32,7 +27,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
             BlockPos blockPos,
             BlockState blockState
     ) {
-        return SFMBlockEntities.CABLE_FACADE_BLOCK_ENTITY.get().create(blockPos, blockState);
+        return SFMBlockEntities.FANCY_CABLE_FACADE_BLOCK_ENTITY.get().create(blockPos, blockState);
     }
 
     @SuppressWarnings("deprecation")
@@ -42,10 +37,11 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
             BlockGetter pLevel,
             BlockPos pPos
     ) {
+        return super.getOcclusionShape(pState, pLevel, pPos);
         // Translucent blocks should have no occlusion
-        return pState.getValue(FACADE_TYPE_PROP) == FacadeType.TRANSLUCENT ?
-               Shapes.empty() :
-               Shapes.block();
+//        return pState.getValue(FACADE_TYPE_PROP) == FacadeType.TRANSLUCENT ?
+//               Shapes.empty() :
+//               Shapes.block();
     }
 
     @SuppressWarnings("deprecation")
@@ -55,7 +51,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
             BlockPos pPos,
             BlockState pState
     ) {
-        return new ItemStack(SFMBlocks.CABLE_BLOCK.get());
+        return new ItemStack(SFMBlocks.FANCY_CABLE_BLOCK.get());
     }
 
     @Override
@@ -68,7 +64,8 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACADE_TYPE_PROP);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(FACADE_TYPE_PROP);
     }
 }

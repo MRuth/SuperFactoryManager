@@ -152,10 +152,15 @@ public class SFMBlockStatesAndModels extends BlockStateProvider {
                 .end()
                 .texture("cable", modLoc("block/fancy_cable"));
 
-        var multipartBuilder = getMultipartBuilder(SFMBlocks.FANCY_CABLE_BLOCK.get());
+        var multipartBuilder1 = getMultipartBuilder(SFMBlocks.FANCY_CABLE_BLOCK.get());
+        var multipartBuilder2 = getMultipartBuilder(SFMBlocks.FANCY_CABLE_FACADE_BLOCK.get());
 
         // Core
-        multipartBuilder.part()
+        multipartBuilder1.part()
+                .modelFile(coreModel)
+                .addModel()
+                .end();
+        multipartBuilder2.part()
                 .modelFile(coreModel)
                 .addModel()
                 .end();
@@ -173,7 +178,15 @@ public class SFMBlockStatesAndModels extends BlockStateProvider {
                 case DOWN -> rotX = 90;
             }
 
-            multipartBuilder.part()
+            multipartBuilder1.part()
+                    .modelFile(connectionModel)
+                    .rotationX(rotX)
+                    .rotationY(rotY)
+                    .uvLock(false)
+                    .addModel()
+                    .condition(FancyCableBlock.DIRECTION_PROPERTIES.get(direction), true)
+                    .end();
+            multipartBuilder2.part()
                     .modelFile(connectionModel)
                     .rotationX(rotX)
                     .rotationY(rotY)

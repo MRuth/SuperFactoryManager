@@ -2,7 +2,7 @@ package ca.teamdman.sfm.client.gui.screen;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.client.ClientDiagnosticInfo;
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientScreenHelpers;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
 import ca.teamdman.sfm.common.item.DiskItem;
 import ca.teamdman.sfm.common.localization.LocalizationEntry;
@@ -258,15 +258,15 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerContainerMenu>
     }
 
     private void onEditButtonClicked() {
-        ClientStuff.showProgramEditScreen(getProgram(), this::sendProgram);
+        ClientScreenHelpers.showProgramEditScreen(getProgram(), this::sendProgram);
     }
 
     private void onExamplesButtonClicked() {
-        ClientStuff.showExampleListScreen(getProgram(), this::sendProgram);
+        ClientScreenHelpers.showExampleListScreen(getProgram(), this::sendProgram);
     }
 
     private void onLogsButtonClicked() {
-        ClientStuff.showLogsScreen(menu);
+        ClientScreenHelpers.showLogsScreen(menu);
     }
 
     private void performReset() {

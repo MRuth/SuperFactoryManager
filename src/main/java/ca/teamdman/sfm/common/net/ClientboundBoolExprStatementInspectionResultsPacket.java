@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.net;
 
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientScreenHelpers;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record ClientboundBoolExprStatementInspectionResultsPacket(
@@ -34,7 +34,7 @@ public record ClientboundBoolExprStatementInspectionResultsPacket(
                 ClientboundBoolExprStatementInspectionResultsPacket msg,
                 SFMPacketHandlingContext context
         ) {
-            ClientStuff.showProgramEditScreen(msg.results);
+            ClientScreenHelpers.showProgramEditScreen(msg.results);
         }
     }
 }

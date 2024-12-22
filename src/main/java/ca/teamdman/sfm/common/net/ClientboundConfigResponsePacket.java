@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.net;
 
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientScreenHelpers;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -41,8 +41,8 @@ public record ClientboundConfigResponsePacket(
             String configTomlString = msg.configToml();
             configTomlString = configTomlString.replaceAll("\r", "");
             switch (msg.requestingEditMode()) {
-                case SHOW -> ClientStuff.showProgramEditScreen(configTomlString);
-                case EDIT -> ClientStuff.showProgramEditScreen(
+                case SHOW -> ClientScreenHelpers.showProgramEditScreen(configTomlString);
+                case EDIT -> ClientScreenHelpers.showProgramEditScreen(
                         configTomlString,
                         (newContent) -> SFMPackets.sendToServer(new ServerboundConfigUpdatePacket(newContent))
                 );

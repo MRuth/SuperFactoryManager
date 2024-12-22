@@ -2,7 +2,7 @@ package ca.teamdman.sfm.client.gui.screen;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.client.ClientDiagnosticInfo;
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientTranslationHelpers;
 import ca.teamdman.sfm.client.ProgramSyntaxHighlightingHelper;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
 import ca.teamdman.sfm.common.localization.LocalizationEntry;
@@ -93,7 +93,7 @@ public class LogsScreen extends Screen {
                 level = level.withStyle(ChatFormatting.DARK_GRAY);
             }
 
-            String[] lines = ClientStuff.resolveTranslation(log.contents()).split("\n", -1);
+            String[] lines = ClientTranslationHelpers.resolveTranslation(log.contents()).split("\n", -1);
 
             StringBuilder codeBlock = new StringBuilder();
             boolean insideCodeBlock = false;

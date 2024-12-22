@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.common.item;
 
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientKeyHelpers;
+import ca.teamdman.sfm.client.ClientScreenHelpers;
 import ca.teamdman.sfm.client.ProgramSyntaxHighlightingHelper;
 import ca.teamdman.sfm.client.registry.SFMKeyMappings;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
@@ -164,7 +165,7 @@ public class DiskItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         var stack = pPlayer.getItemInHand(pUsedHand);
         if (pLevel.isClientSide) {
-            ClientStuff.showProgramEditScreen(
+            ClientScreenHelpers.showProgramEditScreen(
                     getProgram(stack),
                     programString -> SFMPackets.sendToServer(new ServerboundDiskItemSetProgramPacket(
                                 programString,
@@ -178,7 +179,7 @@ public class DiskItem extends Item {
     @Override
     public Component getName(ItemStack stack) {
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            if (ClientStuff.isKeyDown(SFMKeyMappings.MORE_INFO_TOOLTIP_KEY)) return super.getName(stack);
+            if (ClientKeyHelpers.isKeyDown(SFMKeyMappings.MORE_INFO_TOOLTIP_KEY)) return super.getName(stack);
         }
         var name = getProgramName(stack);
         if (name.isEmpty()) return super.getName(stack);

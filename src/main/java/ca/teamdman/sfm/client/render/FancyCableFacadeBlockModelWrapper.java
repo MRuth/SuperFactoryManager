@@ -1,4 +1,4 @@
-package ca.teamdman.sfm.client.model;
+package ca.teamdman.sfm.client.render;
 
 import ca.teamdman.sfm.common.block.CableFacadeBlock;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
@@ -15,48 +15,66 @@ import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CableBlockModelWrapper extends BakedModelWrapper<BakedModel> {
+public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedModel> {
 
     private static final ChunkRenderTypeSet SOLID = ChunkRenderTypeSet.of(RenderType.solid());
     private static final ChunkRenderTypeSet ALL = ChunkRenderTypeSet.all();
 
-    public CableBlockModelWrapper(BakedModel originalModel) {
+    public FancyCableFacadeBlockModelWrapper(BakedModel originalModel) {
         super(originalModel);
     }
 
     @Override
     public @NotNull List<BakedQuad> getQuads(
-            BlockState state,
-            Direction side,
+            @Nullable BlockState state,
+            @Nullable Direction side,
             @NotNull RandomSource rand,
             @NotNull ModelData extraData,
-            RenderType renderType
+            @Nullable RenderType renderType
     ) {
-        BlockState mimicState = extraData.get(CableFacadeBlock.FACADE_BLOCK_STATE);
-        if (mimicState == null) {
-            return originalModel.getQuads(state, side, rand, ModelData.EMPTY, renderType);
-        }
         Minecraft minecraft = Minecraft.getInstance();
-        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
-        if (mimicState.getBlock() == SFMBlocks.CABLE_FACADE_BLOCK.get()) {
+        BlockState mimicState = extraData.get(CableFacadeBlock.FACADE_BLOCK_STATE);
+        if (mimicState == null || mimicState.getBlock() == SFMBlocks.CABLE_FACADE_BLOCK.get()) {
             // facade blocks should only exist with some other block to be shown
             return minecraft
                     .getModelManager()
                     .getMissingModel()
                     .getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
         }
-
+        List<BakedQuad> originalQuads = originalModel.getQuads(state, side, rand, ModelData.EMPTY, renderType);
+        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
         BakedModel mimicModel = blockRenderer.getBlockModel(mimicState);
         ChunkRenderTypeSet renderTypes = mimicModel.getRenderTypes(mimicState, rand, extraData);
 
         if (renderType == null || renderTypes.contains(renderType)) {
-            return mimicModel.getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
+            List<BakedQuad> mimicQuads = mimicModel.getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
+            if (!mimicQuads.isEmpty()) {
+                // we want to return the original quads with the texture of their quads lol
+                List<BakedQuad> resultQuads = new ArrayList<>(originalQuads.size());
+                for (BakedQuad originalQuad : originalQuads) {
+                    resultQuads.add(new BakedQuad(
+                            originalQuad.getVertices(),
+                            originalQuad.getTintIndex(),
+                            originalQuad.getDirection(),
+//                            mimicQuads.get(0).getSprite(),
+                            originalQuad.getSprite(),
+                            originalQuad.isShade(),
+                            originalQuad.hasAmbientOcclusion()
+                    ));
+                }
+                return resultQuads;
+            }
         }
 
-        return List.of();
+        return minecraft
+                .getModelManager()
+                .getMissingModel()
+                .getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
     }
 
     @Override

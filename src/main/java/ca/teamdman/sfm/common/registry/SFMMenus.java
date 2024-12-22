@@ -2,7 +2,7 @@ package ca.teamdman.sfm.common.registry;
 
 
 import ca.teamdman.sfm.SFM;
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientRaycastHelpers;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.blockentity.TestBarrelTankBlockEntity;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
@@ -53,7 +53,7 @@ public class SFMMenus {
                         ) {
                             return DistExecutor.unsafeRunForDist(
                                     () -> () -> {
-                                        BlockEntity be = ClientStuff.getLookBlockEntity();
+                                        BlockEntity be = ClientRaycastHelpers.getLookBlockEntity();
                                         if (!(be instanceof ManagerBlockEntity mbe))
                                             return IContainerFactory.super.create(windowId, inv);
                                         return new ManagerContainerMenu(windowId, inv, mbe);
@@ -91,7 +91,7 @@ public class SFMMenus {
                         ) {
                             return DistExecutor.unsafeRunForDist(
                                     () -> () -> {
-                                        BlockEntity unchecked = ClientStuff.getLookBlockEntity();
+                                        BlockEntity unchecked = ClientRaycastHelpers.getLookBlockEntity();
                                         if (!(unchecked instanceof TestBarrelTankBlockEntity blockEntity))
                                             return IContainerFactory.super.create(windowId, inv);
                                         return new TestBarrelTankContainerMenu(windowId, inv, blockEntity);

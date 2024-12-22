@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.common.item;
 
-import ca.teamdman.sfm.client.ClientStuff;
+import ca.teamdman.sfm.client.ClientKeyHelpers;
+import ca.teamdman.sfm.client.ClientScreenHelpers;
 import ca.teamdman.sfm.client.handler.LabelGunKeyMappingHandler;
 import ca.teamdman.sfm.client.registry.SFMKeyMappings;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
@@ -103,7 +104,7 @@ public class LabelGunItem extends Item {
     ) {
         var level = ctx.getLevel();
         if (level.isClientSide && ctx.getPlayer() != null) {
-            boolean pickBlock = ClientStuff.isKeyDown(SFMKeyMappings.LABEL_GUN_PICK_BLOCK_MODIFIER_KEY);
+            boolean pickBlock = ClientKeyHelpers.isKeyDown(SFMKeyMappings.LABEL_GUN_PICK_BLOCK_MODIFIER_KEY);
             SFMPackets.sendToServer(new ServerboundLabelGunUsePacket(
                     ctx.getHand(),
                     ctx.getClickedPos(),
@@ -173,7 +174,7 @@ public class LabelGunItem extends Item {
     ) {
         var stack = player.getItemInHand(hand);
         if (level.isClientSide) {
-            ClientStuff.showLabelGunScreen(stack, hand);
+            ClientScreenHelpers.showLabelGunScreen(stack, hand);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }

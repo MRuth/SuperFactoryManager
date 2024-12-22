@@ -1,7 +1,8 @@
-// 1.19.2	2024-11-09T01:59:47.0562519	Block States: sfm
+// 1.19.2	2024-12-18T16:34:13.2700254	Block States: sfm
 f303dc233cde263e111cfdb2e2cbc48b93521724 assets/sfm/blockstates/cable.json
 f303dc233cde263e111cfdb2e2cbc48b93521724 assets/sfm/blockstates/cable_facade.json
 0a672c9322f8bb4628d2c78d1f2d4edf3099aa31 assets/sfm/blockstates/fancy_cable.json
+0a672c9322f8bb4628d2c78d1f2d4edf3099aa31 assets/sfm/blockstates/fancy_cable_facade.json
 01e9d7d54169b7f6bbd287f4b896629f66f25305 assets/sfm/blockstates/manager.json
 a351025a2054b6ce2ddc21dc14734cc8b5b635bc assets/sfm/blockstates/printing_press.json
 9be344941a18ad0d8dccbcd6536d52bf7295c1c8 assets/sfm/blockstates/test_barrel.json
