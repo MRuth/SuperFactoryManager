@@ -1,12 +1,12 @@
 package ca.teamdman.sfm.client.render;
 
 import ca.teamdman.sfm.common.block.CableFacadeBlock;
-import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.util.FacadeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -39,42 +39,61 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
     ) {
         Minecraft minecraft = Minecraft.getInstance();
         BlockState mimicState = extraData.get(CableFacadeBlock.FACADE_BLOCK_STATE);
-        if (mimicState == null || mimicState.getBlock() == SFMBlocks.CABLE_FACADE_BLOCK.get()) {
-            // facade blocks should only exist with some other block to be shown
-            return minecraft
-                    .getModelManager()
-                    .getMissingModel()
-                    .getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
-        }
-        List<BakedQuad> originalQuads = originalModel.getQuads(state, side, rand, ModelData.EMPTY, renderType);
-        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
-        BakedModel mimicModel = blockRenderer.getBlockModel(mimicState);
-        ChunkRenderTypeSet renderTypes = mimicModel.getRenderTypes(mimicState, rand, extraData);
 
-        if (renderType == null || renderTypes.contains(renderType)) {
-            List<BakedQuad> mimicQuads = mimicModel.getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
-            if (!mimicQuads.isEmpty()) {
-                // we want to return the original quads with the texture of their quads lol
-                List<BakedQuad> resultQuads = new ArrayList<>(originalQuads.size());
-                for (BakedQuad originalQuad : originalQuads) {
-                    resultQuads.add(new BakedQuad(
-                            originalQuad.getVertices(),
-                            originalQuad.getTintIndex(),
-                            originalQuad.getDirection(),
-//                            mimicQuads.get(0).getSprite(),
-                            originalQuad.getSprite(),
-                            originalQuad.isShade(),
-                            originalQuad.hasAmbientOcclusion()
-                    ));
+        // get all quads for the original model on the null-direction pass
+        if (mimicState != null && side == null) {
+            /// the original model only uses un-culled faces so we force null side
+            /// [net.minecraft.client.resources.model.SimpleBakedModel#getQuads(BlockState, Direction, RandomSource)]
+            List<BakedQuad> originalQuads = originalModel.getQuads(state, null, rand, ModelData.EMPTY, renderType);
+
+            BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+            BakedModel mimicModel = blockRenderer.getBlockModel(mimicState);
+            ChunkRenderTypeSet renderTypes = mimicModel.getRenderTypes(mimicState, rand, extraData);
+
+            if (renderType == null || renderTypes.contains(renderType)) {
+                TextureAtlasSprite sprite = null;
+                for (Direction dir : Direction.values()) {
+                    List<BakedQuad> mimicQuads = mimicModel.getQuads(
+                            mimicState,
+                            dir,
+                            rand,
+                            ModelData.EMPTY,
+                            renderType
+                    );
+                    if (!mimicQuads.isEmpty()) {
+                        sprite = mimicQuads.get(0).getSprite();
+                        break;
+                    }
                 }
-                return resultQuads;
+                if (sprite != null) {
+                    // we want to return the original quads with the other texture
+                    List<BakedQuad> resultQuads = new ArrayList<>(originalQuads.size());
+                    for (BakedQuad originalQuad : originalQuads) {
+                        resultQuads.add(new RetexturedBakedQuad(
+                                originalQuad,
+                                sprite
+                        ));
+//                        resultQuads.add(new BakedQuad(
+//                                originalQuad.getVertices(),
+//                                originalQuad.getTintIndex(),
+//                                originalQuad.getDirection(),
+////                                originalQuad.getSprite(),
+//                                sprite,
+//                                originalQuad.isShade(),
+//                                originalQuad.hasAmbientOcclusion()
+//                        ));
+                    }
+                    return resultQuads;
+                }
             }
         }
+        return List.of();
 
-        return minecraft
-                .getModelManager()
-                .getMissingModel()
-                .getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
+//        // this only has quads for non-null sides
+//        return minecraft
+//                .getModelManager()
+//                .getMissingModel()
+//                .getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
     }
 
     @Override

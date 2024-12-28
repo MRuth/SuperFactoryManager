@@ -1,7 +1,6 @@
 package ca.teamdman.sfm.client.render;
 
 import ca.teamdman.sfm.common.block.CableFacadeBlock;
-import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.util.FacadeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -36,28 +35,20 @@ public class CableFacadeBlockModelWrapper extends BakedModelWrapper<BakedModel> 
             @NotNull ModelData extraData,
             @Nullable RenderType renderType
     ) {
-        BlockState mimicState = extraData.get(CableFacadeBlock.FACADE_BLOCK_STATE);
-        if (mimicState == null) {
-            return originalModel.getQuads(state, side, rand, ModelData.EMPTY, renderType);
-        }
         Minecraft minecraft = Minecraft.getInstance();
-        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
-        if (mimicState.getBlock() == SFMBlocks.CABLE_FACADE_BLOCK.get()) {
-            // facade blocks should only exist with some other block to be shown
-            return minecraft
-                    .getModelManager()
-                    .getMissingModel()
-                    .getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
+        BlockState mimicState = extraData.get(CableFacadeBlock.FACADE_BLOCK_STATE);
+        if (mimicState != null) {
+            BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+            BakedModel mimicModel = blockRenderer.getBlockModel(mimicState);
+            ChunkRenderTypeSet renderTypes = mimicModel.getRenderTypes(mimicState, rand, extraData);
+            if (renderType == null || renderTypes.contains(renderType)) {
+                return mimicModel.getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
+            }
         }
-
-        BakedModel mimicModel = blockRenderer.getBlockModel(mimicState);
-        ChunkRenderTypeSet renderTypes = mimicModel.getRenderTypes(mimicState, rand, extraData);
-
-        if (renderType == null || renderTypes.contains(renderType)) {
-            return mimicModel.getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
-        }
-
-        return List.of();
+        return minecraft
+                .getModelManager()
+                .getMissingModel()
+                .getQuads(state, side, rand, ModelData.EMPTY, renderType);
     }
 
     @Override

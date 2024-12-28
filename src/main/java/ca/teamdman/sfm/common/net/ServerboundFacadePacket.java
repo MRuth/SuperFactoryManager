@@ -19,6 +19,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -61,25 +62,33 @@ public record ServerboundFacadePacket(
                 msg.paintStack(),
                 msg.hitResult()
         );
-        if (msg.paintStack.getItem() == Items.AIR) {
-            // Set to non-facade variant
+        Item paintItem = msg.paintStack.getItem();
+        if (paintItem == Items.AIR) {
+            // Clear facade
             worldBlockState = hitFacadable.getNonFacadeBlock().getStateForPlacement(blockPlaceContext);
             assert worldBlockState != null;
             renderBlockState = null;
         } else {
-            // Set to facade variant, update render block state
-            Block renderBlock = Block.byItem(msg.paintStack.getItem());
+            @Nullable Block renderBlock = Block.byItem(paintItem);
             if (renderBlock == Blocks.AIR) return null;
-            renderBlockState = Objects.requireNonNullElse(
-                    renderBlock.getStateForPlacement(blockPlaceContext),
-                    renderBlock.defaultBlockState()
-            );
-            worldBlockState = hitFacadable.getFacadeBlock().getStateForPlacement(blockPlaceContext);
-            assert worldBlockState != null;
-            FacadeType facadeType = renderBlockState.isSolidRender(level, hitPos)
-                                    ? FacadeType.OPAQUE
-                                    : FacadeType.TRANSLUCENT;
-            worldBlockState.setValue(CableFacadeBlock.FACADE_TYPE_PROP, facadeType);
+            if (renderBlock instanceof IFacadableBlock guh && guh.getNonFacadeBlock() == renderBlock) {
+                // Set to a cable block
+                worldBlockState = guh.getNonFacadeBlock().getStateForPlacement(blockPlaceContext);
+                assert worldBlockState != null;
+                renderBlockState = null;
+            } else {
+                // Set to a facade
+                renderBlockState = Objects.requireNonNullElse(
+                        renderBlock.getStateForPlacement(blockPlaceContext),
+                        renderBlock.defaultBlockState()
+                );
+                worldBlockState = hitFacadable.getFacadeBlock().getStateForPlacement(blockPlaceContext);
+                assert worldBlockState != null;
+                FacadeType facadeType = renderBlockState.isSolidRender(level, hitPos)
+                                        ? FacadeType.OPAQUE
+                                        : FacadeType.TRANSLUCENT;
+                worldBlockState.setValue(CableFacadeBlock.FACADE_TYPE_PROP, facadeType);
+            }
         }
 
         Set<BlockPos> positions = switch (msg.spreadLogic) {

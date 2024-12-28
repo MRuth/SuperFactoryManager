@@ -89,6 +89,7 @@ EVERY 20G+5 TICKS DO END
 -- Fix inspection results missing line endings when multiple resource types present
 -- Add exports for all side to network tool, listing selected side first
 -- Add hotkeys for label gun next/prev for people with no scroll wheel, unbound by default
+-- Add facades to fancy cables, HUGE thanks to CoFH for their RetexturedBakedQuad class <3
 
 ---- 4.19.1 ----
 -- Fix 1.19.4 build failures due to Gradle hating me
