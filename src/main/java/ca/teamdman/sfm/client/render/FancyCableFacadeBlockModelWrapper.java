@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
@@ -44,13 +45,14 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
         if (mimicState != null && side == null) {
             /// the original model only uses un-culled faces so we force null side
             /// [net.minecraft.client.resources.model.SimpleBakedModel#getQuads(BlockState, Direction, RandomSource)]
-            List<BakedQuad> originalQuads = originalModel.getQuads(state, null, rand, ModelData.EMPTY, renderType);
+            List<BakedQuad> originalQuads = originalModel.getQuads(state, null, rand, ModelData.EMPTY, null);
 
             BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
             BakedModel mimicModel = blockRenderer.getBlockModel(mimicState);
             ChunkRenderTypeSet renderTypes = mimicModel.getRenderTypes(mimicState, rand, extraData);
 
             if (renderType == null || renderTypes.contains(renderType)) {
+                // Find the sprite for the mimic model
                 TextureAtlasSprite sprite = null;
                 for (Direction dir : Direction.values()) {
                     List<BakedQuad> mimicQuads = mimicModel.getQuads(
@@ -73,27 +75,12 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
                                 originalQuad,
                                 sprite
                         ));
-//                        resultQuads.add(new BakedQuad(
-//                                originalQuad.getVertices(),
-//                                originalQuad.getTintIndex(),
-//                                originalQuad.getDirection(),
-////                                originalQuad.getSprite(),
-//                                sprite,
-//                                originalQuad.isShade(),
-//                                originalQuad.hasAmbientOcclusion()
-//                        ));
                     }
                     return resultQuads;
                 }
             }
         }
         return List.of();
-
-//        // this only has quads for non-null sides
-//        return minecraft
-//                .getModelManager()
-//                .getMissingModel()
-//                .getQuads(mimicState, side, rand, ModelData.EMPTY, renderType);
     }
 
     @Override
@@ -109,5 +96,13 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
         }
         BakedModel bakedModel = blockRenderer.getBlockModel(paintBlockState);
         return bakedModel.getRenderTypes(paintBlockState, rand, ModelData.EMPTY);
+    }
+
+    @Override
+    public List<RenderType> getRenderTypes(
+            ItemStack itemStack,
+            boolean fabulous
+    ) {
+        return super.getRenderTypes(itemStack, fabulous);
     }
 }
