@@ -52,7 +52,7 @@ public abstract class CommonFacadeBlockEntity<T extends IFacadeBlockEntity.Facad
     public void load(CompoundTag pTag) {
         super.load(pTag);
         T tried = loadFacadeData(pTag);
-        if (facadeData != null) {
+        if (tried != null) {
             this.facadeData = tried;
             requestModelDataUpdate();
         }
