@@ -1,8 +1,8 @@
 package ca.teamdman.sfm.common.block;
 
+import ca.teamdman.sfm.common.facade.FacadeType;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
-import ca.teamdman.sfm.common.util.FacadeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -14,12 +14,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.Nullable;
 
 
 public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacadableBlock {
-    public static final ModelProperty<BlockState> FACADE_BLOCK_STATE = new ModelProperty<>();
     public static final EnumProperty<FacadeType> FACADE_TYPE_PROP = FacadeType.FACADE_TYPE;
 
     public CableFacadeBlock() {

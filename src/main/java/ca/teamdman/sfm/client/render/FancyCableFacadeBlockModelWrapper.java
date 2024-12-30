@@ -1,7 +1,9 @@
 package ca.teamdman.sfm.client.render;
 
 import ca.teamdman.sfm.common.block.CableFacadeBlock;
-import ca.teamdman.sfm.common.util.FacadeType;
+import ca.teamdman.sfm.common.blockentity.FancyCableFacadeBlockEntity;
+import ca.teamdman.sfm.common.blockentity.IFacadeBlockEntity;
+import ca.teamdman.sfm.common.facade.FacadeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -39,10 +41,11 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
             @Nullable RenderType renderType
     ) {
         Minecraft minecraft = Minecraft.getInstance();
-        BlockState mimicState = extraData.get(CableFacadeBlock.FACADE_BLOCK_STATE);
+        BlockState mimicState = extraData.get(IFacadeBlockEntity.FACADE_BLOCK_STATE);
+        Direction mimicDirection = extraData.get(FancyCableFacadeBlockEntity.FACADE_DIRECTION);
 
         // get all quads for the original model on the null-direction pass
-        if (mimicState != null && side == null) {
+        if (mimicState != null && side == null && mimicDirection != null) {
             /// the original model only uses un-culled faces so we force null side
             /// [net.minecraft.client.resources.model.SimpleBakedModel#getQuads(BlockState, Direction, RandomSource)]
             List<BakedQuad> originalQuads = originalModel.getQuads(state, null, rand, ModelData.EMPTY, null);
@@ -54,18 +57,15 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
             if (renderType == null || renderTypes.contains(renderType)) {
                 // Find the sprite for the mimic model
                 TextureAtlasSprite sprite = null;
-                for (Direction dir : Direction.values()) {
-                    List<BakedQuad> mimicQuads = mimicModel.getQuads(
-                            mimicState,
-                            dir,
-                            rand,
-                            ModelData.EMPTY,
-                            renderType
-                    );
-                    if (!mimicQuads.isEmpty()) {
-                        sprite = mimicQuads.get(0).getSprite();
-                        break;
-                    }
+                List<BakedQuad> mimicQuads = mimicModel.getQuads(
+                        mimicState,
+                        mimicDirection,
+                        rand,
+                        ModelData.EMPTY,
+                        renderType
+                );
+                if (!mimicQuads.isEmpty()) {
+                    sprite = mimicQuads.get(0).getSprite();
                 }
                 if (sprite != null) {
                     // we want to return the original quads with the other texture
@@ -90,7 +90,7 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
             @NotNull ModelData data
     ) {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        BlockState paintBlockState = data.get(CableFacadeBlock.FACADE_BLOCK_STATE);
+        BlockState paintBlockState = data.get(IFacadeBlockEntity.FACADE_BLOCK_STATE);
         if (paintBlockState == null) {
             return cableBlockState.getValue(CableFacadeBlock.FACADE_TYPE_PROP) == FacadeType.TRANSLUCENT ? ALL : SOLID;
         }

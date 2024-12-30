@@ -1,8 +1,8 @@
 package ca.teamdman.sfm.common.block;
 
+import ca.teamdman.sfm.common.facade.FacadeType;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
-import ca.teamdman.sfm.common.util.FacadeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;

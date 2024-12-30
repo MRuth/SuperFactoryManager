@@ -1,4 +1,4 @@
-package ca.teamdman.sfm.common.util;
+package ca.teamdman.sfm.common.facade;
 
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;

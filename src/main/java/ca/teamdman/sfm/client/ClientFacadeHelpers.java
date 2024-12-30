@@ -1,5 +1,8 @@
 package ca.teamdman.sfm.client;
 
+import ca.teamdman.sfm.common.facade.FacadePlan;
+import ca.teamdman.sfm.common.facade.FacadePlanWarning;
+import ca.teamdman.sfm.common.facade.FacadePlanner;
 import ca.teamdman.sfm.common.net.ServerboundFacadePacket;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import net.minecraft.client.Minecraft;
@@ -16,19 +19,19 @@ public class ClientFacadeHelpers {
         assert player != null;
         Level level = player.level;
 
-        ServerboundFacadePacket.FacadePlan facadePlan = ServerboundFacadePacket.getFacadePlan(
+        FacadePlan facadePlan = FacadePlanner.getFacadePlan(
                 player,
                 level,
                 msg,
                 true
         );
         if (facadePlan == null) return;
-        ServerboundFacadePacket.FacadePlanWarning warning = facadePlan.warning();
+        FacadePlanWarning warning = facadePlan.warning();
         if (warning == null) {
             // No confirmation necessary for single updates
             SFMPackets.sendToServer(msg);
             // Perform eager update
-            ServerboundFacadePacket.handle(msg, player);
+            facadePlan.apply(level);
         } else {
             ConfirmScreen confirmScreen = new ConfirmScreen(
                     (confirmed) -> {
@@ -37,7 +40,7 @@ public class ClientFacadeHelpers {
                             // Send packet
                             SFMPackets.sendToServer(msg);
                             // Perform eager update
-                            ServerboundFacadePacket.handle(msg, player);
+                            facadePlan.apply(level);
                         }
                     },
                     warning.confirmTitle(),
