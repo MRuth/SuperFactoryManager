@@ -11,11 +11,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ClientScreenHelpers {
     public static void setOrPushScreen(Screen screen) {
@@ -101,5 +104,37 @@ public class ClientScreenHelpers {
                     )
             );
         }
+    }
+
+    public static void showChangelog() {
+        String changelog = null;
+        var irm = Minecraft.getInstance().getResourceManager();
+        Map<ResourceLocation, Resource> found = irm.listResources(
+                "template_programs",
+                (path) -> path.getPath().endsWith(".sfml") || path.getPath().endsWith(".sfm")
+        );
+        for (var entry : found.entrySet()) {
+            if (entry.getKey().getPath().equals("template_programs/changelog.sfml")) {
+                try (var reader = entry.getValue().openAsReader()) {
+                    changelog = reader.lines().collect(Collectors.joining("\n"));
+                    break;
+                } catch (Exception e) {
+                    SFM.LOGGER.error("Failed to read changelog", e);
+                }
+            }
+        }
+        if (changelog == null) {
+            SFM.LOGGER.error("Failed to find changelog");
+            return;
+        }
+        ProgramEditScreen screen = new ExampleEditScreen(
+                changelog,
+                changelog,
+                Map.of("changelog.sfml", changelog),
+                $ -> {
+                }
+        );
+        setOrPushScreen(screen);
+        screen.scrollToTop();
     }
 }

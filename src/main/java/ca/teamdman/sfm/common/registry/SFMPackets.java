@@ -78,6 +78,7 @@ public class SFMPackets {
         registerClientboundPacket(new ClientboundConfigResponsePacket.Daddy());
         registerServerboundPacket(new ServerboundConfigUpdatePacket.Daddy());
         registerServerboundPacket(new ServerboundFacadePacket.Daddy());
+        registerClientboundPacket(new ClientboundShowChangelogPacket.Daddy());
     }
 
     public static void sendToServer(

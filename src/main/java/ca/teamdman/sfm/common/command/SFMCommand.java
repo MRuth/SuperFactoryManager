@@ -4,11 +4,14 @@ import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
 import ca.teamdman.sfm.common.config.SFMConfigReadWriter;
 import ca.teamdman.sfm.common.net.ClientboundConfigResponsePacket;
+import ca.teamdman.sfm.common.net.ClientboundShowChangelogPacket;
+import ca.teamdman.sfm.common.registry.SFMPackets;
 import ca.teamdman.sfm.common.watertanknetwork.WaterNetworkManager;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -83,6 +86,23 @@ public class SFMCommand {
                                       })
                         )
         );
+        command.then(Commands.literal("changelog")
+                             .requires(source -> source.hasPermission(Commands.LEVEL_ALL))
+                             .executes(ctx -> {
+                                 ServerPlayer player = ctx.getSource().getPlayer();
+                                 if (player != null) {
+                                     // I tried making this a client command by registering in the client command event
+                                     // but what happened was that when the command is sent in the chat
+                                     // the mc logic is to set the screen to null after the command executes to close the chat
+                                     // which closes the changelog gui
+                                     // so doing it this way will keep the screen open lol
+                                     SFMPackets.sendToPlayer(
+                                             player,
+                                             new ClientboundShowChangelogPacket()
+                                     );
+                                 }
+                                 return SINGLE_SUCCESS;
+                             }));
         event.getDispatcher().register(command);
     }
 
