@@ -8,12 +8,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
 public record ApplyFacadesFacadePlan(
-        IFacadableBlock worldBlock,
         FacadeData facadeData,
         FacadeTransparency facadeTransparency,
         Set<BlockPos> positions
@@ -21,20 +21,23 @@ public record ApplyFacadesFacadePlan(
     @Override
     public void apply(Level level) {
         this.positions().forEach(pos -> {
-            level.setBlock(
-                    pos,
-                    this.worldBlock().getStateForPlacementByFacadePlan(
-                            level,
-                            pos,
-                            this.facadeTransparency()
-                    ),
-                    Block.UPDATE_IMMEDIATE | Block.UPDATE_CLIENTS
-            );
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof IFacadeBlockEntity facadeBlockEntity) {
-                facadeBlockEntity.updateFacadeData(this.facadeData());
+            BlockState blockState = level.getBlockState(pos);
+            Block block = blockState.getBlock();
+            if (block instanceof IFacadableBlock facadableBlock) {
+                BlockState nextBlockState = facadableBlock.getStateForPlacementByFacadePlan(
+                        level,
+                        pos,
+                        this.facadeTransparency()
+                );
+                level.setBlock(pos, nextBlockState, Block.UPDATE_IMMEDIATE | Block.UPDATE_CLIENTS);
+                BlockEntity blockEntity = level.getBlockEntity(pos);
+                if (blockEntity instanceof IFacadeBlockEntity facadeBlockEntity) {
+                    facadeBlockEntity.updateFacadeData(this.facadeData());
+                } else {
+                    SFM.LOGGER.warn("Block entity {} at {} is not a facade block entity", pos, blockEntity);
+                }
             } else {
-                SFM.LOGGER.warn("Block entity {} at {} is not a facade block entity", pos, blockEntity);
+                SFM.LOGGER.warn("Block {} at {} is not a facadable block", block, pos);
             }
         });
     }

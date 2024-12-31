@@ -88,7 +88,6 @@ public class FacadePlanner {
                                                 ? FacadeTransparency.OPAQUE
                                                 : FacadeTransparency.TRANSLUCENT;
         return new ApplyFacadesFacadePlan(
-                hitFacadable.getFacadeBlock(),
                 new FacadeData(
                         renderBlockState,
                         msg.hitResult().getDirection(),
