@@ -1,35 +1,15 @@
 package ca.teamdman.sfm.common.blockentity;
 
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import ca.teamdman.sfm.common.facade.FacadeData;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.Nullable;
 
-public interface IFacadeBlockEntity<T extends IFacadeBlockEntity.FacadeData> {
-    ModelProperty<BlockState> FACADE_BLOCK_STATE = new ModelProperty<>();
+public interface IFacadeBlockEntity {
+    ModelProperty<BlockState> FACADE_BLOCK_STATE_MODEL_PROPERTY = new ModelProperty<>();
 
-    void updateFacadeData(
-            BlockState newFacadeState,
-            Direction hitDirection
-    );
+    void updateFacadeData(FacadeData newFacadeData);
 
-    T createFacadeData(
-            BlockState facadeState,
-            Direction hitDirection
-    );
+    @Nullable FacadeData getFacadeData();
 
-    @Nullable T loadFacadeData(CompoundTag tag);
-
-    void saveFacadeData(
-            CompoundTag tag,
-            T data
-    );
-
-    @Nullable T getFacadeData();
-
-    interface FacadeData {
-        BlockState getRenderBlockState();
-        Direction getRenderHitDirection();
-    }
 }

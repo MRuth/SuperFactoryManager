@@ -1,17 +1,12 @@
 package ca.teamdman.sfm.common.facade;
 
 import ca.teamdman.sfm.common.block.IFacadableBlock;
-import ca.teamdman.sfm.common.block.ManagerBlock;
 import ca.teamdman.sfm.common.blockentity.IFacadeBlockEntity;
 import ca.teamdman.sfm.common.cablenetwork.CableNetwork;
-import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.net.ServerboundFacadePacket;
 import ca.teamdman.sfm.common.util.InPlaceBlockPlaceContext;
-import ca.teamdman.sfm.common.util.SFMDirections;
 import ca.teamdman.sfm.common.util.SFMStreamUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -40,8 +35,7 @@ public class FacadePlanner {
     public static @Nullable IFacadePlan getFacadePlan(
             Player player,
             Level level,
-            ServerboundFacadePacket msg,
-            boolean computeWarnings
+            ServerboundFacadePacket msg
     ) {
         // preconditions
         BlockPos hitPos = msg.hitResult().getBlockPos();
@@ -55,8 +49,7 @@ public class FacadePlanner {
         if (paintingWithAir) {
             return new ClearFacadesFacadePlan(
                     hitFacadable.getNonFacadeBlock(),
-                    getPositions(level, msg, hitPos, hitBlock),
-                    computeWarnings ? getFacadePlanWarning(level, msg, Set.of(hitPos), null) : null
+                    getPositions(level, msg, hitPos, hitBlock)
             );
         }
 
@@ -64,26 +57,20 @@ public class FacadePlanner {
         if (renderBlock == Blocks.AIR) return null;
 
         if (renderBlock instanceof IFacadableBlock guh) {
-            if (level.getBlockEntity(hitPos) instanceof IFacadeBlockEntity<?> hitFacadeBlockEntity) {
+            if (level.getBlockEntity(hitPos) instanceof IFacadeBlockEntity hitFacadeBlockEntity) {
                 // Change facade type
-                IFacadeBlockEntity.FacadeData hitFacadeData = hitFacadeBlockEntity.getFacadeData();
-                if (hitFacadeData != null && hitBlockState.hasProperty(FacadeType.FACADE_TYPE_PROPERTY)) {
+                FacadeData hitFacadeData = hitFacadeBlockEntity.getFacadeData();
+                if (hitFacadeData != null
+                    && hitBlockState.hasProperty(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY)) {
                     return new ChangeWorldBlockFacadePlan(
                             guh.getFacadeBlock(),
-                            getPositions(level, msg, hitPos, hitBlock),
-                            computeWarnings ? getFacadePlanWarning(
-                                    level,
-                                    msg,
-                                    Set.of(hitPos),
-                                    hitFacadeData.getRenderBlockState()
-                            ) : null
+                            getPositions(level, msg, hitPos, hitBlock)
                     );
                 }
             }
             return new ClearFacadesFacadePlan(
                     guh.getFacadeBlock(),
-                    getPositions(level, msg, hitPos, hitBlock),
-                    computeWarnings ? getFacadePlanWarning(level, msg, Set.of(hitPos), null) : null
+                    getPositions(level, msg, hitPos, hitBlock)
             );
         }
 
@@ -97,16 +84,18 @@ public class FacadePlanner {
                 )),
                 renderBlock.defaultBlockState()
         );
-        FacadeType facadeType = renderBlockState.isSolidRender(level, hitPos)
-                                ? FacadeType.OPAQUE
-                                : FacadeType.TRANSLUCENT;
+        FacadeTransparency facadeTransparency = renderBlockState.isSolidRender(level, hitPos)
+                                                ? FacadeTransparency.OPAQUE
+                                                : FacadeTransparency.TRANSLUCENT;
         return new ApplyFacadesFacadePlan(
                 hitFacadable.getFacadeBlock(),
-                renderBlockState,
-                facadeType,
-                msg.hitResult().getDirection(),
-                getPositions(level, msg, hitPos, hitBlock),
-                computeWarnings ? getFacadePlanWarning(level, msg, Set.of(hitPos), renderBlockState) : null
+                new FacadeData(
+                        renderBlockState,
+                        msg.hitResult().getDirection(),
+                        FacadeTextureMode.FILL
+                ),
+                facadeTransparency,
+                getPositions(level, msg, hitPos, hitBlock)
         );
     }
 
@@ -120,27 +109,18 @@ public class FacadePlanner {
             case SINGLE -> Set.of(hitPos);
             case NETWORK -> CableNetwork.discoverCables(level, hitPos).collect(Collectors.toSet());
             case NETWORK_GLOBAL_SAME_PAINT -> {
-                if (level.getBlockEntity(hitPos) instanceof IFacadeBlockEntity<?> startFacadeBlockEntity) {
+                if (level.getBlockEntity(hitPos) instanceof IFacadeBlockEntity startFacadeBlockEntity) {
                     // the start block is a facade
-
-                    Block existingRenderBlock;
-                    IFacadeBlockEntity.FacadeData existingFacadeData = startFacadeBlockEntity.getFacadeData();
-                    if (existingFacadeData != null) {
-                        existingRenderBlock = existingFacadeData.getRenderBlockState().getBlock();
-                    } else {
-                        existingRenderBlock = null;
-                    }
-
+                    FacadeData existingFacadeData = startFacadeBlockEntity.getFacadeData();
+                    Class<?> existingFacadeBlockEntityClass = startFacadeBlockEntity.getClass();
                     yield CableNetwork.discoverCables(level, hitPos)
-                            // we only want painted blocks that match
+                            // we only want matches with the same (world,render) type
                             .filter(cablePos -> {
-                                if (level.getBlockEntity(cablePos) instanceof IFacadeBlockEntity<?> otherFacadeBlockEntity) {
-                                    IFacadeBlockEntity.FacadeData otherFacadeData = otherFacadeBlockEntity.getFacadeData();
-                                    Block otherRenderBlock = null;
-                                    if (otherFacadeData != null) {
-                                        otherRenderBlock = otherFacadeData.getRenderBlockState().getBlock();
-                                    }
-                                    return otherRenderBlock == existingRenderBlock;
+                                if (
+                                        level.getBlockEntity(cablePos) instanceof IFacadeBlockEntity otherFacadeBlockEntity
+                                        && otherFacadeBlockEntity.getClass().equals(existingFacadeBlockEntityClass)
+                                ) {
+                                    return Objects.equals(otherFacadeBlockEntity.getFacadeData(), existingFacadeData);
                                 } else {
                                     return false;
                                 }
@@ -148,8 +128,10 @@ public class FacadePlanner {
                 } else {
                     // the start block is not a facade
                     yield CableNetwork.discoverCables(level, hitPos)
-                            // we only want unpainted blocks
-                            .filter(cablePos -> !(level.getBlockEntity(cablePos) instanceof IFacadeBlockEntity<?>))
+                            // must match start block
+                            .filter(checkPos -> level.getBlockState(checkPos).getBlock() == hitBlock)
+                            // must not have a facade set
+                            .filter(checkPos -> !(level.getBlockEntity(checkPos) instanceof IFacadeBlockEntity))
                             .collect(Collectors.toSet());
                 }
             }
@@ -158,17 +140,10 @@ public class FacadePlanner {
                         .discoverCables(level, hitPos)
                         .collect(Collectors.toSet());
 
-                if (level.getBlockEntity(hitPos) instanceof IFacadeBlockEntity<?> startFacadeBlockEntity) {
+                if (level.getBlockEntity(hitPos) instanceof IFacadeBlockEntity startFacadeBlockEntity) {
                     // the start block is a facade
-
-                    IFacadeBlockEntity.FacadeData existingFacadeData = startFacadeBlockEntity.getFacadeData();
-                    Block existingRenderBlock;
-                    if (existingFacadeData != null) {
-                        existingRenderBlock = existingFacadeData.getRenderBlockState().getBlock();
-                    } else {
-                        existingRenderBlock = null;
-                    }
-
+                    Class<?> existingFacadeBlockEntityClass = startFacadeBlockEntity.getClass();
+                    FacadeData existingFacadeData = startFacadeBlockEntity.getFacadeData();
                     yield SFMStreamUtils.<BlockPos, BlockPos>getRecursiveStream(
                             (current, next, results) -> {
                                 results.accept(current);
@@ -177,15 +152,12 @@ public class FacadePlanner {
                                             if (!cablePositions.contains(neighbour)) {
                                                 return false;
                                             }
-                                            if (level.getBlockEntity(neighbour) instanceof IFacadeBlockEntity<?> otherCableFacadeBlockEntity) {
-                                                IFacadeBlockEntity.FacadeData otherFacadeData = otherCableFacadeBlockEntity.getFacadeData();
-                                                Block neighbourPaintBlock = null;
-                                                if (otherFacadeData != null) {
-                                                    neighbourPaintBlock = otherFacadeData
-                                                            .getRenderBlockState()
-                                                            .getBlock();
-                                                }
-                                                return neighbourPaintBlock == existingRenderBlock;
+                                            if (
+                                                    level.getBlockEntity(neighbour) instanceof IFacadeBlockEntity otherCableFacadeBlockEntity
+                                                    && otherCableFacadeBlockEntity.getClass().equals(existingFacadeBlockEntityClass)
+                                            ) {
+                                                FacadeData otherFacadeData = otherCableFacadeBlockEntity.getFacadeData();
+                                                return Objects.equals(otherFacadeData, existingFacadeData);
                                             } else {
                                                 return false;
                                             }
@@ -205,6 +177,7 @@ public class FacadePlanner {
                                                 return false;
                                             }
                                             Block neighbourBlock = level.getBlockState(neighbour).getBlock();
+
                                             // we assume that non-facade blocks are distinct from facade ones here
                                             return neighbourBlock == hitBlock;
                                         })
@@ -215,96 +188,5 @@ public class FacadePlanner {
                 }
             }
         };
-    }
-
-    private static @Nullable FacadePlanWarning getFacadePlanWarning(
-            Level level,
-            ServerboundFacadePacket msg,
-            Set<BlockPos> positions,
-            @Nullable BlockState renderBlockState
-    ) {
-        switch (msg.spreadLogic()) {
-            case NETWORK -> {
-                // Confirm if:
-                // - There exists two cable blocks with different facade status
-                // Do not confirm if:
-                // - All the cable blocks are the same facade status
-                Object2IntOpenHashMap<BlockState> clobbering = new Object2IntOpenHashMap<>();
-                for (BlockPos spreadPos : positions) {
-                    if (level.getBlockEntity(spreadPos) instanceof IFacadeBlockEntity<?> spreadFacadeBlockEntity) {
-                        IFacadeBlockEntity.FacadeData spreadFacadeData = spreadFacadeBlockEntity.getFacadeData();
-                        clobbering.merge(
-                                spreadFacadeData == null ? null : spreadFacadeData.getRenderBlockState(),
-                                1,
-                                Integer::sum
-                        );
-                    } else {
-                        BlockState spreadBlockState = level.getBlockState(spreadPos);
-                        if (spreadBlockState.getBlock() instanceof ManagerBlock) continue;
-                        clobbering.merge(
-                                spreadBlockState,
-                                1,
-                                Integer::sum
-                        );
-                    }
-                }
-                int clobberingUniqueStateCount = clobbering.keySet().size();
-                if (clobberingUniqueStateCount > 1) {
-                    return new FacadePlanWarning(
-                            LocalizationKeys.FACADE_APPLY_NETWORK_CONFIRM_SCREEN_TITLE.getComponent(),
-                            LocalizationKeys.FACADE_APPLY_NETWORK_CONFIRM_SCREEN_MESSAGE.getComponent(
-                                    clobberingUniqueStateCount,
-                                    clobbering.values().intStream().sum()
-                            ),
-                            LocalizationKeys.FACADE_APPLY_NETWORK_CONFIRM_SCREEN_YES_BUTTON.getComponent(),
-                            LocalizationKeys.FACADE_APPLY_NETWORK_CONFIRM_SCREEN_NO_BUTTON.getComponent()
-                    );
-                }
-            }
-            case NETWORK_GLOBAL_SAME_PAINT, NETWORK_CONTIGUOUS_SAME_PAINT -> {
-                // Confirm if the placement of this new facade will touch existing facades of the new type
-                // So like AAABBBAAA -> AAAAAAAAA should warn
-                // but     AAABBBAAA -> AAACCCAAA should not warn
-                // Get paint block state
-                int susTouches = 0;
-                for (BlockPos spreadPos : positions) {
-                    BlockState checkState = level.getBlockState(spreadPos);
-                    if (checkState.getBlock() instanceof ManagerBlock) continue;
-                    // Skip if this is already the desired state
-                    if (level.getBlockEntity(spreadPos) instanceof IFacadeBlockEntity<?> spreadFacadeBlockEntity) {
-                        IFacadeBlockEntity.FacadeData spreadFacadeData = spreadFacadeBlockEntity.getFacadeData();
-                        if (spreadFacadeData != null && spreadFacadeData
-                                .getRenderBlockState()
-                                .equals(renderBlockState)) {
-                            continue;
-                        }
-                    }
-                    // Increment if neighbour already in the new state
-                    for (Direction direction : SFMDirections.DIRECTIONS) {
-                        BlockPos offset = spreadPos.relative(direction);
-                        if (level.getBlockEntity(offset) instanceof IFacadeBlockEntity<?> offsetFacadeBlockEntity) {
-                            IFacadeBlockEntity.FacadeData offsetFacadeData = offsetFacadeBlockEntity.getFacadeData();
-                            if (offsetFacadeData != null && offsetFacadeData.getRenderBlockState().equals(
-                                    renderBlockState)) {
-                                susTouches++;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (susTouches > 0) {
-                    return new FacadePlanWarning(
-                            LocalizationKeys.FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_TITLE.getComponent(),
-                            LocalizationKeys.FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_MESSAGE.getComponent(
-                                    susTouches,
-                                    susTouches
-                            ),
-                            LocalizationKeys.FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_YES_BUTTON.getComponent(),
-                            LocalizationKeys.FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_NO_BUTTON.getComponent()
-                    );
-                }
-            }
-        }
-        return null;
     }
 }

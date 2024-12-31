@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.client.render;
 
 import ca.teamdman.sfm.common.blockentity.IFacadeBlockEntity;
+import ca.teamdman.sfm.common.facade.FacadeData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -21,10 +22,10 @@ public class FacadeBlockColor implements BlockColor {
         if (blockAndTintGetter == null || blockPos == null) return -1;
 
         BlockEntity blockEntity = blockAndTintGetter.getBlockEntity(blockPos);
-        if (!(blockEntity instanceof IFacadeBlockEntity<?> facadeBlockEntity)) return -1;
-        IFacadeBlockEntity.FacadeData facadeData = facadeBlockEntity.getFacadeData();
+        if (!(blockEntity instanceof IFacadeBlockEntity facadeBlockEntity)) return -1;
+        FacadeData facadeData = facadeBlockEntity.getFacadeData();
         if (facadeData == null) return -1;
-        BlockState facadeState = facadeData.getRenderBlockState();
+        BlockState facadeState = facadeData.facadeBlockState();
         return Minecraft.getInstance().getBlockColors().getColor(facadeState, blockAndTintGetter, blockPos, tintIndex);
     }
 }

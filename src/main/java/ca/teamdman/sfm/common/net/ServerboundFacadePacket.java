@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.common.facade.FacadePlanner;
+import ca.teamdman.sfm.common.facade.FacadeSpreadLogic;
 import ca.teamdman.sfm.common.facade.IFacadePlan;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
@@ -11,7 +12,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public record ServerboundFacadePacket(
         BlockHitResult hitResult,
-        SpreadLogic spreadLogic,
+        FacadeSpreadLogic spreadLogic,
         ItemStack paintStack,
         InteractionHand paintHand
 ) implements SFMPacket {
@@ -20,34 +21,11 @@ public record ServerboundFacadePacket(
             Player sender
     ) {
         Level level = sender.level;
-        IFacadePlan facadePlan = FacadePlanner.getFacadePlan(sender, level, msg, false);
+        IFacadePlan facadePlan = FacadePlanner.getFacadePlan(sender, level, msg);
         if (facadePlan == null) {
             return;
         }
         facadePlan.apply(level);
-    }
-
-    public enum SpreadLogic {
-        SINGLE,
-        NETWORK,
-        NETWORK_GLOBAL_SAME_PAINT,
-        NETWORK_CONTIGUOUS_SAME_PAINT;
-
-        public static SpreadLogic fromParts(
-                boolean isCtrlKeyDown,
-                boolean isAltKeyDown
-        ) {
-            if (isCtrlKeyDown && isAltKeyDown) {
-                return NETWORK;
-            }
-            if (isAltKeyDown) {
-                return NETWORK_GLOBAL_SAME_PAINT;
-            }
-            if (isCtrlKeyDown) {
-                return NETWORK_CONTIGUOUS_SAME_PAINT;
-            }
-            return SINGLE;
-        }
     }
 
     public static class Daddy implements SFMPacketDaddy<ServerboundFacadePacket> {
@@ -66,7 +44,7 @@ public record ServerboundFacadePacket(
         public ServerboundFacadePacket decode(FriendlyByteBuf buf) {
             return new ServerboundFacadePacket(
                     buf.readBlockHitResult(),
-                    buf.readEnum(SpreadLogic.class),
+                    buf.readEnum(FacadeSpreadLogic.class),
                     buf.readItem(),
                     buf.readEnum(InteractionHand.class)
             );

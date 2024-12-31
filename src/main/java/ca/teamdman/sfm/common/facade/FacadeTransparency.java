@@ -3,11 +3,11 @@ package ca.teamdman.sfm.common.facade;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-public enum FacadeType implements StringRepresentable {
+public enum FacadeTransparency implements StringRepresentable {
     OPAQUE, TRANSLUCENT;
-    public static final EnumProperty<FacadeType> FACADE_TYPE_PROPERTY = EnumProperty.create("facade_type", FacadeType.class);
+    public static final EnumProperty<FacadeTransparency> FACADE_TRANSPARENCY_PROPERTY = EnumProperty.create("facade_transparency", FacadeTransparency.class);
 
-    FacadeType() {
+    FacadeTransparency() {
     }
 
     @Override

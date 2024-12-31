@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.block;
 
-import ca.teamdman.sfm.common.facade.FacadeType;
+import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,6 +14,6 @@ public interface IFacadableBlock {
     BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
             BlockPos pos,
-            @Nullable FacadeType facadeType
+            @Nullable FacadeTransparency facadeTransparency
     );
 }

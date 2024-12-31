@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.block;
 
-import ca.teamdman.sfm.common.facade.FacadeType;
+import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import net.minecraft.core.BlockPos;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class FancyCableFacadeBlock extends FancyCableBlock implements EntityBlock, IFacadableBlock {
     public FancyCableFacadeBlock() {
         super();
-        registerDefaultState(defaultBlockState().setValue(FacadeType.FACADE_TYPE_PROPERTY, FacadeType.TRANSLUCENT));
+        registerDefaultState(defaultBlockState().setValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY, FacadeTransparency.TRANSLUCENT));
     }
 
     @Override
@@ -41,19 +41,19 @@ public class FancyCableFacadeBlock extends FancyCableBlock implements EntityBloc
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FacadeType.FACADE_TYPE_PROPERTY);
+        builder.add(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY);
     }
 
     @Override
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
             BlockPos pos,
-            @Nullable FacadeType facadeType
+            @Nullable FacadeTransparency facadeTransparency
     ) {
-        BlockState state = super.getStateForPlacementByFacadePlan(level, pos, facadeType);
-        if (facadeType == null) {
+        BlockState state = super.getStateForPlacementByFacadePlan(level, pos, facadeTransparency);
+        if (facadeTransparency == null) {
             return state;
         }
-        return state.setValue(FacadeType.FACADE_TYPE_PROPERTY, facadeType);
+        return state.setValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY, facadeTransparency);
     }
 }

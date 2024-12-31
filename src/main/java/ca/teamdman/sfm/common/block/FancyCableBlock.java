@@ -2,7 +2,7 @@ package ca.teamdman.sfm.common.block;
 
 import ca.teamdman.sfm.common.block.shape.ShapeCache;
 import ca.teamdman.sfm.common.cablenetwork.ICableBlock;
-import ca.teamdman.sfm.common.facade.FacadeType;
+import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import com.google.common.collect.ImmutableMap;
@@ -124,7 +124,7 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
             BlockPos pos,
-            @Nullable FacadeType facadeType
+            @Nullable FacadeTransparency facadeTransparency
     ) {
         return getState(defaultBlockState(), level, pos);
     }

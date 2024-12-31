@@ -10,7 +10,7 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class ClientFacadeHelpers {
+public class ClientFacadeWarningHelper {
     public static void sendFacadePacketFromClientWithConfirmationIfNecessary(ServerboundFacadePacket msg) {
         // Given the incentives for a single cable network to be used,
         // we want to protect users from accidentally clobbering their designs in a single action
@@ -22,11 +22,10 @@ public class ClientFacadeHelpers {
         IFacadePlan facadePlan = FacadePlanner.getFacadePlan(
                 player,
                 level,
-                msg,
-                true
+                msg
         );
         if (facadePlan == null) return;
-        FacadePlanWarning warning = facadePlan.warning();
+        FacadePlanWarning warning = facadePlan.computeWarning(level);
         if (warning == null) {
             // No confirmation necessary for single updates
             SFMPackets.sendToServer(msg);

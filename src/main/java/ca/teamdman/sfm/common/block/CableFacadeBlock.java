@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.block;
 
-import ca.teamdman.sfm.common.facade.FacadeType;
+import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import net.minecraft.core.BlockPos;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacadableBlock {
     public CableFacadeBlock() {
         super();
-        registerDefaultState(getStateDefinition().any().setValue(FacadeType.FACADE_TYPE_PROPERTY, FacadeType.OPAQUE));
+        registerDefaultState(getStateDefinition().any().setValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY, FacadeTransparency.OPAQUE));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
             BlockPos pPos
     ) {
         // Translucent blocks should have no occlusion
-        return pState.getValue(FacadeType.FACADE_TYPE_PROPERTY) == FacadeType.TRANSLUCENT ?
+        return pState.getValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY) == FacadeTransparency.TRANSLUCENT ?
                Shapes.empty() :
                Shapes.block();
     }
@@ -60,24 +60,24 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
             BlockGetter pLevel,
             BlockPos pPos
     ) {
-        return pState.getValue(FacadeType.FACADE_TYPE_PROPERTY) == FacadeType.TRANSLUCENT;
+        return pState.getValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY) == FacadeTransparency.TRANSLUCENT;
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FacadeType.FACADE_TYPE_PROPERTY);
+        pBuilder.add(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY);
     }
 
     @Override
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
             BlockPos pos,
-            @Nullable FacadeType facadeType
+            @Nullable FacadeTransparency facadeTransparency
     ) {
-        BlockState blockState = super.getStateForPlacementByFacadePlan(level, pos, facadeType);
-        if (facadeType == null) {
+        BlockState blockState = super.getStateForPlacementByFacadePlan(level, pos, facadeTransparency);
+        if (facadeTransparency == null) {
             return blockState;
         }
-        return blockState.setValue(FacadeType.FACADE_TYPE_PROPERTY, facadeType);
+        return blockState.setValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY, facadeTransparency);
     }
 }

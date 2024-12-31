@@ -1,7 +1,7 @@
 package ca.teamdman.sfm.common.blockentity;
 
+import ca.teamdman.sfm.common.facade.FacadeData;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class CommonFacadeBlockEntity<T extends IFacadeBlockEntity.FacadeData> extends BlockEntity implements IFacadeBlockEntity<T> {
-    protected @Nullable T facadeData = null;
+public abstract class CommonFacadeBlockEntity extends BlockEntity implements IFacadeBlockEntity {
+    protected @Nullable FacadeData facadeData = null;
 
     public CommonFacadeBlockEntity(
             BlockEntityType<?> pType,
@@ -25,18 +25,16 @@ public abstract class CommonFacadeBlockEntity<T extends IFacadeBlockEntity.Facad
     }
 
     @Override
-    public @Nullable T getFacadeData() {
+    public @Nullable FacadeData getFacadeData() {
         return facadeData;
     }
 
     @Override
     public void updateFacadeData(
-            BlockState newFacadeState,
-            Direction hitDirection
+            FacadeData newFacadeData
     ) {
-        T newData = createFacadeData(newFacadeState, hitDirection);
-        if (newData.equals(facadeData)) return;
-        this.facadeData = newData;
+        if (newFacadeData.equals(facadeData)) return;
+        this.facadeData = newFacadeData;
         setChanged();
         if (level != null) {
             BlockState state = getBlockState();
@@ -51,7 +49,7 @@ public abstract class CommonFacadeBlockEntity<T extends IFacadeBlockEntity.Facad
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        T tried = loadFacadeData(pTag);
+        FacadeData tried = FacadeData.load(pTag);
         if (tried != null) {
             this.facadeData = tried;
             requestModelDataUpdate();
@@ -74,7 +72,7 @@ public abstract class CommonFacadeBlockEntity<T extends IFacadeBlockEntity.Facad
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
         if (facadeData != null) {
-            saveFacadeData(pTag, facadeData);
+            facadeData.save(pTag);
         }
     }
 }

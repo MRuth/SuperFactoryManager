@@ -1,7 +1,7 @@
 package ca.teamdman.sfm.client.render;
 
 import ca.teamdman.sfm.common.blockentity.IFacadeBlockEntity;
-import ca.teamdman.sfm.common.facade.FacadeType;
+import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -36,7 +36,7 @@ public class CableFacadeBlockModelWrapper extends BakedModelWrapper<BakedModel> 
             @Nullable RenderType renderType
     ) {
         Minecraft minecraft = Minecraft.getInstance();
-        BlockState mimicState = extraData.get(IFacadeBlockEntity.FACADE_BLOCK_STATE);
+        BlockState mimicState = extraData.get(IFacadeBlockEntity.FACADE_BLOCK_STATE_MODEL_PROPERTY);
         if (mimicState != null) {
             BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
             BakedModel mimicModel = blockRenderer.getBlockModel(mimicState);
@@ -59,9 +59,9 @@ public class CableFacadeBlockModelWrapper extends BakedModelWrapper<BakedModel> 
             @NotNull ModelData data
     ) {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        BlockState paintBlockState = data.get(IFacadeBlockEntity.FACADE_BLOCK_STATE);
+        BlockState paintBlockState = data.get(IFacadeBlockEntity.FACADE_BLOCK_STATE_MODEL_PROPERTY);
         if (paintBlockState == null) {
-            return cableBlockState.getValue(FacadeType.FACADE_TYPE_PROPERTY) == FacadeType.TRANSLUCENT ? ALL : SOLID;
+            return cableBlockState.getValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY) == FacadeTransparency.TRANSLUCENT ? ALL : SOLID;
         }
         BakedModel bakedModel = blockRenderer.getBlockModel(paintBlockState);
         return bakedModel.getRenderTypes(paintBlockState, rand, ModelData.EMPTY);

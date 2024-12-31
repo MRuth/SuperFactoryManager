@@ -9,5 +9,5 @@ import java.util.Set;
 public interface IFacadePlan {
     void apply(Level level);
     Set<BlockPos> positions();
-    @Nullable FacadePlanWarning warning();
+    @Nullable FacadePlanWarning computeWarning(Level level);
 }

@@ -1,9 +1,10 @@
 package ca.teamdman.sfm.common.block;
 
-import ca.teamdman.sfm.client.ClientFacadeHelpers;
+import ca.teamdman.sfm.client.ClientFacadeWarningHelper;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
 import ca.teamdman.sfm.common.cablenetwork.ICableBlock;
-import ca.teamdman.sfm.common.facade.FacadeType;
+import ca.teamdman.sfm.common.facade.FacadeSpreadLogic;
+import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.net.ServerboundFacadePacket;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
@@ -77,11 +78,11 @@ public class CableBlock extends Block implements ICableBlock, IFacadableBlock {
             if (pLevel.isClientSide() && pHand == InteractionHand.MAIN_HAND) {
                 ServerboundFacadePacket msg = new ServerboundFacadePacket(
                         pHit,
-                        ServerboundFacadePacket.SpreadLogic.fromParts(Screen.hasControlDown(), Screen.hasAltDown()),
+                        FacadeSpreadLogic.fromParts(Screen.hasControlDown(), Screen.hasAltDown()),
                         pPlayer.getMainHandItem(),
                         InteractionHand.MAIN_HAND
                 );
-                ClientFacadeHelpers.sendFacadePacketFromClientWithConfirmationIfNecessary(msg);
+                ClientFacadeWarningHelper.sendFacadePacketFromClientWithConfirmationIfNecessary(msg);
                 return InteractionResult.CONSUME;
             }
             return InteractionResult.SUCCESS;
@@ -103,7 +104,7 @@ public class CableBlock extends Block implements ICableBlock, IFacadableBlock {
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
             BlockPos pos,
-            @Nullable FacadeType facadeType
+            @Nullable FacadeTransparency facadeTransparency
     ) {
         return defaultBlockState();
     }

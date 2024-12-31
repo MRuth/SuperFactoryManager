@@ -88,36 +88,76 @@ public final class LocalizationKeys {
             "gui.sfm.exit_without_saving_confirm.no_button",
             "Continue editing"
     );
-    public static final LocalizationEntry FACADE_APPLY_NETWORK_CONFIRM_SCREEN_TITLE = new LocalizationEntry(
-            "gui.sfm.facade_apply_network_confirm.title",
-            "Are you sure?"
+    public static final LocalizationEntry FACADE_CONFIRM_CLEAR_SCREEN_TITLE = new LocalizationEntry(
+            "gui.sfm.facade_confirm_clear.title",
+            "Are you sure you want to clear these facades?"
     );
-    public static final LocalizationEntry FACADE_APPLY_NETWORK_CONFIRM_SCREEN_MESSAGE = new LocalizationEntry(
-            "gui.sfm.facade_apply_network_confirm.message",
-            "%d different facade states across %d cables that will be overwritten."
+    public static final LocalizationEntry FACADE_CONFIRM_CLEAR_SCREEN_MESSAGE = new LocalizationEntry(
+            "gui.sfm.facade_confirm_clear.message",
+            "%d different facade states across %d blocks will be wiped from the world."
     );
-    public static final LocalizationEntry FACADE_APPLY_NETWORK_CONFIRM_SCREEN_YES_BUTTON = new LocalizationEntry(
-            "gui.sfm.facade_apply_network_confirm.yes_button",
-            "Apply the change"
+    public static final LocalizationEntry FACADE_CONFIRM_CHANGE_WORLD_BLOCK_SCREEN_TITLE = new LocalizationEntry(
+            "gui.sfm.facade_confirm_change_world_block.title",
+            "Are you sure you want to change the facade world block?"
     );
-    public static final LocalizationEntry FACADE_APPLY_NETWORK_CONFIRM_SCREEN_NO_BUTTON = new LocalizationEntry(
-            "gui.sfm.facade_apply_network_confirm.no_button",
-            "Never mind"
+    public static final LocalizationEntry FACADE_CONFIRM_CHANGE_WORLD_BLOCK_SCREEN_MESSAGE = new LocalizationEntry(
+            "gui.sfm.facade_confirm_change_world_block.message",
+            "%d blocks will change shape, their facades will be persisted."
     );
-     public static final LocalizationEntry FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_TITLE = new LocalizationEntry(
-            "gui.sfm.facade_apply_sus_neighbours_confirm.title",
-            "Are you sure?"
+    public static final LocalizationEntry FACADE_CONFIRM_APPLY_SCREEN_TITLE = new LocalizationEntry(
+            "gui.sfm.facade_confirm_apply.title",
+            "Are you sure you want to update the facade appearance?"
     );
-    public static final LocalizationEntry FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_MESSAGE = new LocalizationEntry(
-            "gui.sfm.facade_apply_sus_neighbours_confirm.message",
-            "%d cables are touching existing facades of the same type, this will merge stuff that may not be easy to undo."
+    public static final LocalizationEntry FACADE_CONFIRM_APPLY_SCREEN_MESSAGE = new LocalizationEntry(
+            "gui.sfm.facade_confirm_apply.message",
+            "%d different facade states across %d blocks that will be overwritten."
     );
-    public static final LocalizationEntry FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_YES_BUTTON = new LocalizationEntry(
-            "gui.sfm.facade_apply_sus_neighbours_confirm.yes_button",
-            "Apply the change"
+    public static final LocalizationEntry CONFIRM_FUNNY_YES_1 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.yes.1",
+            "Yeah, sure, why not."
     );
-    public static final LocalizationEntry FACADE_APPLY_SUS_NEIGHBOURS_CONFIRM_SCREEN_NO_BUTTON = new LocalizationEntry(
-            "gui.sfm.facade_apply_sus_neighbours_confirm.no_button",
+    public static final LocalizationEntry CONFIRM_FUNNY_YES_2 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.yes.2",
+            "Sure, what could go wrong."
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_YES_3 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.yes.3",
+            "Yup, go ahead."
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_YES_4 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.yes.4",
+            "Go for it."
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_YES_5 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.yes.5",
+            "lol do it"
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_YES_6 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.yes.6",
+            "Apply the change."
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_NO_1 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.no.1",
+            "Nah, changed my mind"
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_NO_2 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.no.2",
+            "Holy guacamole, no"
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_NO_3 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.no.3",
+            "no no no no no"
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_NO_4 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.no.4",
+            "Nope, not today"
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_NO_5 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.no.5",
+            "ABORT ABORT ABORT"
+    );
+    public static final LocalizationEntry CONFIRM_FUNNY_NO_6 = new LocalizationEntry(
+            "gui.sfm.comfirm.funny.no.6",
             "Never mind"
     );
     public static final LocalizationEntry PROGRAM_WARNING_RESOURCE_EACH_WITHOUT_PATTERN = new LocalizationEntry(
