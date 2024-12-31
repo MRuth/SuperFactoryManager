@@ -24,7 +24,7 @@ public record ApplyFacadesFacadePlan(
             BlockState blockState = level.getBlockState(pos);
             Block block = blockState.getBlock();
             if (block instanceof IFacadableBlock facadableBlock) {
-                BlockState nextBlockState = facadableBlock.getStateForPlacementByFacadePlan(
+                BlockState nextBlockState = facadableBlock.getFacadeBlock().getStateForPlacementByFacadePlan(
                         level,
                         pos,
                         this.facadeTransparency()

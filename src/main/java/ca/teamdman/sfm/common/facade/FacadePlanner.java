@@ -48,7 +48,6 @@ public class FacadePlanner {
         boolean paintingWithAir = paintItem == Items.AIR;
         if (paintingWithAir) {
             return new ClearFacadesFacadePlan(
-                    hitFacadable.getNonFacadeBlock(),
                     getPositions(level, msg, hitPos, hitBlock)
             );
         }
@@ -56,22 +55,20 @@ public class FacadePlanner {
         @Nullable Block renderBlock = Block.byItem(paintItem);
         if (renderBlock == Blocks.AIR) return null;
 
-        if (renderBlock instanceof IFacadableBlock guh) {
-            if (level.getBlockEntity(hitPos) instanceof IFacadeBlockEntity hitFacadeBlockEntity) {
+        if (renderBlock instanceof IFacadableBlock renderFacadable) {
+            boolean isSameShape = hitFacadable.getNonFacadeBlock() == renderFacadable.getNonFacadeBlock();
+            if (isSameShape) {
+                // Clear facades
+                return new ClearFacadesFacadePlan(
+                        getPositions(level, msg, hitPos, hitBlock)
+                );
+            } else {
                 // Change facade type
-                FacadeData hitFacadeData = hitFacadeBlockEntity.getFacadeData();
-                if (hitFacadeData != null
-                    && hitBlockState.hasProperty(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY)) {
-                    return new ChangeWorldBlockFacadePlan(
-                            guh.getFacadeBlock(),
-                            getPositions(level, msg, hitPos, hitBlock)
-                    );
-                }
+                return new ChangeWorldBlockFacadePlan(
+                        renderFacadable.getFacadeBlock(),
+                        getPositions(level, msg, hitPos, hitBlock)
+                );
             }
-            return new ClearFacadesFacadePlan(
-                    guh.getFacadeBlock(),
-                    getPositions(level, msg, hitPos, hitBlock)
-            );
         }
 
         // Apply facade
