@@ -22,13 +22,17 @@ public class CableFacadeBlockEntity extends CommonFacadeBlockEntity<CableFacadeB
             BlockState facadeState,
             Direction hitDirection
     ) {
-        return new SimpleFacadeData(facadeState);
+        return new SimpleFacadeData(facadeState, hitDirection);
     }
 
     @Override
     public @Nullable CableFacadeBlockEntity.SimpleFacadeData loadFacadeData(CompoundTag tag) {
         if (tag.contains("sfm:facade")) {
-            return new SimpleFacadeData(NbtUtils.readBlockState(tag.getCompound("sfm:facade")));
+            BlockState facadeState = NbtUtils.readBlockState(tag.getCompound("sfm:facade"));
+            Direction facadeDirection = Direction.byName(tag.getString("sfm:facade_direction"));
+            if (facadeDirection != null) {
+                return new SimpleFacadeData(facadeState, facadeDirection);
+            }
         }
         return null;
     }
@@ -39,6 +43,7 @@ public class CableFacadeBlockEntity extends CommonFacadeBlockEntity<CableFacadeB
             SimpleFacadeData data
     ) {
         tag.put("sfm:facade", NbtUtils.writeBlockState(data.facadeState));
+        tag.putString("sfm:facade_direction", data.facadeDirection().getSerializedName());
     }
 
     @Override
@@ -49,10 +54,15 @@ public class CableFacadeBlockEntity extends CommonFacadeBlockEntity<CableFacadeB
         return ModelData.EMPTY;
     }
 
-    public record SimpleFacadeData(BlockState facadeState) implements FacadeData {
+    public record SimpleFacadeData(BlockState facadeState, Direction facadeDirection) implements FacadeData {
         @Override
         public BlockState getRenderBlockState() {
             return facadeState();
+        }
+
+        @Override
+        public Direction getRenderHitDirection() {
+            return facadeDirection();
         }
     }
 }

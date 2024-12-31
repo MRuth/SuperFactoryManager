@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.common.facade;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.common.block.IFacadableBlock;
 import ca.teamdman.sfm.common.blockentity.IFacadeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,9 +14,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public record FacadePlan(
-        BlockState worldBlockState,
+public record OldFacadePlan(
+        IFacadableBlock worldBlock,
         @Nullable BlockState renderBlockState,
+        @Nullable FacadeType facadeType,
         Set<BlockPos> positions,
         Direction direction,
         @Nullable FacadePlanWarning warning
@@ -24,15 +26,29 @@ public record FacadePlan(
         Consumer<BlockPos> painter;
         if (this.renderBlockState() == null) {
             // we are clearing the facade
-            painter = pos -> level.setBlock(
-                    pos,
-                    this.worldBlockState(),
-                    Block.UPDATE_IMMEDIATE | Block.UPDATE_CLIENTS
-            );
+            painter = pos -> {
+                level.setBlock(
+                        pos,
+                        this.worldBlock().getStateForPlacementByFacadePlan(
+                                level,
+                                pos,
+                                this.facadeType()
+                        ),
+                        Block.UPDATE_IMMEDIATE | Block.UPDATE_CLIENTS
+                );
+            };
         } else {
             // we are setting a facade
             painter = pos -> {
-                level.setBlock(pos, this.worldBlockState(), Block.UPDATE_IMMEDIATE | Block.UPDATE_CLIENTS);
+                level.setBlock(
+                        pos,
+                        this.worldBlock().getStateForPlacementByFacadePlan(
+                                level,
+                                pos,
+                                this.facadeType()
+                        ),
+                        Block.UPDATE_IMMEDIATE | Block.UPDATE_CLIENTS
+                );
                 BlockEntity blockEntity = level.getBlockEntity(pos);
                 if (blockEntity instanceof IFacadeBlockEntity<?> facadeBlockEntity) {
                     facadeBlockEntity.updateFacadeData(this.renderBlockState(), this.direction());

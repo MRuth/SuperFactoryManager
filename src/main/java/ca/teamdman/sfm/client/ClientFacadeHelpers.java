@@ -1,8 +1,8 @@
 package ca.teamdman.sfm.client;
 
-import ca.teamdman.sfm.common.facade.FacadePlan;
 import ca.teamdman.sfm.common.facade.FacadePlanWarning;
 import ca.teamdman.sfm.common.facade.FacadePlanner;
+import ca.teamdman.sfm.common.facade.IFacadePlan;
 import ca.teamdman.sfm.common.net.ServerboundFacadePacket;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import net.minecraft.client.Minecraft;
@@ -19,7 +19,7 @@ public class ClientFacadeHelpers {
         assert player != null;
         Level level = player.level;
 
-        FacadePlan facadePlan = FacadePlanner.getFacadePlan(
+        IFacadePlan facadePlan = FacadePlanner.getFacadePlan(
                 player,
                 level,
                 msg,

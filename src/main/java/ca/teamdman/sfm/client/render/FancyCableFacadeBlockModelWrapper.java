@@ -1,6 +1,5 @@
 package ca.teamdman.sfm.client.render;
 
-import ca.teamdman.sfm.common.block.CableFacadeBlock;
 import ca.teamdman.sfm.common.blockentity.FancyCableFacadeBlockEntity;
 import ca.teamdman.sfm.common.blockentity.IFacadeBlockEntity;
 import ca.teamdman.sfm.common.facade.FacadeType;
@@ -83,6 +82,7 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
         return List.of();
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public @NotNull ChunkRenderTypeSet getRenderTypes(
             @NotNull BlockState cableBlockState,
@@ -92,7 +92,7 @@ public class FancyCableFacadeBlockModelWrapper extends BakedModelWrapper<BakedMo
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         BlockState paintBlockState = data.get(IFacadeBlockEntity.FACADE_BLOCK_STATE);
         if (paintBlockState == null) {
-            return cableBlockState.getValue(CableFacadeBlock.FACADE_TYPE_PROP) == FacadeType.TRANSLUCENT ? ALL : SOLID;
+            return cableBlockState.getValue(FacadeType.FACADE_TYPE_PROPERTY) == FacadeType.TRANSLUCENT ? ALL : SOLID;
         }
         BakedModel bakedModel = blockRenderer.getBlockModel(paintBlockState);
         return bakedModel.getRenderTypes(paintBlockState, rand, ModelData.EMPTY);

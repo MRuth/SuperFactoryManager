@@ -20,37 +20,37 @@ public class SFMItems {
         }
     };
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SFM.MOD_ID);
-    public static final RegistryObject<Item> MANAGER_ITEM = register("manager", SFMBlocks.MANAGER_BLOCK);
-    public static final RegistryObject<Item> TUNNELLED_MANAGER_ITEM = register(
+    public static final RegistryObject<BlockItem> MANAGER_ITEM = register("manager", SFMBlocks.MANAGER_BLOCK);
+    public static final RegistryObject<BlockItem> TUNNELLED_MANAGER_ITEM = register(
             "tunnelled_manager",
             SFMBlocks.TUNNELLED_MANAGER_BLOCK
     );
-    public static final RegistryObject<Item> CABLE_ITEM = register("cable", SFMBlocks.CABLE_BLOCK);
-    public static final RegistryObject<Item> FANCY_CABLE_ITEM = register("fancy_cable", SFMBlocks.FANCY_CABLE_BLOCK);
-    public static final RegistryObject<Item> PRINTING_PRESS_ITEM = ITEMS.register(
+    public static final RegistryObject<BlockItem> CABLE_ITEM = register("cable", SFMBlocks.CABLE_BLOCK);
+    public static final RegistryObject<BlockItem> FANCY_CABLE_ITEM = register("fancy_cable", SFMBlocks.FANCY_CABLE_BLOCK);
+    public static final RegistryObject<PrintingPressBlockItem> PRINTING_PRESS_ITEM = ITEMS.register(
             "printing_press",
             PrintingPressBlockItem::new
     );
     //    public static final  RegistryObject<Item>   BATTERY_ITEM    = register("battery", SFMBlocks.BATTERY_BLOCK);
-    public static final RegistryObject<Item> WATER_TANK_ITEM = register("water_tank", SFMBlocks.WATER_TANK_BLOCK);
-    public static final RegistryObject<Item> DISK_ITEM = ITEMS.register("disk", DiskItem::new);
-    public static final RegistryObject<Item> LABEL_GUN_ITEM = ITEMS.register(
+    public static final RegistryObject<BlockItem> WATER_TANK_ITEM = register("water_tank", SFMBlocks.WATER_TANK_BLOCK);
+    public static final RegistryObject<DiskItem> DISK_ITEM = ITEMS.register("disk", DiskItem::new);
+    public static final RegistryObject<LabelGunItem> LABEL_GUN_ITEM = ITEMS.register(
             "labelgun", // TODO: rename on a major version update to label_gun
             LabelGunItem::new
     );
-    public static final RegistryObject<Item> NETWORK_TOOL_ITEM = ITEMS.register("network_tool", NetworkToolItem::new);
+    public static final RegistryObject<NetworkToolItem> NETWORK_TOOL_ITEM = ITEMS.register("network_tool", NetworkToolItem::new);
 
-    public static final RegistryObject<Item> FORM_ITEM = ITEMS.register("form", FormItem::new);
-    public static final RegistryObject<Item> EXPERIENCE_SHARD_ITEM = ITEMS.register("xp_shard", ExperienceShard::new);
-    public static final RegistryObject<Item> EXPERIENCE_GOOP_ITEM = ITEMS.register("xp_goop", ExperienceGoop::new);
+    public static final RegistryObject<FormItem> FORM_ITEM = ITEMS.register("form", FormItem::new);
+    public static final RegistryObject<ExperienceShardItem> EXPERIENCE_SHARD_ITEM = ITEMS.register("xp_shard", ExperienceShardItem::new);
+    public static final RegistryObject<ExperienceGoopItem> EXPERIENCE_GOOP_ITEM = ITEMS.register("xp_goop", ExperienceGoopItem::new);
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
     }
 
-    private static RegistryObject<Item> register(
+    private static RegistryObject<BlockItem> register(
             String name,
-            RegistryObject<Block> block
+            RegistryObject<? extends Block> block
     ) {
         return ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(TAB)));
     }

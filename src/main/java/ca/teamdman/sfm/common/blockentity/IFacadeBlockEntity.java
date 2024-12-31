@@ -30,5 +30,6 @@ public interface IFacadeBlockEntity<T extends IFacadeBlockEntity.FacadeData> {
 
     interface FacadeData {
         BlockState getRenderBlockState();
+        Direction getRenderHitDirection();
     }
 }

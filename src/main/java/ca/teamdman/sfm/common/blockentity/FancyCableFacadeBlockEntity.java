@@ -86,10 +86,14 @@ public class FancyCableFacadeBlockEntity extends CommonFacadeBlockEntity<FancyCa
             Direction facadeDirection,
             TextureMode textureMode
     ) implements FacadeData {
-
         @Override
         public BlockState getRenderBlockState() {
             return facadeState();
+        }
+
+        @Override
+        public Direction getRenderHitDirection() {
+            return facadeDirection();
         }
     }
 }

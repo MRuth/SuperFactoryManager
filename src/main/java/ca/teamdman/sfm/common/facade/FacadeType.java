@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public enum FacadeType implements StringRepresentable {
     OPAQUE, TRANSLUCENT;
-    public static final EnumProperty<FacadeType> FACADE_TYPE = EnumProperty.create("facade_type", FacadeType.class);
+    public static final EnumProperty<FacadeType> FACADE_TYPE_PROPERTY = EnumProperty.create("facade_type", FacadeType.class);
 
     FacadeType() {
     }

@@ -1,7 +1,7 @@
 package ca.teamdman.sfm.common.net;
 
-import ca.teamdman.sfm.common.facade.FacadePlan;
 import ca.teamdman.sfm.common.facade.FacadePlanner;
+import ca.teamdman.sfm.common.facade.IFacadePlan;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +20,7 @@ public record ServerboundFacadePacket(
             Player sender
     ) {
         Level level = sender.level;
-        FacadePlan facadePlan = FacadePlanner.getFacadePlan(sender, level, msg, false);
+        IFacadePlan facadePlan = FacadePlanner.getFacadePlan(sender, level, msg, false);
         if (facadePlan == null) {
             return;
         }

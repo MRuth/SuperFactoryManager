@@ -2,6 +2,7 @@ package ca.teamdman.sfm.common.block;
 
 import ca.teamdman.sfm.common.block.shape.ShapeCache;
 import ca.teamdman.sfm.common.cablenetwork.ICableBlock;
+import ca.teamdman.sfm.common.facade.FacadeType;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import com.google.common.collect.ImmutableMap;
@@ -66,18 +67,12 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
-    }
-
-    @Override
-    public Block getNonFacadeBlock() {
+    public IFacadableBlock getNonFacadeBlock() {
         return SFMBlocks.FANCY_CABLE_BLOCK.get();
     }
 
     @Override
-    public Block getFacadeBlock() {
+    public IFacadableBlock getFacadeBlock() {
         return SFMBlocks.FANCY_CABLE_FACADE_BLOCK.get();
     }
 
@@ -125,6 +120,15 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
         return getState(state, world, pos);
     }
 
+    @Override
+    public BlockState getStateForPlacementByFacadePlan(
+            LevelAccessor level,
+            BlockPos pos,
+            @Nullable FacadeType facadeType
+    ) {
+        return getState(defaultBlockState(), level, pos);
+    }
+
     protected static VoxelShape getShape(BlockState state) {
         var shape = SHAPE_CORE;
 
@@ -144,6 +148,12 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
             Supplier<Boolean> condition
     ) {
         return condition.get() ? Shapes.or(shape1, shape2) : shape1;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
     }
 
     protected BlockState getState(
