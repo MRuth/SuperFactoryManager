@@ -1,7 +1,7 @@
 package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.SFM;
-import ca.teamdman.sfm.common.command.ConfigCommandBehaviour;
+import ca.teamdman.sfm.common.command.ConfigCommandBehaviourInput;
 import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.config.SFMConfigReadWriter;
 import ca.teamdman.sfm.common.registry.SFMPackets;
@@ -9,10 +9,10 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ServerboundConfigRequestPacket(
-        ConfigCommandBehaviour requestingEditMode
+public record ServerboundServerConfigRequestPacket(
+        ConfigCommandBehaviourInput requestingEditMode
 ) implements SFMPacket {
-    public static class Daddy implements SFMPacketDaddy<ServerboundConfigRequestPacket> {
+    public static class Daddy implements SFMPacketDaddy<ServerboundServerConfigRequestPacket> {
         @Override
         public PacketDirection getPacketDirection() {
             return PacketDirection.SERVERBOUND;
@@ -20,20 +20,20 @@ public record ServerboundConfigRequestPacket(
 
         @Override
         public void encode(
-                ServerboundConfigRequestPacket msg,
+                ServerboundServerConfigRequestPacket msg,
                 FriendlyByteBuf friendlyByteBuf
         ) {
             friendlyByteBuf.writeEnum(msg.requestingEditMode());
         }
 
         @Override
-        public ServerboundConfigRequestPacket decode(FriendlyByteBuf friendlyByteBuf) {
-            return new ServerboundConfigRequestPacket(friendlyByteBuf.readEnum(ConfigCommandBehaviour.class));
+        public ServerboundServerConfigRequestPacket decode(FriendlyByteBuf friendlyByteBuf) {
+            return new ServerboundServerConfigRequestPacket(friendlyByteBuf.readEnum(ConfigCommandBehaviourInput.class));
         }
 
         @Override
         public void handle(
-                ServerboundConfigRequestPacket msg,
+                ServerboundServerConfigRequestPacket msg,
                 SFMPacketHandlingContext context
         ) {
             ServerPlayer player = context.sender();
@@ -42,7 +42,7 @@ public record ServerboundConfigRequestPacket(
                 return;
             }
             if (!player.hasPermissions(Commands.LEVEL_OWNERS)
-                && msg.requestingEditMode() == ConfigCommandBehaviour.EDIT) {
+                && msg.requestingEditMode() == ConfigCommandBehaviourInput.EDIT) {
                 SFM.LOGGER.warn(
                         "Player {} tried to request server config for editing but does not have the necessary permissions, this should never happen o-o",
                         player.getName().getString()
@@ -65,8 +65,8 @@ public record ServerboundConfigRequestPacket(
         }
 
         @Override
-        public Class<ServerboundConfigRequestPacket> getPacketClass() {
-            return ServerboundConfigRequestPacket.class;
+        public Class<ServerboundServerConfigRequestPacket> getPacketClass() {
+            return ServerboundServerConfigRequestPacket.class;
         }
     }
 }

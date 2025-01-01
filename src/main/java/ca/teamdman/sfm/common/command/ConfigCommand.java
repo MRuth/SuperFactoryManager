@@ -15,18 +15,14 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 public record ConfigCommand(
-        ConfigCommandBehaviour behaviour
+        ConfigCommandBehaviourInput behaviour,
+        ConfigCommandVariantInput variant
 ) implements Command<CommandSourceStack> {
     public static final int FAILURE = 0;
 
     @Override
     public int run(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        var variant = ctx.getArgument(
-                "variant",
-                ConfigVariantInput.class
-        );
-
-        ServerPlayer player = getPlayer(ctx, variant);
+        ServerPlayer player = getPlayer(ctx);
         if (player == null) return FAILURE;
 
         return switch (variant) {
@@ -36,22 +32,21 @@ public record ConfigCommand(
     }
 
     private @Nullable ServerPlayer getPlayer(
-            CommandContext<CommandSourceStack> ctx,
-            ConfigVariantInput variant
+            CommandContext<CommandSourceStack> ctx
     ) {
         ServerPlayer player = ctx.getSource().getPlayer();
         if (player == null) {
             SFM.LOGGER.error(
                     "Received config command ({} {}) from null player!?",
                     variant,
-                    behaviour()
+                    behaviour
             );
             return null;
         } else {
             SFM.LOGGER.info(
                     "Received config command ({} {}) from player {}",
                     variant,
-                    behaviour(),
+                    behaviour,
                     player
             );
         }
@@ -61,7 +56,7 @@ public record ConfigCommand(
     private int handleClientConfigCommand(ServerPlayer player) {
         SFMPackets.sendToPlayer(
                 player,
-                new ClientboundClientConfigCommandPacket(behaviour())
+                new ClientboundClientConfigCommandPacket(behaviour)
         );
         return FAILURE;
     }
@@ -73,7 +68,7 @@ public record ConfigCommand(
             SFM.LOGGER.warn(
                     "Unable to get server config for player {} to {}",
                     player.getName().getString(),
-                    behaviour()
+                    behaviour
             );
             player.sendSystemMessage(
                     SFMConfigReadWriter.ConfigSyncResult.FAILED_TO_FIND
@@ -85,7 +80,7 @@ public record ConfigCommand(
                     player,
                     new ClientboundServerConfigCommandPacket(
                             configToml,
-                            behaviour()
+                            behaviour
                     )
             );
         }

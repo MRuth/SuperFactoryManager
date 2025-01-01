@@ -2,7 +2,7 @@ package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.client.ClientScreenHelpers;
-import ca.teamdman.sfm.common.command.ConfigCommandBehaviour;
+import ca.teamdman.sfm.common.command.ConfigCommandBehaviourInput;
 import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.config.SFMConfigReadWriter;
 import net.minecraft.client.Minecraft;
@@ -10,7 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record ClientboundClientConfigCommandPacket(
-        ConfigCommandBehaviour requestingEditMode
+        ConfigCommandBehaviourInput requestingEditMode
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ClientboundClientConfigCommandPacket> {
         @Override
@@ -29,7 +29,7 @@ public record ClientboundClientConfigCommandPacket(
         @Override
         public ClientboundClientConfigCommandPacket decode(FriendlyByteBuf friendlyByteBuf) {
             return new ClientboundClientConfigCommandPacket(
-                    friendlyByteBuf.readEnum(ConfigCommandBehaviour.class)
+                    friendlyByteBuf.readEnum(ConfigCommandBehaviourInput.class)
             );
         }
 

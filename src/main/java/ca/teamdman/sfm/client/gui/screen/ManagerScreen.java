@@ -3,7 +3,7 @@ package ca.teamdman.sfm.client.gui.screen;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.client.ClientDiagnosticInfo;
 import ca.teamdman.sfm.client.ClientScreenHelpers;
-import ca.teamdman.sfm.common.command.ConfigCommandBehaviour;
+import ca.teamdman.sfm.common.command.ConfigCommandBehaviourInput;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
 import ca.teamdman.sfm.common.item.DiskItem;
 import ca.teamdman.sfm.common.localization.LocalizationEntry;
@@ -312,7 +312,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerContainerMenu>
     }
 
     private void onServerConfigButtonClicked() {
-        SFMPackets.sendToServer(new ServerboundConfigRequestPacket(ConfigCommandBehaviour.SHOW));
+        SFMPackets.sendToServer(new ServerboundServerConfigRequestPacket(ConfigCommandBehaviourInput.SHOW));
     }
 
     private void sendAttemptFix() {

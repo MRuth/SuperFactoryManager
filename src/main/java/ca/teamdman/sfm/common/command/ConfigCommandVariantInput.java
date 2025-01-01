@@ -1,6 +1,6 @@
 package ca.teamdman.sfm.common.command;
 
-public enum ConfigVariantInput {
+public enum ConfigCommandVariantInput {
     CLIENT,
     SERVER
 }

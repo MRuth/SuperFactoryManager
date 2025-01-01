@@ -70,19 +70,33 @@ public class SFMCommand {
                                       .then(Commands
                                                     .argument(
                                                             "variant",
-                                                            EnumArgument.enumArgument(ConfigVariantInput.class)
+                                                            EnumArgument.enumArgument(ConfigCommandVariantInput.class)
                                                     )
-                                                    .executes(new ConfigCommand(ConfigCommandBehaviour.SHOW))
+                                                    .executes(ctx -> new ConfigCommand(
+                                                            ConfigCommandBehaviourInput.SHOW,
+                                                            ctx.getArgument(
+                                                                    "variant",
+                                                                    ConfigCommandVariantInput.class
+                                                            )
+                                                    ).run(ctx))
                                       )
                         )
                         .then(Commands.literal("edit")
-                                      .requires(source -> source.hasPermission(Commands.LEVEL_OWNERS))
-                                      .then(Commands
-                                                    .argument(
-                                                            "variant",
-                                                            EnumArgument.enumArgument(ConfigVariantInput.class)
-                                                    )
-                                                    .executes(new ConfigCommand(ConfigCommandBehaviour.EDIT))
+                                      .then(
+                                              Commands.literal(ConfigCommandVariantInput.SERVER.name())
+                                                      .requires(source -> source.hasPermission(Commands.LEVEL_OWNERS))
+                                                      .executes(new ConfigCommand(
+                                                              ConfigCommandBehaviourInput.EDIT,
+                                                              ConfigCommandVariantInput.SERVER
+                                                      ))
+                                      )
+                                      .then(
+                                              Commands.literal(ConfigCommandVariantInput.CLIENT.name())
+                                                      .requires(source -> source.hasPermission(Commands.LEVEL_ALL))
+                                                      .executes(new ConfigCommand(
+                                                              ConfigCommandBehaviourInput.EDIT,
+                                                              ConfigCommandVariantInput.CLIENT
+                                                      ))
                                       )
                         )
         );

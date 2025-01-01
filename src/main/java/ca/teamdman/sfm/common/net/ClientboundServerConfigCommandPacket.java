@@ -1,13 +1,13 @@
 package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.client.ClientScreenHelpers;
-import ca.teamdman.sfm.common.command.ConfigCommandBehaviour;
+import ca.teamdman.sfm.common.command.ConfigCommandBehaviourInput;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record ClientboundServerConfigCommandPacket(
         String configToml,
-        ConfigCommandBehaviour requestingEditMode
+        ConfigCommandBehaviourInput requestingEditMode
 ) implements SFMPacket {
     public static final int MAX_LENGTH = 20480;
 
@@ -29,7 +29,7 @@ public record ClientboundServerConfigCommandPacket(
         public ClientboundServerConfigCommandPacket decode(FriendlyByteBuf friendlyByteBuf) {
             return new ClientboundServerConfigCommandPacket(
                     friendlyByteBuf.readUtf(MAX_LENGTH),
-                    friendlyByteBuf.readEnum(ConfigCommandBehaviour.class)
+                    friendlyByteBuf.readEnum(ConfigCommandBehaviourInput.class)
             );
         }
 
