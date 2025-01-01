@@ -126,6 +126,38 @@ public class RegexCacheTests {
 
 
     @Test
+    public void measureStartsWithEndsWith() {
+        String pattern = "printed.*processor";
+        String testString = "printed_advanced_processor";
+
+        Predicate<String> optimizedPredicate = RegexCache.buildPredicate(pattern);
+        Predicate<String> standardPredicate = Pattern.compile(pattern).asMatchPredicate();
+
+        long optimizedTime = 0;
+        long standardTime = 0;
+
+        for (int i = 0; i < ALTERNATIONS; i++) {
+            optimizedTime += measureTime(() -> {
+                for (int j = 0; j < ITERATIONS / ALTERNATIONS; j++) {
+                    optimizedPredicate.test(testString);
+                }
+            });
+
+            standardTime += measureTime(() -> {
+                for (int j = 0; j < ITERATIONS / ALTERNATIONS; j++) {
+                    standardPredicate.test(testString);
+                }
+            });
+        }
+
+        System.out.println("EndsWith optimization - Optimized time: " + optimizedTime + " ms");
+        System.out.println("EndsWith optimization - Standard time: " + standardTime + " ms");
+
+        assertEquals(optimizedPredicate.test(testString), standardPredicate.test(testString));
+        assertTrue(optimizedTime < standardTime, "Optimized=" + optimizedTime + ", Standard=" + standardTime);
+    }
+
+    @Test
     public void testDoubleWildcardOptimization() {
         String pattern = ".*.*";
         String testString = "anything";

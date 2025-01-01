@@ -41,11 +41,13 @@ public class RegexCache {
         }
     }
 
+    /// Optimized version of Pattern.compile(x).asMatchPredicate()
+    ///
+    /// Special cases for common patterns
     private static Predicate<String> getPredicateFromRegex(String x) {
         if (!SFMPerformanceTweaks.REGEX_PREDICATE_OPTIMIZATION) {
             return Pattern.compile(x).asMatchPredicate();
         }
-        // Special cases for common patterns
         if (x.startsWith(".*") && x.endsWith(".*")) {
             String substring = x.substring(2, x.length() - 2);
             if (!isRegexPattern(substring)) {
@@ -60,6 +62,11 @@ public class RegexCache {
             String prefix = x.substring(0, x.length() - 2);
             if (!isRegexPattern(prefix)) {
                 return s -> s.startsWith(prefix);
+            }
+        } else if (x.contains(".*")) {
+            String[] parts = x.split("\\.\\*");
+            if (parts.length == 2 && !isRegexPattern(parts[0]) && !isRegexPattern(parts[1])) {
+                return s -> s.startsWith(parts[0]) && s.endsWith(parts[1]);
             }
         }
         // Default case for other regex patterns
