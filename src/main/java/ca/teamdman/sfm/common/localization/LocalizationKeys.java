@@ -252,6 +252,10 @@ public final class LocalizationKeys {
             () -> "sfm.label_gun.label_view_reminder",
             () -> "Label view only shows the selected label. Toggle in gui or with %s"
     );
+    public static final LocalizationEntry NETWORK_TOOL_REMINDER_OVERLAY = new LocalizationEntry(
+            () -> "sfm.network_tool.reminder_overlay",
+            () -> "Toggle network tool overlay with %s"
+    );
     public static final LocalizationEntry LABEL_GUN_ITEM_NAME_WITH_LABEL = new LocalizationEntry(
             () -> SFMItems.LABEL_GUN_ITEM.get().getDescriptionId() + ".with_label",
             () -> "Label Gun: \"%s\""
@@ -775,6 +779,10 @@ public final class LocalizationKeys {
     public static final LocalizationEntry TOGGLE_LABEL_VIEW_KEY = new LocalizationEntry(
             "key.sfm.toggle_label_view_key",
             "Toggle selected label view"
+    );
+    public static final LocalizationEntry TOGGLE_NETWORK_TOOL_OVERLAY = new LocalizationEntry(
+            "key.sfm.toggle_network_tool_overlay",
+            "Toggle network tool overlay"
     );
     public static final LocalizationEntry CONTAINER_INSPECTOR_TOGGLE_KEY = new LocalizationEntry(
             "key.sfm.container_inspector.activation_key",

@@ -97,6 +97,22 @@ public class NetworkToolItem extends Item {
         pStack.getOrCreateTag().remove("networks");
     }
 
+
+    public static boolean getOverlayEnabled(ItemStack stack) {
+        return !stack.getOrCreateTag().getBoolean("sfm:network_tool_overlay_disabled");
+    }
+
+    public static void setOverlayEnabled(
+            ItemStack stack,
+            boolean value
+    ) {
+        if (value) {
+            stack.getOrCreateTag().remove("sfm:network_tool_overlay_disabled");
+        } else {
+            stack.getOrCreateTag().putBoolean("sfm:network_tool_overlay_disabled", true);
+        }
+    }
+
     public static void setCablePositions(
             ItemStack stack,
             Set<BlockPos> positions

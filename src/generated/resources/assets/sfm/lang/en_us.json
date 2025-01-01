@@ -48,9 +48,6 @@
   "gui.sfm.exit_without_saving_confirm.no_button": "Continue editing",
   "gui.sfm.exit_without_saving_confirm.title": "Exit without saving?",
   "gui.sfm.exit_without_saving_confirm.yes_button": "Exit without saving",
-  "gui.sfm.facade_apply_sus_neighbours_confirm.message": "%d cables are touching existing facades of the same type, this will merge stuff that may not be easy to undo.",
-  "gui.sfm.facade_apply_sus_neighbours_confirm.no_button": "Never mind",
-  "gui.sfm.facade_apply_sus_neighbours_confirm.yes_button": "Apply the change",
   "gui.sfm.facade_confirm_apply.message": "%d different facade states across %d blocks that will be overwritten.",
   "gui.sfm.facade_confirm_apply.title": "Are you sure you want to update the facade appearance?",
   "gui.sfm.facade_confirm_change_world_block.message": "%d blocks will change shape, their facades will be persisted.",
@@ -150,6 +147,7 @@
   "key.sfm.label_gun.previous_label": "Label Gun Previous Label",
   "key.sfm.more_info": "Hold For More Info",
   "key.sfm.toggle_label_view_key": "Toggle selected label view",
+  "key.sfm.toggle_network_tool_overlay": "Toggle network tool overlay",
   "log.sfm.cable_network.body": "%s",
   "log.sfm.cable_network.footer": "=============================",
   "log.sfm.cable_network.header.1": "======= Cable network =======",
@@ -224,5 +222,6 @@
   "program.sfm.warnings.unknown_resource_id": "Resource \"%s\" was not found.",
   "program.sfm.warnings.unused_input_label": "Statement \"%s\" at %s inputs \"%s\" from \"%s\" but no future output statement consume \"%s\".",
   "program.sfm.warnings.unused_label": "Label \"%s\" is used in code but not assigned in the world.",
-  "sfm.label_gun.label_view_reminder": "Label view only shows the selected label. Toggle in gui or with %s"
+  "sfm.label_gun.label_view_reminder": "Label view only shows the selected label. Toggle in gui or with %s",
+  "sfm.network_tool.reminder_overlay": "Toggle network tool overlay with %s"
 }

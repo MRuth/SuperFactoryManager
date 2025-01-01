@@ -38,6 +38,7 @@ import java.util.*;
 /*
  * This class uses code from tasgon's "observable" mod, also using MPLv2
  * https://github.com/tasgon/observable/blob/master/common/src/main/kotlin/observable/client/Overlay.kt
+ * https://github.com/tasgon/observable/blob/c3c5a0d0385e0b2c758729bdd935f103122f0f85/common/src/main/kotlin/observable/client/Overlay.kt
  */
 public class ItemWorldRenderer {
     private static final int BUFFER_SIZE = 256;
@@ -207,6 +208,7 @@ public class ItemWorldRenderer {
             MultiBufferSource.BufferSource bufferSource,
             ItemStack networkTool
     ) {
+        if (!NetworkToolItem.getOverlayEnabled(networkTool)) return;
         Set<BlockPos> cablePositions = NetworkToolItem.getCablePositions(networkTool);
         Set<BlockPos> capabilityPositions = NetworkToolItem.getCapabilityProviderPositions(networkTool);
 

@@ -79,6 +79,7 @@ public class SFMPackets {
         registerServerboundPacket(new ServerboundConfigUpdatePacket.Daddy());
         registerServerboundPacket(new ServerboundFacadePacket.Daddy());
         registerClientboundPacket(new ClientboundShowChangelogPacket.Daddy());
+        registerServerboundPacket(new ServerboundNetworkToolToggleOverlayPacket.Daddy());
     }
 
     public static void sendToServer(

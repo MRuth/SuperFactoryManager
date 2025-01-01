@@ -32,6 +32,13 @@ public class SFMKeyMappings {
             GLFW.GLFW_KEY_LEFT_ALT,
             LocalizationKeys.SFM_KEY_CATEGORY.key().get()
     ));
+    public static final Lazy<KeyMapping> TOGGLE_NETWORK_TOOL_OVERLAY_KEY = Lazy.of(() -> new KeyMapping(
+            LocalizationKeys.NETWORK_TOOL_REMINDER_OVERLAY.key().get(),
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_LEFT_ALT,
+            LocalizationKeys.SFM_KEY_CATEGORY.key().get()
+    ));
 
     public static final Lazy<KeyMapping> CONTAINER_INSPECTOR_KEY = Lazy.of(() -> new KeyMapping(
             LocalizationKeys.CONTAINER_INSPECTOR_TOGGLE_KEY.key().get(),
