@@ -20,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 public class CapabilityCache {
-    // Position => Capability => PacketDirection => LazyOptional
-    // We don't use an EnumMap here for PacketDirection because we need to support the null key
+    // Position => Capability => Direction => LazyOptional
+    // We don't use an EnumMap here for Direction because we need to support the null key
     private final Long2ObjectMap<Object2ObjectOpenHashMap<Capability<?>, SFMDirections.NullableDirectionEnumMap<LazyOptional<?>>>> CACHE = new Long2ObjectOpenHashMap<>();
     // Chunk position => Set of Block positions
     private final Long2ObjectMap<LongArraySet> CHUNK_TO_BLOCK_POSITIONS = new Long2ObjectOpenHashMap<>();
