@@ -8,6 +8,10 @@ public record ClientboundShowChangelogPacket(
 
     public static class Daddy implements SFMPacketDaddy<ClientboundShowChangelogPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.CLIENTBOUND;
+        }
+        @Override
         public void encode(
                 ClientboundShowChangelogPacket msg,
                 FriendlyByteBuf friendlyByteBuf

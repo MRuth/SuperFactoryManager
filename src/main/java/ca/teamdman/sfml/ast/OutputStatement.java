@@ -247,7 +247,7 @@ public class OutputStatement implements IOStatement {
     ) {
         report.append("Slot: ").append(slot.getSlot()).append("\n");
         report.append("Position: ").append(slot.getPos()).append("\n");
-        report.append("Direction: ").append(slot.getDirection()).append("\n");
+        report.append("PacketDirection: ").append(slot.getDirection()).append("\n");
         report
                 .append("Capability: ")
                 .append(slot.getHandler())

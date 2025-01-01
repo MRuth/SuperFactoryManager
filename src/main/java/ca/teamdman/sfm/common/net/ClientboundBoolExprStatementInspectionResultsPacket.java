@@ -10,6 +10,10 @@ public record ClientboundBoolExprStatementInspectionResultsPacket(
 
     public static class Daddy implements SFMPacketDaddy<ClientboundBoolExprStatementInspectionResultsPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.CLIENTBOUND;
+        }
+        @Override
         public Class<ClientboundBoolExprStatementInspectionResultsPacket> getPacketClass() {
             return ClientboundBoolExprStatementInspectionResultsPacket.class;
         }

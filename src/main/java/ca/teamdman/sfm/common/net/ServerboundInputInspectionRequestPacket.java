@@ -14,6 +14,10 @@ public record ServerboundInputInspectionRequestPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundInputInspectionRequestPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundInputInspectionRequestPacket msg,
                 FriendlyByteBuf friendlyByteBuf

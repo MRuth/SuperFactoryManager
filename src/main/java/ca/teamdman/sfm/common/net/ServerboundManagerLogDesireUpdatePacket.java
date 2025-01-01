@@ -12,6 +12,10 @@ public record ServerboundManagerLogDesireUpdatePacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundManagerLogDesireUpdatePacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundManagerLogDesireUpdatePacket msg,
                 FriendlyByteBuf friendlyByteBuf

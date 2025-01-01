@@ -11,6 +11,10 @@ public record ServerboundDiskItemSetProgramPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundDiskItemSetProgramPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundDiskItemSetProgramPacket msg,
                 FriendlyByteBuf buf

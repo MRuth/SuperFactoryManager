@@ -30,6 +30,10 @@ public record ServerboundFacadePacket(
 
     public static class Daddy implements SFMPacketDaddy<ServerboundFacadePacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundFacadePacket msg,
                 FriendlyByteBuf buf

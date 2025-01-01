@@ -16,6 +16,10 @@ public record ServerboundConfigUpdatePacket(
     public static final int MAX_CONFIG_LENGTH = 32767;
     public static class Daddy implements SFMPacketDaddy<ServerboundConfigUpdatePacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundConfigUpdatePacket msg,
                 FriendlyByteBuf friendlyByteBuf

@@ -12,6 +12,10 @@ public record ServerboundNetworkToolToggleOverlayPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundNetworkToolToggleOverlayPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundNetworkToolToggleOverlayPacket msg,
                 FriendlyByteBuf buf

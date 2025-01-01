@@ -15,6 +15,10 @@ public record ServerboundManagerRebuildPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundManagerRebuildPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundManagerRebuildPacket msg,
                 FriendlyByteBuf friendlyByteBuf

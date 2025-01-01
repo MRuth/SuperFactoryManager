@@ -154,7 +154,7 @@ public class ItemResourceType extends ResourceType<ItemStack, Item, IItemHandler
         === Input Slot ===
         Slot: 0
         Position: BlockPos{x=262, y=-60, z=628}
-        Direction: up
+        PacketDirection: up
         Capability: mekanism.common.capabilities.proxy.ProxyItemHandler@49cc116e (mekanism.common.capabilities.proxy.ProxyItemHandler)
         Block Entity: mekanism.common.tile.TileEntityBin (mekanism:creative_bin)
         Block: mekanism.common.block.basic.BlockBin (mekanism:creative_bin)
@@ -162,7 +162,7 @@ public class ItemResourceType extends ResourceType<ItemStack, Item, IItemHandler
         === Output Slot ===
         Slot: 1
         Position: BlockPos{x=231, y=-2, z=628}
-        Direction: null
+        PacketDirection: null
         Capability: cofh.lib.inventory.ManagedItemHandler@3141c283 (cofh.lib.inventory.ManagedItemHandler)
         Block Entity: cofh.thermal.expansion.block.entity.machine.MachineInsolatorTile (thermal:machine_insolator)
         Block: cofh.core.block.TileBlockActive4Way (thermal:machine_insolator)

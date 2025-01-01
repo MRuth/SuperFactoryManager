@@ -10,6 +10,10 @@ public record ClientboundInputInspectionResultsPacket(
 
     public static class Daddy implements SFMPacketDaddy<ClientboundInputInspectionResultsPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.CLIENTBOUND;
+        }
+        @Override
         public void encode(
                 ClientboundInputInspectionResultsPacket msg,
                 FriendlyByteBuf friendlyByteBuf

@@ -26,6 +26,10 @@ public record ServerboundLabelGunUsePacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundLabelGunUsePacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundLabelGunUsePacket msg,
                 FriendlyByteBuf buf

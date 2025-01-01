@@ -12,6 +12,10 @@ public record ServerboundManagerFixPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundManagerFixPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundManagerFixPacket msg,
                 FriendlyByteBuf friendlyByteBuf

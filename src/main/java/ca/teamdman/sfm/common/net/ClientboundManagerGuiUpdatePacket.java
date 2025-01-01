@@ -19,6 +19,10 @@ public record ClientboundManagerGuiUpdatePacket(
 
     public static class Daddy implements SFMPacketDaddy<ClientboundManagerGuiUpdatePacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.CLIENTBOUND;
+        }
+        @Override
         public Class<ClientboundManagerGuiUpdatePacket> getPacketClass() {
             return ClientboundManagerGuiUpdatePacket.class;
         }

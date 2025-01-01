@@ -13,6 +13,10 @@ public record ClientboundContainerExportsInspectionResultsPacket(
 
     public static class Daddy implements SFMPacketDaddy<ClientboundContainerExportsInspectionResultsPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.CLIENTBOUND;
+        }
+        @Override
         public Class<ClientboundContainerExportsInspectionResultsPacket> getPacketClass() {
             return ClientboundContainerExportsInspectionResultsPacket.class;
         }

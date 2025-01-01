@@ -28,6 +28,10 @@ public record ServerboundNetworkToolUsePacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundNetworkToolUsePacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundNetworkToolUsePacket msg,
                 FriendlyByteBuf friendlyByteBuf
@@ -40,7 +44,7 @@ public record ServerboundNetworkToolUsePacket(
         public ServerboundNetworkToolUsePacket decode(FriendlyByteBuf friendlyByteBuf) {
             return new ServerboundNetworkToolUsePacket(
                     friendlyByteBuf.readBlockPos(),
-                    friendlyByteBuf.readEnum(Direction.class)
+                    friendlyByteBuf.readEnum(PacketDirection.class)
             );
         }
 
@@ -64,7 +68,7 @@ public record ServerboundNetworkToolUsePacket(
                 payload.append(state).append("\n");
 
                 List<CableNetwork> foundNetworks = new ArrayList<>();
-                for (Direction direction : SFMDirections.DIRECTIONS) {
+                for (PacketDirection direction : SFMDirections.DIRECTIONS) {
                     BlockPos cablePosition = pos.relative(direction);
                     CableNetworkManager
                             .getOrRegisterNetworkFromCablePosition(level, cablePosition)
@@ -102,12 +106,12 @@ public record ServerboundNetworkToolUsePacket(
                     }
                 }
 
-                Direction[] directions = new Direction[Direction.values().length + 1];
+                PacketDirection[] directions = new PacketDirection[PacketDirection.values().length + 1];
                 directions[0] = msg.blockFace;
                 directions[1] = null;
                 int assignmentIndex = 2;
-                for (int i = 0; i < Direction.values().length; i++) {
-                    Direction dir = Direction.values()[i];
+                for (int i = 0; i < PacketDirection.values().length; i++) {
+                    PacketDirection dir = PacketDirection.values()[i];
                     if (dir == msg.blockFace) continue;
                     directions[assignmentIndex++] = dir;
                 }

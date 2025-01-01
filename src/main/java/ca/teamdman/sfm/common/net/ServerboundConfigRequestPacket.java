@@ -14,6 +14,10 @@ public record ServerboundConfigRequestPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundConfigRequestPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundConfigRequestPacket msg,
                 FriendlyByteBuf friendlyByteBuf

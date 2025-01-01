@@ -17,6 +17,10 @@ public record ClientboundConfigResponsePacket(
 
     public static class Daddy implements SFMPacketDaddy<ClientboundConfigResponsePacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.CLIENTBOUND;
+        }
+        @Override
         public void encode(
                 ClientboundConfigResponsePacket msg,
                 FriendlyByteBuf friendlyByteBuf

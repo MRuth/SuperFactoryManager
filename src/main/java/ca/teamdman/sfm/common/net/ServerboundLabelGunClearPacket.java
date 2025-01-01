@@ -9,6 +9,10 @@ public record ServerboundLabelGunClearPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundLabelGunClearPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundLabelGunClearPacket msg,
                 FriendlyByteBuf buf

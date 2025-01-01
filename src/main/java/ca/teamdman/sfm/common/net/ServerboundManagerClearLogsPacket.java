@@ -12,6 +12,10 @@ public record ServerboundManagerClearLogsPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundManagerClearLogsPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundManagerClearLogsPacket msg,
                 FriendlyByteBuf friendlyByteBuf

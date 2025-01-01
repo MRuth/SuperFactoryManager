@@ -266,6 +266,10 @@ public record ServerboundOutputInspectionRequestPacket(
 
     public static class Daddy implements SFMPacketDaddy<ServerboundOutputInspectionRequestPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundOutputInspectionRequestPacket msg,
                 FriendlyByteBuf friendlyByteBuf

@@ -18,6 +18,10 @@ public record ServerboundManagerSetLogLevelPacket(
 
     public static class Daddy implements SFMPacketDaddy<ServerboundManagerSetLogLevelPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundManagerSetLogLevelPacket msg,
                 FriendlyByteBuf friendlyByteBuf

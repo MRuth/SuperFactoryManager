@@ -17,6 +17,10 @@ public record ServerboundLabelInspectionRequestPacket(
 
     public static class Daddy implements SFMPacketDaddy<ServerboundLabelInspectionRequestPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundLabelInspectionRequestPacket msg,
                 FriendlyByteBuf friendlyByteBuf

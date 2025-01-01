@@ -13,6 +13,10 @@ public record ServerboundIfStatementInspectionRequestPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundIfStatementInspectionRequestPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundIfStatementInspectionRequestPacket msg,
                 FriendlyByteBuf friendlyByteBuf

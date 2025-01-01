@@ -11,6 +11,10 @@ public record ServerboundLabelGunToggleLabelViewPacket(
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundLabelGunToggleLabelViewPacket> {
         @Override
+        public PacketDirection getPacketDirection() {
+            return PacketDirection.SERVERBOUND;
+        }
+        @Override
         public void encode(
                 ServerboundLabelGunToggleLabelViewPacket msg,
                 FriendlyByteBuf buf
