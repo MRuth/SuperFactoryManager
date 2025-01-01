@@ -10,12 +10,14 @@ import ca.teamdman.sfm.common.watertanknetwork.WaterNetworkManager;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.server.command.EnumArgument;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 
@@ -67,23 +69,75 @@ public class SFMCommand {
                 Commands.literal("config")
                         .then(Commands.literal("show")
                                       .requires(source -> source.hasPermission(Commands.LEVEL_ALL))
-                                      .executes(ctx -> {
-                                          SFMConfigReadWriter.handleConfigCommandUsed(
-                                                  ctx,
-                                                  ClientboundConfigResponsePacket.ConfigResponseUsage.SHOW
-                                          );
-                                          return SINGLE_SUCCESS;
-                                      })
+                                      .then(Commands
+                                                    .argument(
+                                                            "variant",
+                                                            EnumArgument.enumArgument(ConfigVariantInput.class)
+                                                    )
+                                                    .executes(ctx -> {
+                                                        var variant = ctx.getArgument(
+                                                                "variant",
+                                                                ConfigVariantInput.class
+                                                        );
+                                                        switch (variant) {
+                                                            case CLIENT -> {
+                                                                ServerPlayer player = ctx.getSource().getPlayer();
+                                                                if (player != null) {
+                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
+                                                                }
+                                                            }
+                                                            case SERVER -> {
+                                                                ServerPlayer player = ctx.getSource().getPlayer();
+                                                                if (player != null) {
+                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
+                                                                }
+                                                            }
+                                                            case COMMON -> {
+                                                                SFMConfigReadWriter.handleConfigCommandUsed(
+                                                                        ctx,
+                                                                        ClientboundConfigResponsePacket.ConfigResponseUsage.SHOW
+                                                                );
+                                                            }
+                                                        }
+                                                        return SINGLE_SUCCESS;
+                                                    })
+                                      )
                         )
                         .then(Commands.literal("edit")
                                       .requires(source -> source.hasPermission(Commands.LEVEL_OWNERS))
-                                      .executes(ctx -> {
-                                          SFMConfigReadWriter.handleConfigCommandUsed(
-                                                  ctx,
-                                                  ClientboundConfigResponsePacket.ConfigResponseUsage.EDIT
-                                          );
-                                          return SINGLE_SUCCESS;
-                                      })
+                                      .then(Commands
+                                                    .argument(
+                                                            "variant",
+                                                            EnumArgument.enumArgument(ConfigVariantInput.class)
+                                                    )
+                                                    .executes(ctx -> {
+                                                        var variant = ctx.getArgument(
+                                                                "variant",
+                                                                ConfigVariantInput.class
+                                                        );
+                                                        switch (variant) {
+                                                            case CLIENT -> {
+                                                                ServerPlayer player = ctx.getSource().getPlayer();
+                                                                if (player != null) {
+                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
+                                                                }
+                                                            }
+                                                            case SERVER -> {
+                                                                ServerPlayer player = ctx.getSource().getPlayer();
+                                                                if (player != null) {
+                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
+                                                                }
+                                                            }
+                                                            case COMMON -> {
+                                                                SFMConfigReadWriter.handleConfigCommandUsed(
+                                                                        ctx,
+                                                                        ClientboundConfigResponsePacket.ConfigResponseUsage.EDIT
+                                                                );
+                                                            }
+                                                        }
+                                                        return SINGLE_SUCCESS;
+                                                    })
+                                      )
                         )
         );
         command.then(Commands.literal("changelog")
