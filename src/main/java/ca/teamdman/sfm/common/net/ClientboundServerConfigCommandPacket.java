@@ -1,28 +1,24 @@
 package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.client.ClientScreenHelpers;
+import ca.teamdman.sfm.common.command.ConfigCommandBehaviour;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import net.minecraft.network.FriendlyByteBuf;
 
-public record ClientboundConfigResponsePacket(
+public record ClientboundServerConfigCommandPacket(
         String configToml,
-        ConfigResponseUsage requestingEditMode
+        ConfigCommandBehaviour requestingEditMode
 ) implements SFMPacket {
     public static final int MAX_LENGTH = 20480;
 
-    public enum ConfigResponseUsage {
-        SHOW,
-        EDIT
-    }
-
-    public static class Daddy implements SFMPacketDaddy<ClientboundConfigResponsePacket> {
+    public static class Daddy implements SFMPacketDaddy<ClientboundServerConfigCommandPacket> {
         @Override
         public PacketDirection getPacketDirection() {
             return PacketDirection.CLIENTBOUND;
         }
         @Override
         public void encode(
-                ClientboundConfigResponsePacket msg,
+                ClientboundServerConfigCommandPacket msg,
                 FriendlyByteBuf friendlyByteBuf
         ) {
             friendlyByteBuf.writeUtf(msg.configToml(), MAX_LENGTH);
@@ -30,16 +26,16 @@ public record ClientboundConfigResponsePacket(
         }
 
         @Override
-        public ClientboundConfigResponsePacket decode(FriendlyByteBuf friendlyByteBuf) {
-            return new ClientboundConfigResponsePacket(
+        public ClientboundServerConfigCommandPacket decode(FriendlyByteBuf friendlyByteBuf) {
+            return new ClientboundServerConfigCommandPacket(
                     friendlyByteBuf.readUtf(MAX_LENGTH),
-                    friendlyByteBuf.readEnum(ConfigResponseUsage.class)
+                    friendlyByteBuf.readEnum(ConfigCommandBehaviour.class)
             );
         }
 
         @Override
         public void handle(
-                ClientboundConfigResponsePacket msg,
+                ClientboundServerConfigCommandPacket msg,
                 SFMPacketHandlingContext context
         ) {
             String configTomlString = msg.configToml();
@@ -48,14 +44,14 @@ public record ClientboundConfigResponsePacket(
                 case SHOW -> ClientScreenHelpers.showProgramEditScreen(configTomlString);
                 case EDIT -> ClientScreenHelpers.showProgramEditScreen(
                         configTomlString,
-                        (newContent) -> SFMPackets.sendToServer(new ServerboundConfigUpdatePacket(newContent))
+                        (newContent) -> SFMPackets.sendToServer(new ServerboundServerConfigUpdatePacket(newContent))
                 );
             }
         }
 
         @Override
-        public Class<ClientboundConfigResponsePacket> getPacketClass() {
-            return ClientboundConfigResponsePacket.class;
+        public Class<ClientboundServerConfigCommandPacket> getPacketClass() {
+            return ClientboundServerConfigCommandPacket.class;
         }
     }
 }

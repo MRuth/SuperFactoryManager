@@ -2,18 +2,12 @@ package ca.teamdman.sfm.common.config;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
-import ca.teamdman.sfm.common.net.ClientboundConfigResponsePacket;
-import ca.teamdman.sfm.common.registry.SFMPackets;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.electronwill.nightconfig.toml.TomlFormat;
-import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.Bindings;
 import net.minecraftforge.fml.config.IConfigEvent;
@@ -32,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class SFMConfigReadWriter {
     /**
      * SERVER configs are synced at login to servers, which can serve as inspiration for how we should update the configs on our own.
@@ -46,10 +41,10 @@ public class SFMConfigReadWriter {
     @SuppressWarnings("JavadocReference")
     public static ConfigSyncResult updateAndSyncServerConfig(String newConfigToml) {
         try {
-            SFM.LOGGER.debug("Received config for update and sync:\n{}", newConfigToml);
-            CommentedConfig config = parseConfigToml(newConfigToml);
+            SFM.LOGGER.debug("Received server config for update and sync:\n{}", newConfigToml);
+            CommentedConfig config = parseConfigToml(newConfigToml, SFMConfig.SERVER_SPEC);
             if (config == null) {
-                SFM.LOGGER.error("Received invalid config from player");
+                SFM.LOGGER.error("Received invalid server config from player");
                 return ConfigSyncResult.INVALID_CONFIG;
             }
             if (!writeServerConfig(config)) {
@@ -65,6 +60,26 @@ public class SFMConfigReadWriter {
         }
     }
 
+    public static ConfigSyncResult updateClientConfig(String newConfigToml) {
+        try {
+            SFM.LOGGER.debug("Received client config for update and sync:\n{}", newConfigToml);
+            CommentedConfig config = parseConfigToml(newConfigToml, SFMConfig.CLIENT_SPEC);
+            if (config == null) {
+                SFM.LOGGER.error("Received invalid config");
+                return ConfigSyncResult.INVALID_CONFIG;
+            }
+            if (!writeClientConfig(config)) {
+                SFM.LOGGER.error("Failed to write client config");
+                return ConfigSyncResult.INTERNAL_FAILURE;
+            }
+            // Here is where SFM would distribute the new config to players.
+            // For now, we don't care if the client doesn't have the latest server config.
+            return ConfigSyncResult.SUCCESS;
+        } catch (Throwable t) {
+            SFM.LOGGER.error("Failed to update and sync client config", t);
+            return ConfigSyncResult.INTERNAL_FAILURE;
+        }
+    }
 
     public static @Nullable Path getConfigBasePath() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
@@ -83,7 +98,7 @@ public class SFMConfigReadWriter {
         }
     }
 
-    public static boolean writeServerConfig(CommentedConfig config) {
+    private static boolean writeServerConfig(CommentedConfig config) {
         // Get the config base path
         Path configBasePath = getConfigBasePath();
         if (configBasePath == null) {
@@ -117,23 +132,71 @@ public class SFMConfigReadWriter {
 
         // Load the new config
         final CommentedFileConfig fileConfig = modConfig.getHandler().reader(configBasePath).apply(modConfig);
-        SFM.LOGGER.info("Setting up new config data");
+        SFM.LOGGER.info("Setting up new server config data");
         if (!setConfigData(modConfig, fileConfig)) {
-            SFM.LOGGER.warn("Failed to set new config data");
+            SFM.LOGGER.warn("Failed to set new server config data");
             return false;
         }
 
         SFM.LOGGER.info("Firing config changed event");
         if (!fireChangedEvent(modConfig)) {
-            SFM.LOGGER.warn("Failed to fire config changed event");
+            SFM.LOGGER.warn("Failed to fire server config changed event");
             return false;
         }
         return true;
     }
 
-    public static @Nullable CommentedConfig parseConfigToml(String configToml) {
+    private static boolean writeClientConfig(CommentedConfig config) {
+        // Get the config base path
+        Path configBasePath = getConfigBasePath();
+        if (configBasePath == null) {
+            SFM.LOGGER.warn("Failed to get client config base path");
+            return false;
+        }
+
+        // Get the config path
+        Path configPath = SFMConfigTracker.getPathForConfig(SFMConfig.CLIENT_SPEC);
+        if (configPath == null) {
+            SFM.LOGGER.warn("Failed to get client config path");
+            return false;
+        }
+
+        // Get the mod config obj
+        ModConfig modConfig = SFMConfigTracker.getClientModConfig();
+        if (modConfig == null) {
+            SFM.LOGGER.warn("Failed to get client mod config");
+            return false;
+        }
+
+        // ~~Close the old config~~
+        // this is commented out because it actually unwatches the whole dir instead of just our file
+        // this causes "Failed to remove config {} from tracker!" warnings vvv
+        // java.lang.NullPointerException: Cannot read field "watchedFileCount" because "watchedDir" is null
+        // so do nothing to close the old config
+//        modConfig.getHandler().unload(configBasePath, modConfig);
+
+        // Write the new config
+        TomlFormat.instance().createWriter().write(config, configPath, WritingMode.REPLACE);
+
+        // Load the new config
+        final CommentedFileConfig fileConfig = modConfig.getHandler().reader(configBasePath).apply(modConfig);
+        SFM.LOGGER.info("Setting up new client config data");
+        if (!setConfigData(modConfig, fileConfig)) {
+            SFM.LOGGER.warn("Failed to set new client config data");
+            return false;
+        }
+
+        SFM.LOGGER.info("Firing client config changed event");
+        if (!fireChangedEvent(modConfig)) {
+            SFM.LOGGER.warn("Failed to fire client config changed event");
+            return false;
+        }
+        return true;
+    }
+
+    public static @Nullable CommentedConfig parseConfigToml(String configToml, ForgeConfigSpec configSpec) {
         CommentedConfig config = TomlFormat.instance().createParser().parse(configToml);
-        if (!SFMConfig.SERVER_SPEC.isCorrect(config)) {
+        if (!configSpec.isCorrect(config)) {
             return null;
         }
         return config;
@@ -149,46 +212,6 @@ public class SFMConfigReadWriter {
         } catch (IOException e) {
             SFM.LOGGER.error("Failed reading config contents", e);
             return null;
-        }
-    }
-
-    public static void handleConfigCommandUsed(
-            CommandContext<CommandSourceStack> ctx,
-            ClientboundConfigResponsePacket.ConfigResponseUsage usage
-    ) {
-        SFM.LOGGER.info(
-                "Config slash command {} used by {}",
-                usage,
-                ctx.getSource().getTextName()
-        );
-        ServerPlayer player = ctx.getSource().getPlayer();
-        if (player == null) {
-            SFM.LOGGER.error(
-                    "Received ServerboundConfigRequestPacket ({}) from null player",
-                    usage
-            );
-            return;
-        }
-        String configToml = getConfigToml(SFMConfig.SERVER_SPEC);
-        if (configToml == null) {
-            SFM.LOGGER.warn(
-                    "Unable to get server config for player {} to {}",
-                    player.getName().getString(),
-                    usage
-            );
-            player.sendSystemMessage(
-                    ConfigSyncResult.FAILED_TO_FIND
-                            .component()
-                            .withStyle(ChatFormatting.RED)
-            );
-        } else {
-            SFMPackets.sendToPlayer(
-                    player,
-                    new ClientboundConfigResponsePacket(
-                            configToml,
-                            usage
-                    )
-            );
         }
     }
 

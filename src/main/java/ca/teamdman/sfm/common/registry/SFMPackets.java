@@ -55,7 +55,7 @@ public class SFMPackets {
 
     public static void register() {
         registerPacket(new ClientboundBoolExprStatementInspectionResultsPacket.Daddy());
-        registerPacket(new ClientboundConfigResponsePacket.Daddy());
+        registerPacket(new ClientboundClientConfigCommandPacket.Daddy());
         registerPacket(new ClientboundContainerExportsInspectionResultsPacket.Daddy());
         registerPacket(new ClientboundIfStatementInspectionResultsPacket.Daddy());
         registerPacket(new ClientboundInputInspectionResultsPacket.Daddy());
@@ -64,10 +64,10 @@ public class SFMPackets {
         registerPacket(new ClientboundManagerLogLevelUpdatedPacket.Daddy());
         registerPacket(new ClientboundManagerLogsPacket.Daddy());
         registerPacket(new ClientboundOutputInspectionResultsPacket.Daddy());
+        registerPacket(new ClientboundServerConfigCommandPacket.Daddy());
         registerPacket(new ClientboundShowChangelogPacket.Daddy());
         registerPacket(new ServerboundBoolExprStatementInspectionRequestPacket.Daddy());
         registerPacket(new ServerboundConfigRequestPacket.Daddy());
-        registerPacket(new ServerboundConfigUpdatePacket.Daddy());
         registerPacket(new ServerboundContainerExportsInspectionRequestPacket.Daddy());
         registerPacket(new ServerboundDiskItemSetProgramPacket.Daddy());
         registerPacket(new ServerboundFacadePacket.Daddy());
@@ -89,6 +89,7 @@ public class SFMPackets {
         registerPacket(new ServerboundNetworkToolToggleOverlayPacket.Daddy());
         registerPacket(new ServerboundNetworkToolUsePacket.Daddy());
         registerPacket(new ServerboundOutputInspectionRequestPacket.Daddy());
+        registerPacket(new ServerboundServerConfigUpdatePacket.Daddy());
     }
 
     public static void sendToServer(

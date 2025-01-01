@@ -2,15 +2,12 @@ package ca.teamdman.sfm.common.command;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
-import ca.teamdman.sfm.common.config.SFMConfigReadWriter;
-import ca.teamdman.sfm.common.net.ClientboundConfigResponsePacket;
 import ca.teamdman.sfm.common.net.ClientboundShowChangelogPacket;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import ca.teamdman.sfm.common.watertanknetwork.WaterNetworkManager;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
@@ -21,6 +18,7 @@ import net.minecraftforge.server.command.EnumArgument;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 
+@SuppressWarnings({"LoggingSimilarMessage", "DuplicatedCode"})
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = SFM.MOD_ID)
 public class SFMCommand {
     @SubscribeEvent
@@ -74,33 +72,7 @@ public class SFMCommand {
                                                             "variant",
                                                             EnumArgument.enumArgument(ConfigVariantInput.class)
                                                     )
-                                                    .executes(ctx -> {
-                                                        var variant = ctx.getArgument(
-                                                                "variant",
-                                                                ConfigVariantInput.class
-                                                        );
-                                                        switch (variant) {
-                                                            case CLIENT -> {
-                                                                ServerPlayer player = ctx.getSource().getPlayer();
-                                                                if (player != null) {
-                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
-                                                                }
-                                                            }
-                                                            case SERVER -> {
-                                                                ServerPlayer player = ctx.getSource().getPlayer();
-                                                                if (player != null) {
-                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
-                                                                }
-                                                            }
-                                                            case COMMON -> {
-                                                                SFMConfigReadWriter.handleConfigCommandUsed(
-                                                                        ctx,
-                                                                        ClientboundConfigResponsePacket.ConfigResponseUsage.SHOW
-                                                                );
-                                                            }
-                                                        }
-                                                        return SINGLE_SUCCESS;
-                                                    })
+                                                    .executes(new ConfigCommand(ConfigCommandBehaviour.SHOW))
                                       )
                         )
                         .then(Commands.literal("edit")
@@ -110,33 +82,7 @@ public class SFMCommand {
                                                             "variant",
                                                             EnumArgument.enumArgument(ConfigVariantInput.class)
                                                     )
-                                                    .executes(ctx -> {
-                                                        var variant = ctx.getArgument(
-                                                                "variant",
-                                                                ConfigVariantInput.class
-                                                        );
-                                                        switch (variant) {
-                                                            case CLIENT -> {
-                                                                ServerPlayer player = ctx.getSource().getPlayer();
-                                                                if (player != null) {
-                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
-                                                                }
-                                                            }
-                                                            case SERVER -> {
-                                                                ServerPlayer player = ctx.getSource().getPlayer();
-                                                                if (player != null) {
-                                                                    player.sendSystemMessage(Component.literal("This is not implemented yet."));
-                                                                }
-                                                            }
-                                                            case COMMON -> {
-                                                                SFMConfigReadWriter.handleConfigCommandUsed(
-                                                                        ctx,
-                                                                        ClientboundConfigResponsePacket.ConfigResponseUsage.EDIT
-                                                                );
-                                                            }
-                                                        }
-                                                        return SINGLE_SUCCESS;
-                                                    })
+                                                    .executes(new ConfigCommand(ConfigCommandBehaviour.EDIT))
                                       )
                         )
         );

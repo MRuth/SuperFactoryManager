@@ -48,7 +48,7 @@ public record ServerboundManagerRebuildPacket(
                     (menu, manager) -> {
                         ServerPlayer player = context.sender();
                         if (player == null) {
-                            SFM.LOGGER.error("Received ServerboundManagerRebuildPacket from null player");
+                            SFM.LOGGER.error("Received {} from null player", this.getPacketClass().getName());
                             return;
                         }
                         // perform rebuild by unregistering the cable network

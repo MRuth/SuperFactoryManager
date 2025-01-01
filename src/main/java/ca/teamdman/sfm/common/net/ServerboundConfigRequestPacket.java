@@ -1,22 +1,23 @@
 package ca.teamdman.sfm.common.net;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.common.command.ConfigCommandBehaviour;
 import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.config.SFMConfigReadWriter;
-import ca.teamdman.sfm.common.net.ClientboundConfigResponsePacket.ConfigResponseUsage;
 import ca.teamdman.sfm.common.registry.SFMPackets;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ServerboundConfigRequestPacket(
-        ConfigResponseUsage requestingEditMode
+        ConfigCommandBehaviour requestingEditMode
 ) implements SFMPacket {
     public static class Daddy implements SFMPacketDaddy<ServerboundConfigRequestPacket> {
         @Override
         public PacketDirection getPacketDirection() {
             return PacketDirection.SERVERBOUND;
         }
+
         @Override
         public void encode(
                 ServerboundConfigRequestPacket msg,
@@ -27,7 +28,7 @@ public record ServerboundConfigRequestPacket(
 
         @Override
         public ServerboundConfigRequestPacket decode(FriendlyByteBuf friendlyByteBuf) {
-            return new ServerboundConfigRequestPacket(friendlyByteBuf.readEnum(ConfigResponseUsage.class));
+            return new ServerboundConfigRequestPacket(friendlyByteBuf.readEnum(ConfigCommandBehaviour.class));
         }
 
         @Override
@@ -37,11 +38,11 @@ public record ServerboundConfigRequestPacket(
         ) {
             ServerPlayer player = context.sender();
             if (player == null) {
-                SFM.LOGGER.error("Received ServerboundConfigRequestPacket from null player");
+                SFM.LOGGER.error("Received {} from null player", this.getPacketClass().getName());
                 return;
             }
             if (!player.hasPermissions(Commands.LEVEL_OWNERS)
-                && msg.requestingEditMode() == ConfigResponseUsage.EDIT) {
+                && msg.requestingEditMode() == ConfigCommandBehaviour.EDIT) {
                 SFM.LOGGER.warn(
                         "Player {} tried to request server config for editing but does not have the necessary permissions, this should never happen o-o",
                         player.getName().getString()
@@ -59,7 +60,7 @@ public record ServerboundConfigRequestPacket(
             SFM.LOGGER.info("Sending config to player: {}", player.getName().getString());
             SFMPackets.sendToPlayer(
                     () -> player,
-                    new ClientboundConfigResponsePacket(configToml, msg.requestingEditMode())
+                    new ClientboundServerConfigCommandPacket(configToml, msg.requestingEditMode())
             );
         }
 

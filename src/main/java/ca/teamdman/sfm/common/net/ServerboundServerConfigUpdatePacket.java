@@ -7,39 +7,39 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.HandshakeMessages;
 
-public record ServerboundConfigUpdatePacket(
+public record ServerboundServerConfigUpdatePacket(
         String newConfig
 ) implements SFMPacket {
     /**
      * Value chosen to match {@link HandshakeMessages.S2CConfigData#decode(FriendlyByteBuf)}
      */
     public static final int MAX_CONFIG_LENGTH = 32767;
-    public static class Daddy implements SFMPacketDaddy<ServerboundConfigUpdatePacket> {
+    public static class Daddy implements SFMPacketDaddy<ServerboundServerConfigUpdatePacket> {
         @Override
         public PacketDirection getPacketDirection() {
             return PacketDirection.SERVERBOUND;
         }
         @Override
         public void encode(
-                ServerboundConfigUpdatePacket msg,
+                ServerboundServerConfigUpdatePacket msg,
                 FriendlyByteBuf friendlyByteBuf
         ) {
             friendlyByteBuf.writeUtf(msg.newConfig, MAX_CONFIG_LENGTH);
         }
 
         @Override
-        public ServerboundConfigUpdatePacket decode(FriendlyByteBuf friendlyByteBuf) {
-            return new ServerboundConfigUpdatePacket(friendlyByteBuf.readUtf(MAX_CONFIG_LENGTH));
+        public ServerboundServerConfigUpdatePacket decode(FriendlyByteBuf friendlyByteBuf) {
+            return new ServerboundServerConfigUpdatePacket(friendlyByteBuf.readUtf(MAX_CONFIG_LENGTH));
         }
 
         @Override
         public void handle(
-                ServerboundConfigUpdatePacket msg,
+                ServerboundServerConfigUpdatePacket msg,
                 SFMPacketHandlingContext context
         ) {
             ServerPlayer player = context.sender();
             if (player == null) {
-                SFM.LOGGER.error("Received ServerboundConfigRequestPacket from null player");
+                SFM.LOGGER.error("Received {} from null player", this.getPacketClass().getName());
                 return;
             }
             if (!player.hasPermissions(Commands.LEVEL_OWNERS)) {
@@ -54,8 +54,8 @@ public record ServerboundConfigUpdatePacket(
         }
 
         @Override
-        public Class<ServerboundConfigUpdatePacket> getPacketClass() {
-            return ServerboundConfigUpdatePacket.class;
+        public Class<ServerboundServerConfigUpdatePacket> getPacketClass() {
+            return ServerboundServerConfigUpdatePacket.class;
         }
     }
 }

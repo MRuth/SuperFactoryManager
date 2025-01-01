@@ -38,6 +38,17 @@ public class SFMConfigTracker {
         return null;
     }
 
+    static @Nullable ModConfig getClientModConfig() {
+        Set<ModConfig> modConfigs = ConfigTracker.INSTANCE.configSets().get(ModConfig.Type.CLIENT);
+        for (ModConfig modConfig : modConfigs) {
+            // .equals() doesn't work here
+            if (modConfig.getSpec() == SFMConfig.CLIENT_SPEC) {
+                return modConfig;
+            }
+        }
+        return null;
+    }
+
     @Mod.EventBusSubscriber(modid = SFM.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class ModConfigEventListeners {
         /**
@@ -100,8 +111,7 @@ public class SFMConfigTracker {
          */
         @SubscribeEvent
         public static void onServerStopped(ServerStoppedEvent event) {
-            configPaths.clear();
+            configPaths.entrySet().removeIf(entry -> entry.getKey() == SFMConfig.SERVER_SPEC);
         }
-
     }
 }
