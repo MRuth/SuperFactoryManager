@@ -33,7 +33,7 @@ public class SFMKeyMappings {
             LocalizationKeys.SFM_KEY_CATEGORY.key().get()
     ));
     public static final Lazy<KeyMapping> TOGGLE_NETWORK_TOOL_OVERLAY_KEY = Lazy.of(() -> new KeyMapping(
-            LocalizationKeys.NETWORK_TOOL_REMINDER_OVERLAY.key().get(),
+            LocalizationKeys.TOGGLE_NETWORK_TOOL_OVERLAY.key().get(),
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_LEFT_ALT,

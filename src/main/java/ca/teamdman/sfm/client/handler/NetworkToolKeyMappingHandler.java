@@ -19,12 +19,12 @@ import net.minecraftforge.fml.common.Mod;
 
 public class NetworkToolKeyMappingHandler {
     private static ToggleKeyState toggleKeyState = ToggleKeyState.Idle;
-    private static boolean toggleKeyPressed = false;
 
     public static void setExternalDebounce() {
         toggleKeyState = ToggleKeyState.PressCancelledExternally;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;

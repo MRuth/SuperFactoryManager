@@ -27,6 +27,7 @@ public class LabelGunKeyMappingHandler {
         altState = AltState.PressCancelledExternally;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
