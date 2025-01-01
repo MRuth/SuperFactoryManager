@@ -164,9 +164,13 @@ public class SFMConfig {
 
     public static class SFMClientConfig {
         public final ForgeConfigSpec.BooleanValue showLineNumbers;
+        public final ForgeConfigSpec.BooleanValue showLabelGunReminderOverlay;
+        public final ForgeConfigSpec.BooleanValue showNetworkToolReminderOverlay;
 
         SFMClientConfig(ForgeConfigSpec.Builder builder) {
             showLineNumbers = builder.define("showLineNumbers", false);
+            showLabelGunReminderOverlay = builder.define("showLabelGunReminderOverlay", true);
+            showNetworkToolReminderOverlay = builder.define("showNetworkToolReminderOverlay", true);
         }
     }
 }

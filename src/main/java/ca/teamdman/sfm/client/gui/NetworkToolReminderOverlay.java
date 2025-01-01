@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.client.gui;
 
 import ca.teamdman.sfm.client.registry.SFMKeyMappings;
+import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.item.NetworkToolItem;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.registry.SFMItems;
@@ -16,6 +17,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 public class NetworkToolReminderOverlay implements IGuiOverlay {
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void render(
             ForgeGui gui,
@@ -57,6 +59,7 @@ public class NetworkToolReminderOverlay implements IGuiOverlay {
     private static boolean shouldRender(Minecraft minecraft) {
         LocalPlayer player = minecraft.player;
         if (player == null) return false;
+        if (!SFMConfig.CLIENT.showNetworkToolReminderOverlay.get()) return false;
         ItemStack networkTool = SFMHandUtils.getItemInEitherHand(player, SFMItems.NETWORK_TOOL_ITEM.get());
         if (networkTool.isEmpty()) return false;
         return NetworkToolItem.getOverlayEnabled(networkTool);

@@ -1,6 +1,7 @@
 package ca.teamdman.sfm.client.gui;
 
 import ca.teamdman.sfm.client.registry.SFMKeyMappings;
+import ca.teamdman.sfm.common.config.SFMConfig;
 import ca.teamdman.sfm.common.item.LabelGunItem;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.registry.SFMItems;
@@ -18,6 +19,7 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 public class LabelGunReminderOverlay implements IGuiOverlay {
 
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void render(
             ForgeGui gui,
@@ -60,6 +62,7 @@ public class LabelGunReminderOverlay implements IGuiOverlay {
     private static boolean shouldRender(Minecraft minecraft) {
         LocalPlayer player = minecraft.player;
         if (player == null) return false;
+        if (!SFMConfig.CLIENT.showLabelGunReminderOverlay.get()) return false;
         ItemStack labelGun = SFMHandUtils.getItemInEitherHand(player, SFMItems.LABEL_GUN_ITEM.get());
         if (labelGun.isEmpty()) return false;
         return LabelGunItem.getOnlyShowActiveLabel(labelGun);
