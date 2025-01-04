@@ -87,6 +87,7 @@ public abstract class SFMGameTestBase {
             Runnable onSuccess
     ) {
         SFMGameTestBase.assertManagerRunning(manager); // the program should already be compiled so we can monkey patch it
+        manager.enableRebuildProgramLock();
         var hasExecuted = new AtomicBoolean(false);
         var startTime = new AtomicLong();
         var endTime = new AtomicLong();

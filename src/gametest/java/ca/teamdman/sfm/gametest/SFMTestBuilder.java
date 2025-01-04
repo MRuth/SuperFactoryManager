@@ -230,7 +230,9 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
         BlockPos managerPos = new BlockPos(1, 2, 0).offset(offset);
         helper.setBlock(managerPos, SFMBlocks.MANAGER_BLOCK.get());
         manager = (ManagerBlockEntity) helper.getBlockEntity(managerPos);
+        assertTrue(manager != null, "Manager not found");
         manager.setItem(0, new ItemStack(SFMItems.DISK_ITEM.get()));
+        assertTrue(program != null, "Program not set");
         manager.setProgram(program.stripTrailing().stripIndent());
     }
 }

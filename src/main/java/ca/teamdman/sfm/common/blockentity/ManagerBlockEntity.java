@@ -45,6 +45,7 @@ public class ManagerBlockEntity extends BaseContainerBlockEntity {
     private int tick = 0;
     private int unprocessedRedstonePulses = 0; // used by redstone trigger
     private boolean shouldRebuildProgram = false;
+    private boolean shouldRebuildProgramLock = false;
     private int tickIndex = 0;
 
     public ManagerBlockEntity(
@@ -77,6 +78,15 @@ public class ManagerBlockEntity extends BaseContainerBlockEntity {
                '}';
     }
 
+    /**
+     * Used to prevent tests which modify configs from interfering with other tests.
+     * <p>
+     * When the manager detects a config change and rebuilds, it clobbers the monkey patching used by the tests.
+     */
+    public void enableRebuildProgramLock() {
+        shouldRebuildProgramLock = true;
+    }
+
     public static void serverTick(
             @SuppressWarnings("unused") Level level,
             @SuppressWarnings("unused") BlockPos pos,
@@ -88,7 +98,7 @@ public class ManagerBlockEntity extends BaseContainerBlockEntity {
         if (manager.program != null && manager.program.configRevision() != SFMConfig.SERVER.getRevision()) {
             manager.shouldRebuildProgram = true;
         }
-        if (manager.shouldRebuildProgram) {
+        if (manager.shouldRebuildProgram && !manager.shouldRebuildProgramLock) {
             manager.rebuildProgramAndUpdateDisk();
             manager.shouldRebuildProgram = false;
         }
