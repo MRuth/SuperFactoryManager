@@ -1,8 +1,5 @@
 package ca.teamdman.sfm.common.cablenetwork;
 
-import ca.teamdman.sfm.common.localization.LocalizationKeys;
-import ca.teamdman.sfm.common.logging.TranslatableLogger;
-import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
 import ca.teamdman.sfm.common.util.NotStored;
 import ca.teamdman.sfm.common.util.SFMDirections;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -12,7 +9,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -86,43 +82,6 @@ public class CapabilityCache {
 
     public Stream<BlockPos> getPositions() {
         return CACHE.keySet().longStream().mapToObj(BlockPos::of);
-    }
-
-    public <CAP> LazyOptional<CAP> getOrDiscoverCapability(
-            Level level,
-            @NotStored BlockPos pos,
-            Capability<CAP> capKind,
-            @Nullable Direction direction,
-            TranslatableLogger logger
-    ) {
-        // Check cache
-        var found = getCapability(pos, capKind, direction);
-        if (found != null) {
-            if (found.isPresent()) {
-                logger.trace(x -> x.accept(LocalizationKeys.LOG_CAPABILITY_CACHE_HIT.get(pos, capKind.getName(), direction)));
-                return found;
-            } else {
-                logger.error(x -> x.accept(LocalizationKeys.LOG_CAPABILITY_CACHE_HIT_INVALID.get(pos, capKind.getName(), direction)));
-            }
-        } else {
-            logger.trace(x -> x.accept(LocalizationKeys.LOG_CAPABILITY_CACHE_MISS.get(pos, capKind.getName(), direction)));
-        }
-
-        // No capability found, discover it
-        var provider = SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos.immutable());
-        if (provider != null) {
-            var lazyOptional = provider.getCapability(capKind, direction);
-            if (lazyOptional.isPresent()) {
-                putCapability(pos, capKind, direction, lazyOptional);
-                lazyOptional.addListener(x -> remove(pos, capKind, direction));
-            } else {
-                logger.warn(x -> x.accept(LocalizationKeys.LOGS_EMPTY_CAPABILITY.get(pos, capKind.getName(), direction)));
-            }
-            return lazyOptional;
-        } else {
-            logger.warn(x -> x.accept(LocalizationKeys.LOGS_MISSING_CAPABILITY_PROVIDER.get(pos, capKind.getName(), direction)));
-            return LazyOptional.empty();
-        }
     }
 
     public void remove(

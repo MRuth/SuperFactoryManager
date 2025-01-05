@@ -2,6 +2,7 @@ package ca.teamdman.sfm.common.cablenetwork;
 
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.logging.TranslatableLogger;
+import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
 import ca.teamdman.sfm.common.util.NotStored;
 import ca.teamdman.sfm.common.util.SFMDirections;
 import ca.teamdman.sfm.common.util.SFMStreamUtils;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -68,19 +68,25 @@ public class CableNetwork {
                 }
             }
         }, start).toList();
+
+        // restore cable positions
         for (BlockPos cablePos : cables) {
             CABLE_POSITIONS.add(cablePos.asLong());
         }
 
-        // discover capabilities
-        cables
-                .stream()
-                .flatMap(cablePos -> Arrays
-                        .stream(SFMDirections.DIRECTIONS)
-                        .map(Direction::getNormal)
-                        .map(cablePos::offset))
-                .distinct()
-                .forEach(pos -> CAPABILITY_CACHE.overwriteFromOther(pos, other.CAPABILITY_CACHE));
+        // restore capabilities
+        BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
+        LongSet seenCapabilityPositions = new LongOpenHashSet();
+        for (BlockPos cablePos : cables) {
+            for (Direction direction : SFMDirections.DIRECTIONS) {
+                target.set(cablePos).move(direction);
+                // the same block may be touching multiple cables in the network
+                boolean firstVisit = seenCapabilityPositions.add(target.asLong());
+                if (firstVisit) {
+                    CAPABILITY_CACHE.overwriteFromOther(target, other.CAPABILITY_CACHE);
+                }
+            }
+        }
     }
 
     public static Stream<BlockPos> discoverCables(
@@ -140,18 +146,61 @@ public class CableNetwork {
     }
 
     public <CAP> @NotNull LazyOptional<CAP> getCapability(
-            Capability<CAP> cap,
+            Capability<CAP> capKind,
             @NotStored BlockPos pos,
             @Nullable Direction direction,
             TranslatableLogger logger
     ) {
+        // we assume that if there is a cache entry that it is adjacent to a cable
+        var found = CAPABILITY_CACHE.getCapability(pos, capKind, direction);
+        if (found != null) {
+            // CACHE HIT
+            if (found.isPresent()) {
+                logger.trace(x -> x.accept(LocalizationKeys.LOG_CAPABILITY_CACHE_HIT.get(
+                        pos,
+                        capKind.getName(),
+                        direction
+                )));
+                return found;
+            } else {
+                // CACHE HIT BUT STALE
+                logger.error(x -> x.accept(LocalizationKeys.LOG_CAPABILITY_CACHE_HIT_INVALID.get(
+                        pos,
+                        capKind.getName(),
+                        direction
+                )));
+            }
+        } else {
+            // CACHE MISS
+            logger.trace(x -> x.accept(LocalizationKeys.LOG_CAPABILITY_CACHE_MISS.get(pos, capKind.getName(), direction)));
+        }
+
+        // NEED TO DISCOVER
+
         // any BlockPos can have labels assigned
         // we must only proceed here if there is an adjacent cable from this network
         if (!isAdjacentToCable(pos)) {
             logger.warn(x -> x.accept(LocalizationKeys.LOGS_MISSING_ADJACENT_CABLE.get(pos)));
             return LazyOptional.empty();
         }
-        return CAPABILITY_CACHE.getOrDiscoverCapability(LEVEL, pos, cap, direction, logger);
+        var capabilityProvider = SFMCapabilityProviderMappers.discoverCapabilityProvider(LEVEL, pos.immutable());
+        if (capabilityProvider != null) {
+            var cap = capabilityProvider.getCapability(capKind, direction);
+            if (cap.isPresent()) {
+                CAPABILITY_CACHE.putCapability(pos, capKind, direction, cap);
+                cap.addListener(x -> CAPABILITY_CACHE.remove(pos, capKind, direction));
+            } else {
+                logger.warn(x -> x.accept(LocalizationKeys.LOGS_EMPTY_CAPABILITY.get(pos, capKind.getName(), direction)));
+            }
+            return cap;
+        } else {
+            logger.warn(x -> x.accept(LocalizationKeys.LOGS_MISSING_CAPABILITY_PROVIDER.get(
+                    pos,
+                    capKind.getName(),
+                    direction
+            )));
+            return LazyOptional.empty();
+        }
     }
 
     public int getCableCount() {
