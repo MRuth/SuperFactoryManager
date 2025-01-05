@@ -1,6 +1,5 @@
 package ca.teamdman.benchmark;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap;
@@ -11,7 +10,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -33,9 +31,9 @@ public class LogLevelCheckBenchmark {
     private Map<Level, Predicate<Level>> fastMap1;
     private Map<Level, Predicate<Level>> fastMap2;
     private Map<Level, Predicate<Level>> fastMap3;
-    private List<Pair<Level, Level>> tests;
     private Random random;
     private Level[] levels;
+    @SuppressWarnings("unused")
     private int count;
 
     @Setup(Trial)
