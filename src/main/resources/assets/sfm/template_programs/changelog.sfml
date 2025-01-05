@@ -93,6 +93,8 @@ EVERY 20G+5 TICKS DO END
 -- Add direction support to fancy cable facades
 -- Add `/sfm changelog` command
 -- Add swapping between fancy and normal cables with network tool
+-- Performance improvements by reducing memory allocations iterating block neighbours
+
 
 ---- 4.19.1 ----
 -- Fix 1.19.4 build failures due to Gradle hating me
