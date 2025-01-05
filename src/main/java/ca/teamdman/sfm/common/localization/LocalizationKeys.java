@@ -364,6 +364,10 @@ public final class LocalizationKeys {
             "program.sfm.warnings.mekanism_used_without_direction",
             "Mekanism blocks are read-only when no side is specified, check label \"%s\" used in \"%s\""
     );
+    public static final LocalizationEntry PROGRAM_WARNING_MEKANISM_BAD_SIDE_CONFIG = new LocalizationEntry(
+            "program.sfm.warnings.mekanism_bad_side_config",
+            "Mekanism block side config at %s doesn't agree with statement, check label \"%s\" used in \"%s\""
+    );
     public static final LocalizationEntry PROGRAM_WARNING_DISCONNECTED_LABEL = new LocalizationEntry(
             "program.sfm.warnings.disconnected_label",
             "Label \"%s\" is assigned in the world at %s but not connected by cables."
@@ -766,7 +770,7 @@ public final class LocalizationKeys {
     );
     public static final LocalizationEntry MANAGER_GUI_STATUS_FIX = new LocalizationEntry(
             "gui.sfm.manager.status.fix",
-            "Cleaning up labels!"
+            "Fixing problems!"
     );
     public static final LocalizationEntry GUI_ADVANCED_TOOLTIP_HINT = new LocalizationEntry(
             "gui.sfm.advanced.tooltip.hint",

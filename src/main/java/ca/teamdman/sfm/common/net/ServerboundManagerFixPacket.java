@@ -47,7 +47,7 @@ public record ServerboundManagerFixPacket(
                         if (disk != null) {
                             var program = manager.getProgram();
                             if (program != null) {
-                                ProgramLinter.fixWarningsByRemovingBadLabelsFromDisk(
+                                ProgramLinter.fixWarnings(
                                         manager,
                                         disk,
                                         program

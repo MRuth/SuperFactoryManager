@@ -5,6 +5,8 @@ import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.*;
 import ca.teamdman.sfml.ast.DirectionQualifier;
+import ca.teamdman.sfml.ast.IOStatement;
+import ca.teamdman.sfml.ast.ResourceIdentifier;
 import mekanism.api.RelativeSide;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,6 +43,20 @@ public class SFMMekanismCompat {
                     .getValue(new ResourceLocation(SFM.MOD_ID, "slurry"));
             default -> null;
         };
+    }
+
+    public static EnumSet<TransmissionType> getReferencedTransmissionTypes(IOStatement statement) {
+        EnumSet<TransmissionType> transmissionTypes = EnumSet.noneOf(TransmissionType.class);
+        Set<? extends ResourceType<?, ?, ?>> referencedResourceTypes = statement
+                .getReferencedIOResourceIds()
+                .map(ResourceIdentifier::getResourceType)
+                .collect(Collectors.toSet());
+        for (TransmissionType transmissionType : TransmissionType.values()) {
+            if (referencedResourceTypes.contains(SFMMekanismCompat.getResourceType(transmissionType))) {
+                transmissionTypes.add(transmissionType);
+            }
+        }
+        return transmissionTypes;
     }
 
     public static String gatherInspectionResults(BlockEntity blockEntity) {

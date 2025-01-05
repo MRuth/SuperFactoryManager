@@ -45,16 +45,10 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(TRIGGERED);
-    }
-
-    @Override
     @SuppressWarnings("deprecation")
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
-
 
     @Override
     @SuppressWarnings("deprecation")
@@ -81,7 +75,10 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
     }
 
     @Override
-    public BlockEntity newBlockEntity(@Stored BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(
+            @Stored BlockPos pos,
+            BlockState state
+    ) {
         return SFMBlockEntities.MANAGER_BLOCK_ENTITY
                 .get()
                 .create(pos, state);
@@ -105,8 +102,7 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
                 if (program != null) {
                     DiskItem.setWarnings(
                             disk,
-                            ProgramLinter.gatherWarnings(program,
-                            LabelPositionHolder.from(disk), manager)
+                            ProgramLinter.gatherWarnings(program, LabelPositionHolder.from(disk), manager)
                     );
                 }
             }
@@ -128,13 +124,25 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onPlace(BlockState state, Level world, @NotStored BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(
+            BlockState state,
+            Level world,
+            @NotStored BlockPos pos,
+            BlockState oldState,
+            boolean isMoving
+    ) {
         CableNetworkManager.onCablePlaced(world, pos);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, Level level, @Stored BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(
+            BlockState state,
+            Level level,
+            @Stored BlockPos pos,
+            BlockState newState,
+            boolean isMoving
+    ) {
         if (!state.is(newState.getBlock())) {
             if (level.getBlockEntity(pos) instanceof Container container) {
                 Containers.dropContents(level, pos, container);
@@ -143,5 +151,10 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
             CableNetworkManager.onCableRemoved(level, pos);
             super.onRemove(state, level, pos, newState, isMoving);
         }
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(TRIGGERED);
     }
 }

@@ -367,7 +367,7 @@ dependencies {
     gametestImplementation fg.deobf("curse.maven:titanium-287342:4152837") //titanium-1.19.2-3.7.1-24.jar
     gametestImplementation fg.deobf("curse.maven:patchouli-306770:4031402") //Patchouli-1.19.2-77.jar
 
-    implementation fg.deobf("curse.maven:mekanism-268560:4644795") //Mekanism-1.19.2-10.3.2.469.jar
+    implementation fg.deobf("curse.maven:mekanism-268560:4644795") //Mekanism-1.19.2-10.3.9.13.jar
     implementation "mekanism:Mekanism:1.19.2-10.3.8.477:api"
 
     // https://legacy.curseforge.com/minecraft/mc-mods/sophisticated-core/files/4503931

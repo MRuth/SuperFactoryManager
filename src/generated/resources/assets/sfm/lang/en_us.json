@@ -213,6 +213,7 @@
   "program.sfm.warnings.adjacent_but_disconnected_label": "Label \"%s\" is assigned in the world at %s and is connected by cables but is not detected as a valid inventory.",
   "program.sfm.warnings.disconnected_label": "Label \"%s\" is assigned in the world at %s but not connected by cables.",
   "program.sfm.warnings.each_without_pattern": "EACH used without a pattern, statement %s",
+  "program.sfm.warnings.mekanism_bad_side_config": "Mekanism block side config at %s doesn't agree with statement, check label \"%s\" used in \"%s\"",
   "program.sfm.warnings.mekanism_used_without_direction": "Mekanism blocks are read-only when no side is specified, check label \"%s\" used in \"%s\"",
   "program.sfm.warnings.output_label_not_found_in_inputs": "Statement \"%s\" at %s uses resource type \"%s\" which has no matching input statement.",
   "program.sfm.warnings.round_robin_smelly_count": "Round robin by label should be used with more than one label, statement %s",
