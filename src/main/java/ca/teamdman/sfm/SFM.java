@@ -23,6 +23,7 @@ public class SFM {
         SFMBlocks.register(bus);
         SFMItems.register(bus);
         SFMResourceTypes.register(bus);
+        SFMProgramLinters.register(bus);
         SFMBlockEntities.register(bus);
         SFMCapabilityProviderMappers.register(bus);
         SFMMenus.register(bus);

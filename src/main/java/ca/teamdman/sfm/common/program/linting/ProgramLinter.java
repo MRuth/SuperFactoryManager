@@ -1,4 +1,4 @@
-package ca.teamdman.sfm.common.program;
+package ca.teamdman.sfm.common.program.linting;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
@@ -6,6 +6,8 @@ import ca.teamdman.sfm.common.cablenetwork.CableNetworkManager;
 import ca.teamdman.sfm.common.compat.SFMMekanismCompat;
 import ca.teamdman.sfm.common.compat.SFMModCompat;
 import ca.teamdman.sfm.common.item.DiskItem;
+import ca.teamdman.sfm.common.program.LabelPositionHolder;
+import ca.teamdman.sfm.common.program.ProgramContext;
 import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
 import ca.teamdman.sfml.ast.*;
 import com.mojang.datafixers.util.Pair;

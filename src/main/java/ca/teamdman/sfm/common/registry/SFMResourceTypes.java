@@ -52,7 +52,7 @@ public class SFMResourceTypes {
 
     static {
         if (SFMModCompat.isMekanismLoaded()) {
-            SFMMekanismCompat.register(TYPES);
+            SFMMekanismCompat.registerResourceTypes(TYPES);
         }
     }
 

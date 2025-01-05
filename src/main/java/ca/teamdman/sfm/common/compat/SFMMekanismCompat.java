@@ -2,6 +2,8 @@ package ca.teamdman.sfm.common.compat;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
+import ca.teamdman.sfm.common.program.linting.IProgramLinter;
+import ca.teamdman.sfm.common.program.linting.MekanismProgramLinter;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.*;
 import ca.teamdman.sfml.ast.DirectionQualifier;
@@ -123,7 +125,7 @@ public class SFMMekanismCompat {
         return sb.toString();
     }
 
-    public static void register(DeferredRegister<ResourceType<?, ?, ?>> types) {
+    public static void registerResourceTypes(DeferredRegister<ResourceType<?, ?, ?>> types) {
         types.register(
                 "gas",
                 GasResourceType::new
@@ -144,6 +146,13 @@ public class SFMMekanismCompat {
         types.register(
                 "mekanism_energy",
                 MekanismEnergyResourceType::new
+        );
+    }
+
+    public static void registerProgramLinters(DeferredRegister<IProgramLinter> types) {
+        types.register(
+                "mekanism",
+                MekanismProgramLinter::new
         );
     }
 }

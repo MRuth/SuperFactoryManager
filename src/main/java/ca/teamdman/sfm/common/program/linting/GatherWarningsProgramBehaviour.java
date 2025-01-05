@@ -1,6 +1,9 @@
-package ca.teamdman.sfm.common.program;
+package ca.teamdman.sfm.common.program.linting;
 
 import ca.teamdman.sfm.SFM;
+import ca.teamdman.sfm.common.program.ProgramBehaviour;
+import ca.teamdman.sfm.common.program.ProgramContext;
+import ca.teamdman.sfm.common.program.SimulateExploreAllPathsProgramBehaviour;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
 import ca.teamdman.sfml.ast.*;
 import com.google.common.collect.HashMultimap;
