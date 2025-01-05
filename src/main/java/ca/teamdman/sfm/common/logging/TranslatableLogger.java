@@ -16,32 +16,15 @@ import org.apache.logging.log4j.core.time.Instant;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class TranslatableLogger {
     private static final LoggerContext CONTEXT = new LoggerContext(SFM.MOD_ID);
     private final Logger logger;
     private Level logLevel = Level.OFF;
 
-    /// shortest circuit for performance optimization
-    private boolean active = false;
-
-    /// faster than logger.isEnabled
-    private static final Map<Level, Predicate<Level>> shouldLogGivenCurrent = Map.of(
-            Level.OFF, currentLevel -> false,
-            Level.FATAL, currentLevel -> currentLevel != Level.OFF,
-            Level.ERROR, currentLevel -> currentLevel != Level.OFF && currentLevel != Level.FATAL,
-            Level.WARN, currentLevel ->  currentLevel != Level.OFF && currentLevel != Level.FATAL && currentLevel != Level.ERROR,
-            Level.INFO, currentLevel -> currentLevel == Level.INFO || currentLevel == Level.DEBUG || currentLevel == Level.TRACE || currentLevel == Level.ALL,
-            Level.DEBUG, currentLevel -> currentLevel == Level.DEBUG || currentLevel == Level.TRACE || currentLevel == Level.ALL,
-            Level.TRACE, currentLevel -> currentLevel == Level.TRACE || currentLevel == Level.ALL,
-            Level.ALL, currentLevel -> true
-    );
-
     public TranslatableLogger(String name) {
         // Create logger
         this.logger = CONTEXT.getLogger(name);
-
 
         // Register the config to the logger
         Configuration configuration = CONTEXT.getConfiguration();
@@ -62,11 +45,94 @@ public class TranslatableLogger {
         appender.start();
     }
 
-    public static boolean comesAfter(Instant a, Instant b) {
-        return a.getEpochSecond() > b.getEpochSecond() || (
-                a.getEpochSecond() == b.getEpochSecond()
-                && a.getNanoOfSecond() > b.getNanoOfSecond()
-        );
+    public Level getLogLevel() {
+        return CONTEXT.getConfiguration().getLoggerConfig(logger.getName()).getLevel();
+    }
+
+    public void setLogLevel(Level level) {
+        LoggerConfig found = CONTEXT.getConfiguration().getLoggerConfig(logger.getName());
+        found.setLevel(level);
+        this.logLevel = level;
+        CONTEXT.updateLoggers();
+    }
+
+    public void info(TranslatableContents contents) {
+        if (this.logLevel.isLessSpecificThan(Level.INFO)) {
+            logger.info(contents.getKey(), contents.getArgs());
+        }
+    }
+
+    public void info(Consumer<Consumer<TranslatableContents>> logger) {
+        if (this.logLevel.isLessSpecificThan(Level.INFO)) {
+            logger.accept(contents -> this.logger.info(contents.getKey(), contents.getArgs()));
+        }
+    }
+
+    public void warn(TranslatableContents contents) {
+        if (this.logLevel.isLessSpecificThan(Level.WARN)) {
+            logger.warn(contents.getKey(), contents.getArgs());
+        }
+    }
+
+    public void warn(Consumer<Consumer<TranslatableContents>> logger) {
+        if (this.logLevel.isLessSpecificThan(Level.WARN)) {
+            logger.accept(contents -> this.logger.warn(contents.getKey(), contents.getArgs()));
+        }
+    }
+
+    public void error(TranslatableContents contents) {
+        if (this.logLevel.isLessSpecificThan(Level.ERROR)) {
+            logger.error(contents.getKey(), contents.getArgs());
+        }
+    }
+
+    public void error(Consumer<Consumer<TranslatableContents>> logger) {
+        if (this.logLevel.isLessSpecificThan(Level.ERROR)) {
+            logger.accept(contents -> this.logger.error(contents.getKey(), contents.getArgs()));
+        }
+    }
+
+    public void debug(TranslatableContents contents) {
+        if (this.logLevel.isLessSpecificThan(Level.DEBUG)) {
+            logger.debug(contents.getKey(), contents.getArgs());
+        }
+    }
+
+    public void debug(Consumer<Consumer<TranslatableContents>> logger) {
+        if (this.logLevel.isLessSpecificThan(Level.DEBUG)) {
+            logger.accept(contents -> this.logger.debug(contents.getKey(), contents.getArgs()));
+        }
+    }
+
+    public void trace(TranslatableContents contents) {
+        if (this.logLevel.isLessSpecificThan(Level.TRACE)) {
+            logger.trace(contents.getKey(), contents.getArgs());
+        }
+    }
+
+    public void trace(Consumer<Consumer<TranslatableContents>> logger) {
+        if (this.logLevel.isLessSpecificThan(Level.TRACE)) {
+            logger.accept(contents -> this.logger.trace(contents.getKey(), contents.getArgs()));
+        }
+    }
+
+    public ArrayDeque<TranslatableLogEvent> getLogs() {
+        return new ArrayDeque<>(getContents());
+    }
+
+    public void clear() {
+        getContents().clear();
+    }
+
+    public static boolean comesAfter(
+            Instant a,
+            Instant b
+    ) {
+        return a.getEpochSecond() > b.getEpochSecond()
+               || (
+                       a.getEpochSecond() == b.getEpochSecond()
+                       && a.getNanoOfSecond() > b.getNanoOfSecond()
+               );
     }
 
     public static ArrayDeque<TranslatableLogEvent> decode(FriendlyByteBuf buf) {
@@ -85,7 +151,10 @@ public class TranslatableLogger {
      *
      * @see NetworkHooks#openScreen(ServerPlayer, MenuProvider, Consumer) the byte limit
      */
-    public static void encodeAndDrain(Collection<TranslatableLogEvent> logs, FriendlyByteBuf buf) {
+    public static void encodeAndDrain(
+            Collection<TranslatableLogEvent> logs,
+            FriendlyByteBuf buf
+    ) {
         int maxReadableBytes = 32600;
         FriendlyByteBuf chunk = new FriendlyByteBuf(Unpooled.buffer());
         int count = 0;
@@ -105,30 +174,6 @@ public class TranslatableLogger {
         buf.writeBytes(chunk);
     }
 
-    public Level getLogLevel() {
-        return CONTEXT.getConfiguration().getLoggerConfig(logger.getName()).getLevel();
-    }
-
-    public void setLogLevel(Level level) {
-        LoggerConfig found = CONTEXT.getConfiguration().getLoggerConfig(logger.getName());
-        found.setLevel(level);
-
-        this.active = level != Level.OFF;
-        this.logLevel = level;
-        CONTEXT.updateLoggers();
-    }
-
-    private LinkedList<TranslatableLogEvent> getContents() {
-        var appenders = CONTEXT.getConfiguration().getLoggerConfig(logger.getName()).getAppenders();
-        if (appenders.containsKey(logger.getName())) {
-            var appender = appenders.get(logger.getName());
-            if (appender instanceof TranslatableAppender ta) {
-                return ta.contents;
-            }
-        }
-        return new LinkedList<>();
-    }
-
     public ArrayDeque<TranslatableLogEvent> getLogsAfter(Instant instant) {
         List<TranslatableLogEvent> contents = getContents();
         ArrayDeque<TranslatableLogEvent> toSend = new ArrayDeque<>();
@@ -145,10 +190,6 @@ public class TranslatableLogger {
         return toSend;
     }
 
-    public ArrayDeque<TranslatableLogEvent> getLogs() {
-        return new ArrayDeque<>(getContents());
-    }
-
     public void pruneSoWeDontEatAllTheRam() {
         List<TranslatableLogEvent> contents = getContents();
         if (contents.size() > 10_000) {
@@ -158,62 +199,15 @@ public class TranslatableLogger {
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean isLevelEnabled(Level attempting) {
-        return active && shouldLogGivenCurrent.get(attempting).test(logLevel);
+    private LinkedList<TranslatableLogEvent> getContents() {
+        var appenders = CONTEXT.getConfiguration().getLoggerConfig(logger.getName()).getAppenders();
+        if (appenders.containsKey(logger.getName())) {
+            var appender = appenders.get(logger.getName());
+            if (appender instanceof TranslatableAppender ta) {
+                return ta.contents;
+            }
+        }
+        return new LinkedList<>();
     }
 
-    public void info(TranslatableContents contents) {
-        if (!this.active) return;
-        logger.info(contents.getKey(), contents.getArgs());
-    }
-
-    public void info(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.isLevelEnabled(Level.INFO)) return;
-        logger.accept(this::info);
-    }
-
-    public void warn(TranslatableContents contents) {
-        if (!this.active) return;
-        logger.warn(contents.getKey(), contents.getArgs());
-    }
-
-    public void warn(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.isLevelEnabled(Level.WARN)) return;
-        logger.accept(this::warn);
-    }
-
-    public void error(TranslatableContents contents) {
-        if (!this.active) return;
-        logger.error(contents.getKey(), contents.getArgs());
-    }
-
-    public void error(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.isLevelEnabled(Level.ERROR)) return;
-        logger.accept(this::error);
-    }
-
-    public void debug(TranslatableContents contents) {
-        if (!this.active) return;
-        logger.debug(contents.getKey(), contents.getArgs());
-    }
-
-    public void debug(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.isLevelEnabled(Level.DEBUG)) return;
-        logger.accept(this::debug);
-    }
-
-    public void trace(TranslatableContents contents) {
-        if (!this.active) return;
-        logger.trace(contents.getKey(), contents.getArgs());
-    }
-
-    public void trace(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.isLevelEnabled(Level.TRACE)) return;
-        logger.accept(this::trace);
-    }
-
-    public void clear() {
-        getContents().clear();
-    }
 }
