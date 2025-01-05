@@ -6,6 +6,7 @@ import ca.teamdman.sfm.common.capabilityprovidermapper.CapabilityProviderMapper;
 import ca.teamdman.sfm.common.capabilityprovidermapper.CauldronCapabilityProviderMapper;
 import ca.teamdman.sfm.common.capabilityprovidermapper.ae2.InterfaceCapabilityProviderMapper;
 import ca.teamdman.sfm.common.compat.SFMModCompat;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -62,7 +63,7 @@ public class SFMCapabilityProviderMappers {
     @SuppressWarnings("UnstableApiUsage") // for the javadoc lol
     public static @Nullable ICapabilityProvider discoverCapabilityProvider(
             Level level,
-            BlockPos pos
+            @Stored BlockPos pos
     ) {
         if (!level.isLoaded(pos)) return null;
 

@@ -11,6 +11,8 @@ import appeng.api.storage.StorageHelper;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
 import ca.teamdman.sfm.common.capabilityprovidermapper.CapabilityProviderMapper;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +32,7 @@ import java.util.function.Function;
 
 public class InterfaceCapabilityProviderMapper implements CapabilityProviderMapper {
     @Override
-    public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, BlockPos pos) {
+    public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, @Stored BlockPos pos) {
         var be = level.getBlockEntity(pos);
         if (!(be instanceof InterfaceBlockEntity in)) {
             return null;
@@ -64,7 +66,7 @@ public class InterfaceCapabilityProviderMapper implements CapabilityProviderMapp
         }
     }
 
-    private static @Nullable InterfaceBlockEntity interfaceAt(LevelAccessor level, BlockPos pos) {
+    private static @Nullable InterfaceBlockEntity interfaceAt(LevelAccessor level,@NotStored BlockPos pos) {
         var be = level.getBlockEntity(pos);
         if (be instanceof InterfaceBlockEntity in) {
             return in;

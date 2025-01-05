@@ -3,6 +3,7 @@ package ca.teamdman.sfm.common.watertanknetwork;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.block.WaterTankBlock;
 import ca.teamdman.sfm.common.blockentity.WaterTankBlockEntity;
+import ca.teamdman.sfm.common.util.NotStored;
 import ca.teamdman.sfm.common.util.SFMDirections;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -36,7 +37,7 @@ public class WaterNetworkManager {
 
     private static void addMember(
             Level level,
-            BlockPos pos
+            @NotStored BlockPos pos
     ) {
         if (level.isClientSide()) return;
         getOrRegisterNetwork(level, pos).ifPresent(WaterNetwork::updateMembers);
@@ -44,7 +45,7 @@ public class WaterNetworkManager {
 
     private static void removeMember(
             Level level,
-            BlockPos memberPos
+            @NotStored BlockPos memberPos
     ) {
         if (level.isClientSide()) return;
         getNetwork(level, memberPos).ifPresent(network -> {
@@ -65,7 +66,7 @@ public class WaterNetworkManager {
 
     public static void onActiveStateChanged(
             Level level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             BlockState state
     ) {
         if (state.getOptionalValue(WaterTankBlock.IN_WATER).orElse(false)) {
@@ -102,7 +103,7 @@ public class WaterNetworkManager {
      */
     public static Optional<WaterNetwork> getOrRegisterNetwork(
             Level level,
-            BlockPos pos
+            @NotStored BlockPos pos
     ) {
         if (level.isClientSide()) return Optional.empty();
 
@@ -162,7 +163,7 @@ public class WaterNetworkManager {
 
     private static Optional<WaterNetwork> getNetwork(
             Level level,
-            BlockPos pos
+            @NotStored BlockPos pos
     ) {
         var network = getNetworksForLevel(level).get(pos.asLong());
         return Optional.ofNullable(network);
@@ -182,7 +183,7 @@ public class WaterNetworkManager {
      */
     private static Set<WaterNetwork> getAdjacentNetworks(
             Level level,
-            BlockPos pos
+            @NotStored BlockPos pos
     ) {
         Set<WaterNetwork> rtn = new HashSet<>();
         BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();

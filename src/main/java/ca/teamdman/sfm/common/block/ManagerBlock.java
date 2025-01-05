@@ -8,6 +8,8 @@ import ca.teamdman.sfm.common.item.DiskItem;
 import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.program.ProgramLinter;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,9 +61,9 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
     public void neighborChanged(
             BlockState state,
             Level level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             Block block,
-            BlockPos neighbourPos,
+            @NotStored BlockPos neighbourPos,
             boolean movedByPiston
     ) {
         if (!(level.getBlockEntity(pos) instanceof ManagerBlockEntity mgr)) return;
@@ -79,7 +81,7 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@Stored BlockPos pos, BlockState state) {
         return SFMBlockEntities.MANAGER_BLOCK_ENTITY
                 .get()
                 .create(pos, state);
@@ -90,7 +92,7 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
     public InteractionResult use(
             BlockState state,
             Level level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             Player player,
             InteractionHand hand,
             BlockHitResult hit
@@ -126,13 +128,13 @@ public class ManagerBlock extends BaseEntityBlock implements EntityBlock, ICable
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, Level world, @NotStored BlockPos pos, BlockState oldState, boolean isMoving) {
         CableNetworkManager.onCablePlaced(world, pos);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, @Stored BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             if (level.getBlockEntity(pos) instanceof Container container) {
                 Containers.dropContents(level, pos, container);

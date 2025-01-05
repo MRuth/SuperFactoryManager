@@ -3,6 +3,8 @@ package ca.teamdman.sfm.common.block;
 import ca.teamdman.sfm.common.blockentity.TestBarrelTankBlockEntity;
 import ca.teamdman.sfm.common.containermenu.TestBarrelTankContainerMenu;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,7 +33,7 @@ public class TestBarrelTankBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(
-            BlockPos pPos,
+            @Stored BlockPos pPos,
             BlockState pState
     ) {
         return SFMBlockEntities.TEST_BARREL_TANK_BLOCK_ENTITY.get().create(pPos, pState);
@@ -42,7 +44,7 @@ public class TestBarrelTankBlock extends BaseEntityBlock {
     public InteractionResult use(
             BlockState pState,
             Level pLevel,
-            BlockPos pPos,
+            @NotStored BlockPos pPos,
             Player pPlayer,
             InteractionHand pHand,
             BlockHitResult pHit

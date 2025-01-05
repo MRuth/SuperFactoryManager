@@ -3,6 +3,8 @@ package ca.teamdman.sfm.common.block;
 import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -25,7 +27,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
 
     @Override
     public @Nullable BlockEntity newBlockEntity(
-            BlockPos blockPos,
+            @Stored BlockPos blockPos,
             BlockState blockState
     ) {
         return SFMBlockEntities.CABLE_FACADE_BLOCK_ENTITY.get().create(blockPos, blockState);
@@ -36,7 +38,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
     public VoxelShape getOcclusionShape(
             BlockState pState,
             BlockGetter pLevel,
-            BlockPos pPos
+            @NotStored BlockPos pPos
     ) {
         // Translucent blocks should have no occlusion
         return pState.getValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY) == FacadeTransparency.TRANSLUCENT ?
@@ -48,7 +50,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
     @Override
     public ItemStack getCloneItemStack(
             BlockGetter pLevel,
-            BlockPos pPos,
+            @NotStored BlockPos pPos,
             BlockState pState
     ) {
         return new ItemStack(SFMBlocks.CABLE_BLOCK.get());
@@ -58,7 +60,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
     public boolean propagatesSkylightDown(
             BlockState pState,
             BlockGetter pLevel,
-            BlockPos pPos
+            @NotStored BlockPos pPos
     ) {
         return pState.getValue(FacadeTransparency.FACADE_TRANSPARENCY_PROPERTY) == FacadeTransparency.TRANSLUCENT;
     }
@@ -71,7 +73,7 @@ public class CableFacadeBlock extends CableBlock implements EntityBlock, IFacada
     @Override
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             @Nullable FacadeTransparency facadeTransparency
     ) {
         BlockState blockState = super.getStateForPlacementByFacadePlan(level, pos, facadeTransparency);

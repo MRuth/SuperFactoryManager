@@ -2,6 +2,7 @@ package ca.teamdman.sfm.common.cablenetwork;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
+import ca.teamdman.sfm.common.util.NotStored;
 import ca.teamdman.sfm.common.util.SFMDirections;
 import ca.teamdman.sfm.common.util.SFMStreamUtils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -81,7 +82,7 @@ public class CableNetworkManager {
                 .stream();
     }
 
-    public static Stream<CableNetwork> getNetworksInRange(Level level, BlockPos pos, double maxDistance) {
+    public static Stream<CableNetwork> getNetworksInRange(Level level, @NotStored BlockPos pos, double maxDistance) {
         if (level.isClientSide()) return Stream.empty();
         return getNetworksForLevel(level)
                 .filter(net -> net
@@ -93,12 +94,12 @@ public class CableNetworkManager {
         removeNetwork(network);
     }
 
-    public static void onCablePlaced(Level level, BlockPos pos) {
+    public static void onCablePlaced(Level level, @NotStored BlockPos pos) {
         if (level.isClientSide()) return;
         getOrRegisterNetworkFromCablePosition(level, pos);
     }
 
-    public static void onCableRemoved(Level level, BlockPos cablePos) {
+    public static void onCableRemoved(Level level, @NotStored BlockPos cablePos) {
         getNetworkFromCablePosition(level, cablePos).ifPresent(network -> {
             // Invalidate the original network
             removeNetwork(network);
@@ -125,7 +126,7 @@ public class CableNetworkManager {
      * <p>
      * Networks should only exist on the server side.
      */
-    public static Optional<CableNetwork> getOrRegisterNetworkFromCablePosition(Level level, BlockPos pos) {
+    public static Optional<CableNetwork> getOrRegisterNetworkFromCablePosition(Level level, @NotStored BlockPos pos) {
         if (level.isClientSide()) return Optional.empty();
 
         // discover existing network for this position
@@ -226,7 +227,7 @@ public class CableNetworkManager {
         onNetworkLookupChanged();
     }
 
-    private static Optional<CableNetwork> getNetworkFromCablePosition(Level level, BlockPos pos) {
+    private static Optional<CableNetwork> getNetworkFromCablePosition(Level level, @NotStored BlockPos pos) {
         return Optional.ofNullable(NETWORKS_BY_CABLE_POSITION
                                            .computeIfAbsent(level, k -> new Long2ObjectOpenHashMap<>())
                                            .get(pos.asLong()));

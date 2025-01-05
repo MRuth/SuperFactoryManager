@@ -4,6 +4,7 @@ import ca.teamdman.sfm.common.resourcetype.GasResourceType;
 import ca.teamdman.sfm.common.resourcetype.InfuseResourceType;
 import ca.teamdman.sfm.common.resourcetype.PigmentResourceType;
 import ca.teamdman.sfm.common.resourcetype.SlurryResourceType;
+import ca.teamdman.sfm.common.util.NotStored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -57,7 +58,7 @@ public class SFMModCompat {
 
     public static boolean isMekanismBlock(
             Level level,
-            BlockPos pos
+            @NotStored BlockPos pos
     ) {
         Block block = level.getBlockState(pos).getBlock();
         ResourceLocation blockId = ForgeRegistries.BLOCKS.getKey(block);

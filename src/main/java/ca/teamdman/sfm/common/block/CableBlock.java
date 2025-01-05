@@ -11,6 +11,8 @@ import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.net.ServerboundFacadePacket;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -38,7 +40,7 @@ public class CableBlock extends Block implements ICableBlock, IFacadableBlock {
     public void onPlace(
             BlockState state,
             Level world,
-            BlockPos pos,
+            @Stored BlockPos pos,
             BlockState oldState,
             boolean isMoving
     ) {
@@ -55,7 +57,7 @@ public class CableBlock extends Block implements ICableBlock, IFacadableBlock {
     public void onRemove(
             BlockState state,
             Level level,
-            BlockPos pos,
+            @Stored BlockPos pos,
             BlockState newState,
             boolean isMoving
     ) {
@@ -72,7 +74,7 @@ public class CableBlock extends Block implements ICableBlock, IFacadableBlock {
     public InteractionResult use(
             BlockState pState,
             Level pLevel,
-            BlockPos pPos,
+            @Stored BlockPos pPos,
             Player pPlayer,
             InteractionHand pHand,
             BlockHitResult pHit
@@ -110,7 +112,7 @@ public class CableBlock extends Block implements ICableBlock, IFacadableBlock {
     @Override
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             @Nullable FacadeTransparency facadeTransparency
     ) {
         return defaultBlockState();

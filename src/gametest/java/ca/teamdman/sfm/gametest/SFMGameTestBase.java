@@ -3,6 +3,7 @@ package ca.teamdman.sfm.gametest;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.item.DiskItem;
 import ca.teamdman.sfm.common.program.ProgramContext;
+import ca.teamdman.sfm.common.util.NotStored;
 import ca.teamdman.sfml.ast.Block;
 import ca.teamdman.sfml.ast.Program;
 import ca.teamdman.sfml.ast.Trigger;
@@ -191,7 +192,7 @@ public abstract class SFMGameTestBase {
 
     protected static IItemHandler getItemHandler(
             GameTestHelper helper,
-            BlockPos pos
+            @NotStored BlockPos pos
     ) {
         BlockEntity blockEntity = helper
                 .getBlockEntity(pos);

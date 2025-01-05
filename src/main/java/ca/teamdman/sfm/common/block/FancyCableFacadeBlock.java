@@ -3,6 +3,8 @@ package ca.teamdman.sfm.common.block;
 import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.registry.SFMBlockEntities;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -22,7 +24,7 @@ public class FancyCableFacadeBlock extends FancyCableBlock implements EntityBloc
 
     @Override
     public @Nullable BlockEntity newBlockEntity(
-            BlockPos blockPos,
+            @Stored BlockPos blockPos,
             BlockState blockState
     ) {
         return SFMBlockEntities.FANCY_CABLE_FACADE_BLOCK_ENTITY.get().create(blockPos, blockState);
@@ -32,7 +34,7 @@ public class FancyCableFacadeBlock extends FancyCableBlock implements EntityBloc
     @Override
     public ItemStack getCloneItemStack(
             BlockGetter pLevel,
-            BlockPos pPos,
+            @NotStored BlockPos pPos,
             BlockState pState
     ) {
         return new ItemStack(SFMBlocks.FANCY_CABLE_BLOCK.get());
@@ -47,7 +49,7 @@ public class FancyCableFacadeBlock extends FancyCableBlock implements EntityBloc
     @Override
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             @Nullable FacadeTransparency facadeTransparency
     ) {
         BlockState state = super.getStateForPlacementByFacadePlan(level, pos, facadeTransparency);

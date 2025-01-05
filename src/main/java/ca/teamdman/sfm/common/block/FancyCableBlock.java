@@ -5,6 +5,8 @@ import ca.teamdman.sfm.common.cablenetwork.ICableBlock;
 import ca.teamdman.sfm.common.facade.FacadeTransparency;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -86,9 +88,9 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
     public void neighborChanged(
             BlockState state,
             Level level,
-            BlockPos pos,
+            @Stored BlockPos pos,
             Block block,
-            BlockPos fromPos,
+            @Stored BlockPos fromPos,
             boolean isMoving
     ) {
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
@@ -101,7 +103,7 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
     public VoxelShape getShape(
             BlockState state,
             BlockGetter world,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             CollisionContext ctx
     ) {
         return ShapeCache.getOrCompute(state, FancyCableBlock::getShape);
@@ -114,8 +116,8 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
             Direction dir,
             BlockState facingState,
             LevelAccessor world,
-            BlockPos pos,
-            BlockPos facingPos
+            @NotStored BlockPos pos,
+            @NotStored BlockPos facingPos
     ) {
         return getState(state, world, pos);
     }
@@ -123,7 +125,7 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
     @Override
     public BlockState getStateForPlacementByFacadePlan(
             LevelAccessor level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             @Nullable FacadeTransparency facadeTransparency
     ) {
         return getState(defaultBlockState(), level, pos);
@@ -159,7 +161,7 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
     protected BlockState getState(
             BlockState currentState,
             LevelAccessor level,
-            BlockPos pos
+            @NotStored BlockPos pos
     ) {
         boolean north = hasConnection(level, pos, Direction.NORTH);
         boolean south = hasConnection(level, pos, Direction.SOUTH);
@@ -179,15 +181,16 @@ public class FancyCableBlock extends CableBlock implements IFacadableBlock {
 
     protected boolean hasConnection(
             LevelAccessor level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             Direction direction
     ) {
         // Directly connect to other cables
-        if (level.getBlockState(pos.relative(direction)).getBlock() instanceof ICableBlock) {
+        BlockPos relative = pos.relative(direction);
+        if (level.getBlockState(relative).getBlock() instanceof ICableBlock) {
             return true;
         }
 
-        BlockEntity blockEntity = level.getBlockEntity(pos.relative(direction));
+        BlockEntity blockEntity = level.getBlockEntity(relative);
         if (blockEntity == null) {
             return false;
         }

@@ -2,6 +2,7 @@ package ca.teamdman.sfm.common.cablenetwork;
 
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.logging.TranslatableLogger;
+import ca.teamdman.sfm.common.util.NotStored;
 import ca.teamdman.sfm.common.util.SFMDirections;
 import ca.teamdman.sfm.common.util.SFMStreamUtils;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -35,7 +36,7 @@ public class CableNetwork {
      */
     public static boolean isCable(
             @Nullable Level world,
-            BlockPos cablePos
+            @NotStored BlockPos cablePos
     ) {
         if (world == null) return false;
         return world
@@ -43,14 +44,14 @@ public class CableNetwork {
                 .getBlock() instanceof ICableBlock;
     }
 
-    public void rebuildNetwork(BlockPos start) {
+    public void rebuildNetwork(@NotStored BlockPos start) {
         CABLE_POSITIONS.clear();
         CAPABILITY_CACHE.clear();
         discoverCables(getLevel(), start).forEach(this::addCable);
     }
 
     public void rebuildNetworkFromCache(
-            BlockPos start,
+            @NotStored BlockPos start,
             CableNetwork other
     ) {
         CABLE_POSITIONS.clear();
@@ -84,7 +85,7 @@ public class CableNetwork {
 
     public static Stream<BlockPos> discoverCables(
             Level level,
-            BlockPos startPos
+            @NotStored BlockPos startPos
     ) {
         return SFMStreamUtils.getRecursiveStream((current, next, results) -> {
             results.accept(current);
@@ -98,7 +99,7 @@ public class CableNetwork {
         }, startPos);
     }
 
-    public void addCable(BlockPos pos) {
+    public void addCable(@NotStored BlockPos pos) {
         CABLE_POSITIONS.add(pos.asLong());
     }
 
@@ -123,7 +124,7 @@ public class CableNetwork {
      * @param pos Candidate cable position
      * @return {@code true} if adjacent to cable in network
      */
-    public boolean isAdjacentToCable(BlockPos pos) {
+    public boolean isAdjacentToCable(@NotStored BlockPos pos) {
         BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
         for (Direction direction : SFMDirections.DIRECTIONS) {
             target.set(pos).move(direction);
@@ -134,13 +135,13 @@ public class CableNetwork {
         return false;
     }
 
-    public boolean containsCablePosition(BlockPos pos) {
+    public boolean containsCablePosition(@NotStored BlockPos pos) {
         return CABLE_POSITIONS.contains(pos.asLong());
     }
 
     public <CAP> @NotNull LazyOptional<CAP> getCapability(
             Capability<CAP> cap,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             @Nullable Direction direction,
             TranslatableLogger logger
     ) {
@@ -193,7 +194,7 @@ public class CableNetwork {
      * @param cablePos cable position to be removed
      * @return resulting networks to replace this network
      */
-    protected List<CableNetwork> withoutCable(BlockPos cablePos) {
+    protected List<CableNetwork> withoutCable(@NotStored BlockPos cablePos) {
         CABLE_POSITIONS.remove(cablePos.asLong());
         List<CableNetwork> branches = new ArrayList<>();
         BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();

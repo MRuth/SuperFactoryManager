@@ -6,6 +6,7 @@ import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.program.*;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.ResourceType;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -533,7 +534,7 @@ public class OutputStatement implements IOStatement {
             ProgramContext context,
             ResourceType<STACK, ITEM, CAP> type,
             Label label,
-            BlockPos pos,
+            @Stored BlockPos pos,
             Direction direction,
             CAP capability,
             List<IOutputResourceTracker> trackers,

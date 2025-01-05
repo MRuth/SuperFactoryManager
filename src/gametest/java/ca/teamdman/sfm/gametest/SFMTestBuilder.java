@@ -4,6 +4,8 @@ import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
+import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -215,7 +217,7 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
 
     protected void addChest(
             String name,
-            BlockPos pos
+            @Stored BlockPos pos
     ) {
         helper.setBlock(pos, SFMBlocks.TEST_BARREL_BLOCK.get());
         IItemHandler chest = getItemHandler(helper, pos);
@@ -224,9 +226,9 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
         labelHolder.add(name, helper.absolutePos(pos));
     }
 
-    protected abstract void setupStructure(BlockPos offset);
+    protected abstract void setupStructure(@NotStored BlockPos offset);
 
-    protected void setupManager(BlockPos offset) {
+    protected void setupManager(@NotStored BlockPos offset) {
         BlockPos managerPos = new BlockPos(1, 2, 0).offset(offset);
         helper.setBlock(managerPos, SFMBlocks.MANAGER_BLOCK.get());
         manager = (ManagerBlockEntity) helper.getBlockEntity(managerPos);

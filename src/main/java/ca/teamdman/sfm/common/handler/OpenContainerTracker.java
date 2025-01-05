@@ -2,6 +2,7 @@ package ca.teamdman.sfm.common.handler;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
+import ca.teamdman.sfm.common.util.NotStored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,7 +21,7 @@ import static net.minecraftforge.event.entity.player.PlayerContainerEvent.Open;
 public class OpenContainerTracker {
     private static final Map<BlockPos, Map<ServerPlayer, ManagerContainerMenu>> OPEN_CONTAINERS = new WeakHashMap<>();
 
-    public static Stream<Map.Entry<ServerPlayer, ManagerContainerMenu>> getOpenManagerMenus(BlockPos pos) {
+    public static Stream<Map.Entry<ServerPlayer, ManagerContainerMenu>> getOpenManagerMenus(@NotStored BlockPos pos) {
         if (OPEN_CONTAINERS.containsKey(pos)) {
             return OPEN_CONTAINERS.get(pos).entrySet().stream();
         } else {

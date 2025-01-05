@@ -4,6 +4,7 @@ import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
 import ca.teamdman.sfm.common.containermenu.ManagerContainerMenu;
 import ca.teamdman.sfm.common.registry.SFMPackets;
+import ca.teamdman.sfm.common.util.Stored;
 import ca.teamdman.sfml.ast.Program;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,7 +39,7 @@ public class SFMPacketHandlingContext {
     public <MENU extends AbstractContainerMenu, BE extends BlockEntity> void handleServerboundContainerPacket(
             Class<MENU> menuClass,
             Class<BE> blockEntityClass,
-            BlockPos pos,
+            @Stored BlockPos pos,
             int containerId,
             BiConsumer<MENU, BE> callback
     ) {
@@ -56,7 +57,7 @@ public class SFMPacketHandlingContext {
             SFMPacketHandlingContext ctx,
             Class<MENU> menuClass,
             Class<BE> blockEntityClass,
-            BlockPos pos,
+            @Stored BlockPos pos,
             int containerId,
             BiConsumer<MENU, BE> callback
     ) {

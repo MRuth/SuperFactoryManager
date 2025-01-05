@@ -1,5 +1,6 @@
 package ca.teamdman.sfm.common.capabilityprovidermapper;
 
+import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CauldronCapabilityProviderMapper implements CapabilityProviderMapper {
     @Override
-    public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, BlockPos pos) {
+    public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, @Stored BlockPos pos) {
         var state = level.getBlockState(pos);
         if (state.getBlock() == Blocks.CAULDRON
             || state.getBlock() == Blocks.WATER_CAULDRON

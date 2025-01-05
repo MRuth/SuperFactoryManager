@@ -3,6 +3,7 @@ package ca.teamdman.sfm.common.cablenetwork;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.logging.TranslatableLogger;
 import ca.teamdman.sfm.common.registry.SFMCapabilityProviderMappers;
+import ca.teamdman.sfm.common.util.NotStored;
 import ca.teamdman.sfm.common.util.SFMDirections;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -35,7 +36,7 @@ public class CapabilityCache {
         return CACHE.values().stream().flatMap(x -> x.values().stream()).mapToInt(SFMDirections.NullableDirectionEnumMap::size).sum();
     }
 
-    public void overwriteFromOther(BlockPos pos, CapabilityCache other) {
+    public void overwriteFromOther(@NotStored BlockPos pos, CapabilityCache other) {
         var found = other.CACHE.get(pos.asLong());
         if (found != null) {
             CACHE.put(pos.asLong(), new Object2ObjectOpenHashMap<>(found));
@@ -44,7 +45,7 @@ public class CapabilityCache {
     }
 
     public <CAP> @Nullable LazyOptional<CAP> getCapability(
-            BlockPos pos,
+            @NotStored BlockPos pos,
             Capability<CAP> capKind,
             @Nullable Direction direction
     ) {
@@ -89,7 +90,7 @@ public class CapabilityCache {
 
     public <CAP> LazyOptional<CAP> getOrDiscoverCapability(
             Level level,
-            BlockPos pos,
+            @NotStored BlockPos pos,
             Capability<CAP> capKind,
             @Nullable Direction direction,
             TranslatableLogger logger
@@ -108,7 +109,7 @@ public class CapabilityCache {
         }
 
         // No capability found, discover it
-        var provider = SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos);
+        var provider = SFMCapabilityProviderMappers.discoverCapabilityProvider(level, pos.immutable());
         if (provider != null) {
             var lazyOptional = provider.getCapability(capKind, direction);
             if (lazyOptional.isPresent()) {
@@ -125,7 +126,7 @@ public class CapabilityCache {
     }
 
     public void remove(
-            BlockPos pos,
+            @NotStored BlockPos pos,
             Capability<?> capKind,
             @Nullable Direction direction
     ) {
@@ -146,7 +147,7 @@ public class CapabilityCache {
     }
 
     public <CAP> void putCapability(
-            BlockPos pos,
+            @NotStored BlockPos pos,
             Capability<CAP> capKind,
             @Nullable Direction direction,
             LazyOptional<CAP> cap
@@ -168,14 +169,14 @@ public class CapabilityCache {
         }
     }
 
-    private void addToChunkMap(BlockPos pos) {
+    private void addToChunkMap(@NotStored BlockPos pos) {
         ChunkPos chunkPos = new ChunkPos(pos);
         long chunkKey = chunkPos.toLong();
         long blockPos = pos.asLong();
         CHUNK_TO_BLOCK_POSITIONS.computeIfAbsent(chunkKey, k -> new LongArraySet()).add(blockPos);
     }
 
-    private void removeFromChunkMap(BlockPos pos) {
+    private void removeFromChunkMap(@NotStored BlockPos pos) {
         ChunkPos chunkPos = new ChunkPos(pos);
         long chunkKey = chunkPos.toLong();
         long blockPos = pos.asLong();
