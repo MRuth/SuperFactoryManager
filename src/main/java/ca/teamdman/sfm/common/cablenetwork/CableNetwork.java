@@ -12,9 +12,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -131,7 +131,7 @@ public class CableNetwork {
         return CABLE_POSITIONS.contains(pos.asLong());
     }
 
-    public <CAP> @Nonnull LazyOptional<CAP> getCapability(
+    public <CAP> @NotNull LazyOptional<CAP> getCapability(
             Capability<CAP> cap,
             BlockPos pos,
             @Nullable Direction direction,

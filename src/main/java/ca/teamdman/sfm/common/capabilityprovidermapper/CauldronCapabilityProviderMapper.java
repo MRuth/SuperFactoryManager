@@ -16,8 +16,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-
 public class CauldronCapabilityProviderMapper implements CapabilityProviderMapper {
     @Override
     public @Nullable ICapabilityProvider getProviderFor(LevelAccessor level, BlockPos pos) {
@@ -38,9 +36,8 @@ public class CauldronCapabilityProviderMapper implements CapabilityProviderMappe
             this.fluidHandlerLazyOptional = LazyOptional.of(() -> new CauldronFluidHandler(level, pos));
         }
 
-        @Nonnull
         @Override
-        public @NotNull <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
             if (cap == ForgeCapabilities.FLUID_HANDLER) {
                 return fluidHandlerLazyOptional.cast();
             }
