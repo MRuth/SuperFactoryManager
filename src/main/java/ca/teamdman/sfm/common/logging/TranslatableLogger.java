@@ -64,7 +64,8 @@ public class TranslatableLogger {
 
     public void info(Consumer<Consumer<TranslatableContents>> logger) {
         if (this.logLevel.isLessSpecificThan(Level.INFO)) {
-            logger.accept(contents -> this.logger.info(contents.getKey(), contents.getArgs()));
+//            logger.accept(contents -> this.logger.info(contents.getKey(), contents.getArgs()));
+            logger.accept(this::info);
         }
     }
 
@@ -76,7 +77,8 @@ public class TranslatableLogger {
 
     public void warn(Consumer<Consumer<TranslatableContents>> logger) {
         if (this.logLevel.isLessSpecificThan(Level.WARN)) {
-            logger.accept(contents -> this.logger.warn(contents.getKey(), contents.getArgs()));
+//            logger.accept(contents -> this.logger.warn(contents.getKey(), contents.getArgs()));
+            logger.accept(this::warn);
         }
     }
 
@@ -88,7 +90,8 @@ public class TranslatableLogger {
 
     public void error(Consumer<Consumer<TranslatableContents>> logger) {
         if (this.logLevel.isLessSpecificThan(Level.ERROR)) {
-            logger.accept(contents -> this.logger.error(contents.getKey(), contents.getArgs()));
+//            logger.accept(contents -> this.logger.error(contents.getKey(), contents.getArgs()));
+            logger.accept(this::error);
         }
     }
 
@@ -100,7 +103,8 @@ public class TranslatableLogger {
 
     public void debug(Consumer<Consumer<TranslatableContents>> logger) {
         if (this.logLevel.isLessSpecificThan(Level.DEBUG)) {
-            logger.accept(contents -> this.logger.debug(contents.getKey(), contents.getArgs()));
+//            logger.accept(contents -> this.logger.debug(contents.getKey(), contents.getArgs()));
+            logger.accept(this::debug);
         }
     }
 
@@ -112,7 +116,8 @@ public class TranslatableLogger {
 
     public void trace(Consumer<Consumer<TranslatableContents>> logger) {
         if (this.logLevel.isLessSpecificThan(Level.TRACE)) {
-            logger.accept(contents -> this.logger.trace(contents.getKey(), contents.getArgs()));
+//            logger.accept(contents -> this.logger.trace(contents.getKey(), contents.getArgs()));
+            logger.accept(this::trace);
         }
     }
 
