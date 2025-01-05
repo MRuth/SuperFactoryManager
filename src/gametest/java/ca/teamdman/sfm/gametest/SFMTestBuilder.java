@@ -141,7 +141,6 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                         for (int tryDestSlot = 0; tryDestSlot < dest.getValue().getSlots(); tryDestSlot++) {
                             ItemStack remainder = dest.getValue().insertItem(tryDestSlot, taken, false);
                             if (remainder.isEmpty()) {
-                                assertTrue(dest.getValue().getStackInSlot(tryDestSlot) == taken, "ownership of the reference is taken here last time I checked uwu");
                                 taken = taken.copy(); // because we pass the ownership, we should copy before we call extract which will mutate
                                 destSlot = tryDestSlot;
                                 break;

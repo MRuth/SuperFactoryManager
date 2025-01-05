@@ -476,4 +476,31 @@ public class SFMWithGameTests extends SFMGameTestBase {
                 .run();
     }
 
+    @GameTest(template = "3x2x1")
+    public static void move_one_each_with_tag_mineable_axe(GameTestHelper helper) {
+        new LeftRightManagerTest(helper)
+                .setProgram("""
+                EVERY 20 TICKS DO
+                    INPUT FROM left
+                    OUTPUT 1 EACH WITH TAG minecraft:mineable/axe TO right
+                END
+                """)
+                .preContents("left", Arrays.asList(
+                        new ItemStack(Items.OAK_LOG, 64),
+                        new ItemStack(Items.BIRCH_LOG, 64),
+                        new ItemStack(Items.SPRUCE_LOG, 64)
+                ))
+                .postContents("left", Arrays.asList(
+                        new ItemStack(Items.OAK_LOG, 63),
+                        new ItemStack(Items.BIRCH_LOG, 63),
+                        new ItemStack(Items.SPRUCE_LOG, 63)
+                ))
+                .postContents("right", Arrays.asList(
+                        new ItemStack(Items.OAK_LOG, 1),
+                        new ItemStack(Items.BIRCH_LOG, 1),
+                        new ItemStack(Items.SPRUCE_LOG, 1)
+                ))
+                .run();
+    }
+
 }
