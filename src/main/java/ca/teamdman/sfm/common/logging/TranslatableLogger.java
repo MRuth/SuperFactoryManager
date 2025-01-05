@@ -16,11 +16,27 @@ import org.apache.logging.log4j.core.time.Instant;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class TranslatableLogger {
     private static final LoggerContext CONTEXT = new LoggerContext(SFM.MOD_ID);
     private final Logger logger;
+    private Level logLevel = Level.OFF;
+
+    /// shortest circuit for performance optimization
     private boolean active = false;
+
+    /// faster than logger.isEnabled
+    private static final Map<Level, Predicate<Level>> shouldLogGivenCurrent = Map.of(
+            Level.OFF, currentLevel -> false,
+            Level.FATAL, currentLevel -> currentLevel != Level.OFF,
+            Level.ERROR, currentLevel -> currentLevel != Level.OFF && currentLevel != Level.FATAL,
+            Level.WARN, currentLevel ->  currentLevel != Level.OFF && currentLevel != Level.FATAL && currentLevel != Level.ERROR,
+            Level.INFO, currentLevel -> currentLevel == Level.INFO || currentLevel == Level.DEBUG || currentLevel == Level.TRACE || currentLevel == Level.ALL,
+            Level.DEBUG, currentLevel -> currentLevel == Level.DEBUG || currentLevel == Level.TRACE || currentLevel == Level.ALL,
+            Level.TRACE, currentLevel -> currentLevel == Level.TRACE || currentLevel == Level.ALL,
+            Level.ALL, currentLevel -> true
+    );
 
     public TranslatableLogger(String name) {
         // Create logger
@@ -30,7 +46,7 @@ public class TranslatableLogger {
         // Register the config to the logger
         Configuration configuration = CONTEXT.getConfiguration();
         configuration.removeLogger(name);
-        LoggerConfig config = new LoggerConfig(name, Level.OFF, false);
+        LoggerConfig config = new LoggerConfig(name, logLevel, false);
         configuration.addLogger(name, config);
 
         // Create appender
@@ -98,6 +114,7 @@ public class TranslatableLogger {
         found.setLevel(level);
 
         this.active = level != Level.OFF;
+        this.logLevel = level;
         CONTEXT.updateLoggers();
     }
 
@@ -141,13 +158,18 @@ public class TranslatableLogger {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean isLevelEnabled(Level attempting) {
+        return active && shouldLogGivenCurrent.get(attempting).test(logLevel);
+    }
+
     public void info(TranslatableContents contents) {
         if (!this.active) return;
         logger.info(contents.getKey(), contents.getArgs());
     }
 
     public void info(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.active || !this.logger.isEnabled(Level.INFO)) return;
+        if (!this.isLevelEnabled(Level.INFO)) return;
         logger.accept(this::info);
     }
 
@@ -157,7 +179,7 @@ public class TranslatableLogger {
     }
 
     public void warn(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.active || !this.logger.isEnabled(Level.WARN)) return;
+        if (!this.isLevelEnabled(Level.WARN)) return;
         logger.accept(this::warn);
     }
 
@@ -167,7 +189,7 @@ public class TranslatableLogger {
     }
 
     public void error(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.active || !this.logger.isEnabled(Level.ERROR)) return;
+        if (!this.isLevelEnabled(Level.ERROR)) return;
         logger.accept(this::error);
     }
 
@@ -177,7 +199,7 @@ public class TranslatableLogger {
     }
 
     public void debug(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.active || !this.logger.isEnabled(Level.DEBUG)) return;
+        if (!this.isLevelEnabled(Level.DEBUG)) return;
         logger.accept(this::debug);
     }
 
@@ -187,7 +209,7 @@ public class TranslatableLogger {
     }
 
     public void trace(Consumer<Consumer<TranslatableContents>> logger) {
-        if (!this.active || !this.logger.isEnabled(Level.TRACE)) return;
+        if (!this.isLevelEnabled(Level.TRACE)) return;
         logger.accept(this::trace);
     }
 
