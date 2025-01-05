@@ -67,7 +67,7 @@ public final class InputStatement implements IOStatement {
         context.getLogger().trace(x -> x.accept(LOG_PROGRAM_TICK_IO_STATEMENT_GATHER_SLOTS_CACHE_MISS.get()));
 
         // prepare cache state
-        limitedInputSlotsCache = new ArrayDeque<>();
+        limitedInputSlotsCache = new ArrayDeque<>(27);
 
         // monkey patch the results acceptor to update the cache before returning results
         {
