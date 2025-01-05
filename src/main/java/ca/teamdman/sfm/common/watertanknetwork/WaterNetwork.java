@@ -73,13 +73,15 @@ public record WaterNetwork(
             WaterNetwork cache
     ) {
         return SFMStreamUtils.getRecursiveStream((current, next, results) -> {
-            WaterTankBlockEntity blockEntity = cache.members.get(current.asLong());
+            WaterTankBlockEntity blockEntity = cache.members.get((long) current);
             if (blockEntity == null) return;
             results.accept(blockEntity);
+            BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
             for (Direction d : SFMDirections.DIRECTIONS) {
-                next.accept(current.offset(d.getNormal()));
+                target.set(current).move(d);
+                next.accept(target.asLong());
             }
-        }, start);
+        }, start.asLong());
     }
 
     public void purgeChunk(ChunkAccess chunkAccess) {
@@ -105,12 +107,14 @@ public record WaterNetwork(
     List<WaterNetwork> withoutMember(BlockPos pos) {
         members.remove(pos.asLong());
         List<WaterNetwork> branches = new ArrayList<>();
+        BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
         for (Direction direction : SFMDirections.DIRECTIONS) {
-            BlockPos offset = pos.offset(direction.getNormal());
-            if (!members.containsKey(offset.asLong())) continue;
-            if (branches.stream().anyMatch(branch -> branch.members.containsKey(offset.asLong()))) continue;
+            target.set(pos).move(direction);
+            long targetKey = target.asLong();
+            if (!members.containsKey(targetKey)) continue;
+            if (branches.stream().anyMatch(branch -> branch.members.containsKey(targetKey))) continue;
             WaterNetwork branch = new WaterNetwork(level);
-            branch.rebuildNetworkFromCache(offset, this);
+            branch.rebuildNetworkFromCache(target, this);
             branches.add(branch);
         }
         return branches;

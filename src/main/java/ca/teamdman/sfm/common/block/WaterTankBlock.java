@@ -107,8 +107,10 @@ public class WaterTankBlock extends BaseEntityBlock implements EntityBlock, Buck
             BlockPos pos
     ) {
         int neighbourWaterCount = 0;
+        BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
         for (Direction direction : SFMDirections.DIRECTIONS) {
-            FluidState state = level.getFluidState(pos.relative(direction));
+            target.set(pos).move(direction);
+            FluidState state = level.getFluidState(target);
             if (state.isSource() && state.is(FluidTags.WATER)) {
                 if (++neighbourWaterCount == 2) {
                     return true;

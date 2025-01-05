@@ -59,10 +59,11 @@ public class CableNetwork {
         // discover connected cables
         var cables = SFMStreamUtils.<BlockPos, BlockPos>getRecursiveStream((current, next, results) -> {
             results.accept(current);
+            BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
             for (Direction d : SFMDirections.DIRECTIONS) {
-                BlockPos offset = current.offset(d.getNormal());
-                if (other.containsCablePosition(offset)) {
-                    next.accept(offset);
+                target.set(current).move(d);
+                if (other.containsCablePosition(target)) {
+                    next.accept(target.immutable());
                 }
             }
         }, start).toList();
@@ -73,7 +74,10 @@ public class CableNetwork {
         // discover capabilities
         cables
                 .stream()
-                .flatMap(cablePos -> Arrays.stream(SFMDirections.DIRECTIONS).map(Direction::getNormal).map(cablePos::offset))
+                .flatMap(cablePos -> Arrays
+                        .stream(SFMDirections.DIRECTIONS)
+                        .map(Direction::getNormal)
+                        .map(cablePos::offset))
                 .distinct()
                 .forEach(pos -> CAPABILITY_CACHE.overwriteFromOther(pos, other.CAPABILITY_CACHE));
     }
@@ -84,10 +88,11 @@ public class CableNetwork {
     ) {
         return SFMStreamUtils.getRecursiveStream((current, next, results) -> {
             results.accept(current);
+            BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
             for (Direction d : SFMDirections.DIRECTIONS) {
-                BlockPos offset = current.offset(d.getNormal());
-                if (isCable(level, offset)) {
-                    next.accept(offset);
+                target.set(current).move(d);
+                if (isCable(level, target)) {
+                    next.accept(target.immutable());
                 }
             }
         }, startPos);
@@ -119,8 +124,10 @@ public class CableNetwork {
      * @return {@code true} if adjacent to cable in network
      */
     public boolean isAdjacentToCable(BlockPos pos) {
+        BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
         for (Direction direction : SFMDirections.DIRECTIONS) {
-            if (containsCablePosition(pos.offset(direction.getNormal()))) {
+            target.set(pos).move(direction);
+            if (containsCablePosition(target)) {
                 return true;
             }
         }
@@ -189,13 +196,14 @@ public class CableNetwork {
     protected List<CableNetwork> withoutCable(BlockPos cablePos) {
         CABLE_POSITIONS.remove(cablePos.asLong());
         List<CableNetwork> branches = new ArrayList<>();
-        for (var direction : SFMDirections.DIRECTIONS) {
-            var offsetPos = cablePos.offset(direction.getNormal());
-            if (!containsCablePosition(offsetPos)) continue;
+        BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
+        for (Direction direction : SFMDirections.DIRECTIONS) {
+            target.set(cablePos).move(direction);
+            if (!containsCablePosition(target)) continue;
             // make sure that a branch network doesn't already contain this cable
-            if (branches.stream().anyMatch(n -> n.containsCablePosition(offsetPos))) continue;
+            if (branches.stream().anyMatch(n -> n.containsCablePosition(target))) continue;
             var branchNetwork = new CableNetwork(this.getLevel());
-            branchNetwork.rebuildNetworkFromCache(offsetPos, this);
+            branchNetwork.rebuildNetworkFromCache(target, this);
             branches.add(branchNetwork);
         }
         return branches;

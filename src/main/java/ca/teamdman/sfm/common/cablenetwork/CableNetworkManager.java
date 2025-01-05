@@ -140,13 +140,17 @@ public class CableNetworkManager {
         // find potential networks by getting networks adjacent to this cable
         ArrayDeque<BlockPos> danglingCables = new ArrayDeque<>(6);
         Set<CableNetwork> neighbouringNetworks = new HashSet<>();
-        for (Direction direction : SFMDirections.DIRECTIONS) {
-            BlockPos offset = pos.relative(direction);
-            Optional<CableNetwork> found = getNetworkFromCablePosition(level, offset);
-            if (found.isPresent()) {
-                neighbouringNetworks.add(found.get());
-            } else if (CableNetwork.isCable(level, offset)) {
-                danglingCables.add(offset);
+
+        {
+            BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
+            for (Direction direction : SFMDirections.DIRECTIONS) {
+                target.set(pos).move(direction);
+                Optional<CableNetwork> found = getNetworkFromCablePosition(level, target);
+                if (found.isPresent()) {
+                    neighbouringNetworks.add(found.get());
+                } else if (CableNetwork.isCable(level, target)) {
+                    danglingCables.add(target.immutable());
+                }
             }
         }
 
@@ -189,10 +193,11 @@ public class CableNetworkManager {
         Set<BlockPos> allDanglingCables = SFMStreamUtils.<BlockPos, BlockPos>getRecursiveStream(
                 (current, next, results) -> {
                     results.accept(current);
+                    BlockPos.MutableBlockPos target = new BlockPos.MutableBlockPos();
                     for (Direction d : SFMDirections.DIRECTIONS) {
-                        BlockPos offset = current.offset(d.getNormal());
-                        if (CableNetwork.isCable(rtn.getLevel(), offset) && !rtn.containsCablePosition(offset)) {
-                            next.accept(offset);
+                        target.set(current).move(d);
+                        if (CableNetwork.isCable(rtn.getLevel(), target) && !rtn.containsCablePosition(target)) {
+                            next.accept(target.immutable());
                         }
                     }
                 },
