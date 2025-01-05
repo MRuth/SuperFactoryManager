@@ -106,14 +106,13 @@ public record ServerboundNetworkToolUsePacket(
                     }
                 }
 
-                Direction[] directions = new Direction[Direction.values().length + 1];
+                Direction[] directions = new Direction[SFMDirections.DIRECTIONS.length + 1];
                 directions[0] = msg.blockFace;
                 directions[1] = null;
                 int assignmentIndex = 2;
-                for (int i = 0; i < Direction.values().length; i++) {
-                    Direction dir = Direction.values()[i];
-                    if (dir == msg.blockFace) continue;
-                    directions[assignmentIndex++] = dir;
+                for (Direction direction : SFMDirections.DIRECTIONS) {
+                    if (direction == msg.blockFace) continue;
+                    directions[assignmentIndex++] = direction;
                 }
 
                 String[] messages = new String[directions.length];

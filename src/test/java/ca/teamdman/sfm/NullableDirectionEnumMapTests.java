@@ -14,10 +14,10 @@ public class NullableDirectionEnumMapTests {
     @Test
     public void test() {
         var map = new SFMDirections.NullableDirectionEnumMap<String>();
-        for (var direction : SFMDirections.DIRECTIONS_WITH_NULL) {
+        for (Direction direction : SFMDirections.DIRECTIONS_WITH_NULL) {
             map.put(direction, "test");
         }
-        for (var direction : SFMDirections.DIRECTIONS_WITH_NULL) {
+        for (Direction direction : SFMDirections.DIRECTIONS_WITH_NULL) {
             assertEquals("test", map.get(direction));
         }
         map.forEach((direction, s) -> assertEquals("test", s));
@@ -27,7 +27,7 @@ public class NullableDirectionEnumMapTests {
         map = new SFMDirections.NullableDirectionEnumMap<>();
         map.put(null, "hi");
         assertEquals("hi", map.get(null));
-        for (var direction : Direction.values()) {
+        for (Direction direction : SFMDirections.DIRECTIONS) {
             assertNull(map.get(direction));
         }
     }

@@ -8,7 +8,9 @@ import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 
 public class SFMDirections {
+    /// Optimization to avoid creating a new array every time
     public static final Direction[] DIRECTIONS = Direction.values();
+    /// Optimization to avoid creating a new array every time. Null is position 0
     public static final Direction[] DIRECTIONS_WITH_NULL = new Direction[]{
             null,
             Direction.NORTH,
