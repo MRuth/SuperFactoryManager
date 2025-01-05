@@ -226,6 +226,7 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
         labelHolder.add(name, helper.absolutePos(pos));
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected abstract void setupStructure(@NotStored BlockPos offset);
 
     protected void setupManager(@NotStored BlockPos offset) {

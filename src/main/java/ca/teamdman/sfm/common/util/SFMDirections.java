@@ -62,6 +62,7 @@ public class SFMDirections {
             this((T[]) new Object[DIRECTIONS_WITH_NULL.length]);
         }
 
+        @SuppressWarnings("unused")
         public boolean containsKey(@Nullable Direction direction) {
             return buckets[keyFor(direction)] != null;
         }
