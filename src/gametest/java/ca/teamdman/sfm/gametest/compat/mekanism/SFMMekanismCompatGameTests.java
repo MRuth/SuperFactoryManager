@@ -681,7 +681,6 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
 
     @GameTest(template = "3x2x1")
     public static void mek_cube(GameTestHelper helper) {
-        // 1) Build a test specification
         SFMTestSpec spec = new SFMTestSpec()
                 .setProgram("""
                                         EVERY 20 TICKS DO
@@ -689,11 +688,9 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
                                             OUTPUT fe:: TO b TOP SIDE
                                         END
                                     """)
-                // Add a block "a" at relative pos (2,2,0)? or at (1,0,0)? you choose
                 .addBlock(TestBlockDef.<TileEntityEnergyCube>of(
                         "a",
                         new BlockPos(1, 0, 0),
-                        // For a Mekanism block that has a block entity:
                         mekanism.common.registries.MekanismBlocks.BASIC_ENERGY_CUBE.getBlock(),
                         (tileEntityCube) -> {
                             tileEntityCube.setEnergy(0, SFMMekanismCompat.createForgeEnergy(1000));
@@ -716,13 +713,10 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
                                 DataType.INPUT
                         )
                 ))
-                // Pre/Post DSL lines
                 .preCondition("ONE a HAS EQ 1000 fe::")
                 .preCondition("ONE b HAS EQ 0 fe::")
                 .postCondition("ONE a HAS EQ 0 fe::")
                 .postCondition("ONE b HAS EQ 1000 fe::");
-
-        // 2) Build & run
         new SFMDeclarativeTestBuilder(helper, spec).run();
     }
 
