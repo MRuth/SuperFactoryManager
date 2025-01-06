@@ -2,12 +2,18 @@ package ca.teamdman.sfm.gametest.compat.mekanism;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.blockentity.ManagerBlockEntity;
+import ca.teamdman.sfm.common.compat.SFMMekanismCompat;
 import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.gametest.SFMGameTestBase;
+import ca.teamdman.sfm.gametest.declarative.SFMDeclarativeTestBuilder;
+import ca.teamdman.sfm.gametest.declarative.SFMTestSpec;
+import ca.teamdman.sfm.gametest.declarative.TestBlockDef;
+import mekanism.api.RelativeSide;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.tier.BinTier;
@@ -16,6 +22,7 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.multiblock.TileEntityInductionPort;
 import mekanism.common.util.UnitDisplayUtils;
 import net.minecraft.core.BlockPos;
@@ -204,7 +211,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
             assertTrue(left.getBinSlot().getCount() == BinTier.ULTIMATE.getStorage() - 64, "Contents did not depart");
             assertTrue(right.getBinSlot().getCount() == 64, "Contents did not arrive");
             assertTrue(right.getBinSlot().getStack().getItem() == Items.COAL, "Contents wrong type");
-            
+
         });
     }
 
@@ -245,7 +252,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
             assertTrue(left.getBinSlot().getCount() == 100 - 64, "Contents did not depart");
             assertTrue(right.getBinSlot().getCount() == 100 + 64, "Contents did not arrive");
             assertTrue(right.getBinSlot().getStack().getItem() == Items.DIAMOND, "Contents wrong type");
-            
+
         });
     }
 
@@ -286,7 +293,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
             assertTrue(left.getBinSlot().getCount() == BinTier.ULTIMATE.getStorage() - 32, "Contents did not depart");
             assertTrue(right.getBinSlot().getCount() == BinTier.ULTIMATE.getStorage(), "Contents did not arrive");
             assertTrue(right.getBinSlot().getStack().getItem() == Items.STICK, "Contents wrong type");
-            
+
         });
     }
 
@@ -326,7 +333,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(left.getEnergy(0).equals(FloatingLong.ZERO), "Contents did not depart");
             assertTrue(right.getEnergy(0).equals(EnergyCubeTier.ULTIMATE.getMaxEnergy()), "Contents did not arrive");
-            
+
         });
     }
 
@@ -366,7 +373,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         succeedIfManagerDidThingWithoutLagging(helper, manager, () -> {
             assertTrue(left.getEnergy(0).equals(FloatingLong.ZERO), "Contents did not depart");
             assertTrue(right.getEnergy(0).equals(FloatingLong.create(2_000)), "Contents did not arrive");
-            
+
         });
     }
 
@@ -409,7 +416,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
                     "Contents did not depart"
             );
             assertTrue(right.getEnergy(0).equals(EnergyCubeTier.ULTIMATE.getMaxEnergy()), "Contents did not arrive");
-            
+
         });
     }
 
@@ -459,7 +466,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
                     right.getEnergy(0).equals(UnitDisplayUtils.EnergyUnit.FORGE_ENERGY.convertFrom(1)),
                     "Contents did not arrive"
             );
-            
+
         });
     }
 
@@ -495,7 +502,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
         // create the program
         var program = """
                     NAME "many inventory lag test"
-
+                
                     EVERY 20 TICKS DO
                         INPUT fluid:*:* FROM source
                         OUTPUT fluid:*:* TO dest TOP SIDE
@@ -526,7 +533,7 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
                     .mapToInt(FluidStack::getAmount)
                     .sum();
             assertTrue(found == 1000 * 25 * 24, "Not all fluids were moved (found " + found + ")");
-            
+
 
         });
     }
@@ -668,7 +675,55 @@ public class SFMMekanismCompatGameTests extends SFMGameTestBase {
                     success,
                     "Expected energy did not match"
             );
-            
+
         });
     }
+
+    @GameTest(template = "3x2x1")
+    public static void mek_cube(GameTestHelper helper) {
+        // 1) Build a test specification
+        SFMTestSpec spec = new SFMTestSpec()
+                .setProgram("""
+                                        EVERY 20 TICKS DO
+                                            INPUT fe:: FROM a BOTTOM SIDE
+                                            OUTPUT fe:: TO b TOP SIDE
+                                        END
+                                    """)
+                // Add a block "a" at relative pos (2,2,0)? or at (1,0,0)? you choose
+                .addBlock(TestBlockDef.<TileEntityEnergyCube>of(
+                        "a",
+                        new BlockPos(1, 0, 0),
+                        // For a Mekanism block that has a block entity:
+                        mekanism.common.registries.MekanismBlocks.BASIC_ENERGY_CUBE.getBlock(),
+                        (tileEntityCube) -> {
+                            tileEntityCube.setEnergy(0, SFMMekanismCompat.createForgeEnergy(1000));
+                            SFMMekanismCompat.configureExclusiveIO(
+                                    tileEntityCube,
+                                    TransmissionType.ENERGY,
+                                    RelativeSide.BOTTOM,
+                                    DataType.OUTPUT
+                            );
+                        }
+                ))
+                .addBlock(TestBlockDef.<TileEntityEnergyCube>of(
+                        "b",
+                        new BlockPos(-1, 0, 0),
+                        mekanism.common.registries.MekanismBlocks.BASIC_ENERGY_CUBE.getBlock(),
+                        (tileEntityCube) -> SFMMekanismCompat.configureExclusiveIO(
+                                tileEntityCube,
+                                TransmissionType.ENERGY,
+                                RelativeSide.TOP,
+                                DataType.INPUT
+                        )
+                ))
+                // Pre/Post DSL lines
+                .preCondition("ONE a HAS EQ 1000 fe::")
+                .preCondition("ONE b HAS EQ 0 fe::")
+                .postCondition("ONE a HAS EQ 0 fe::")
+                .postCondition("ONE b HAS EQ 1000 fe::");
+
+        // 2) Build & run
+        new SFMDeclarativeTestBuilder(helper, spec).run();
+    }
+
 }

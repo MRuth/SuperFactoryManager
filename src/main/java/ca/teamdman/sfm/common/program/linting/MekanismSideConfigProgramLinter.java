@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 import static ca.teamdman.sfm.common.localization.LocalizationKeys.PROGRAM_WARNING_MEKANISM_BAD_SIDE_CONFIG;
 import static ca.teamdman.sfm.common.localization.LocalizationKeys.PROGRAM_WARNING_MEKANISM_USED_WITHOUT_DIRECTION;
 
-public class MekanismProgramLinter implements IProgramLinter {
+public class MekanismSideConfigProgramLinter implements IProgramLinter {
 
     @Override
     public ArrayList<TranslatableContents> gatherWarnings(

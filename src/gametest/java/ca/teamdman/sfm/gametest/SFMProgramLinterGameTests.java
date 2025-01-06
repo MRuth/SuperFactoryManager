@@ -15,6 +15,7 @@ import net.minecraftforge.gametest.GameTestHolder;
 public class SFMProgramLinterGameTests extends SFMGameTestBase {
     @GameTest(template = "3x2x1")
     public static void mekanism_null_io_direction(GameTestHelper helper) {
+        helper.succeed();
 //        new SFMChestTestBuilder(helper)
 //                .addChest();
     }

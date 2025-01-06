@@ -3,18 +3,20 @@ package ca.teamdman.sfm.common.compat;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import ca.teamdman.sfm.common.program.linting.IProgramLinter;
-import ca.teamdman.sfm.common.program.linting.MekanismProgramLinter;
+import ca.teamdman.sfm.common.program.linting.MekanismSideConfigProgramLinter;
 import ca.teamdman.sfm.common.registry.SFMResourceTypes;
 import ca.teamdman.sfm.common.resourcetype.*;
 import ca.teamdman.sfml.ast.DirectionQualifier;
 import ca.teamdman.sfml.ast.IOStatement;
 import ca.teamdman.sfml.ast.ResourceIdentifier;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.UnitDisplayUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -61,6 +63,10 @@ public class SFMMekanismCompat {
         return transmissionTypes;
     }
 
+    public static FloatingLong createForgeEnergy(long amount) {
+        return UnitDisplayUtils.EnergyUnit.FORGE_ENERGY.convertInPlaceFrom(FloatingLong.create(amount));
+    }
+
     public static String gatherInspectionResults(BlockEntity blockEntity) {
         if (!(blockEntity instanceof ISideConfiguration sideConfiguration)) {
             return "";
@@ -93,9 +99,9 @@ public class SFMMekanismCompat {
                         .append("\n");
                 sb.append("INPUT ").append(resourceTypeKey.location()).append(":: FROM target ");
                 sb.append(outputSides
-                        .stream()
-                        .map(DirectionQualifier::directionToString)
-                        .collect(Collectors.joining(", ")));
+                                  .stream()
+                                  .map(DirectionQualifier::directionToString)
+                                  .collect(Collectors.joining(", ")));
                 sb.append(" SIDE\n");
             }
 
@@ -116,9 +122,9 @@ public class SFMMekanismCompat {
                         .append("\n");
                 sb.append("OUTPUT ").append(resourceTypeKey.location()).append(":: TO target ");
                 sb.append(inputSides
-                        .stream()
-                        .map(DirectionQualifier::directionToString)
-                        .collect(Collectors.joining(", ")));
+                                  .stream()
+                                  .map(DirectionQualifier::directionToString)
+                                  .collect(Collectors.joining(", ")));
                 sb.append(" SIDE\n");
             }
         }
@@ -152,7 +158,40 @@ public class SFMMekanismCompat {
     public static void registerProgramLinters(DeferredRegister<IProgramLinter> types) {
         types.register(
                 "mekanism",
-                MekanismProgramLinter::new
+                MekanismSideConfigProgramLinter::new
         );
+    }
+
+    public static void configureTopBottomIO(TileComponentConfig config) {
+        for (TransmissionType transmissionType : TransmissionType.values()) {
+            ConfigInfo info = config.getConfig(transmissionType);
+            if (info == null) continue;
+            info.setDataType(DataType.INPUT, RelativeSide.TOP);
+            info.setDataType(DataType.OUTPUT, RelativeSide.BOTTOM);
+            info.addDisabledSides(RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.LEFT, RelativeSide.RIGHT);
+            for (RelativeSide side : RelativeSide.values()) {
+                config.sideChanged(transmissionType, side);
+            }
+        }
+    }
+
+    public static void configureExclusiveIO(
+            ISideConfiguration mekanismBlockEntity,
+            TransmissionType transmissionType,
+            RelativeSide relativeSide,
+            DataType dataType
+    ) {
+        TileComponentConfig config = mekanismBlockEntity.getConfig();
+        for (TransmissionType value : TransmissionType.values()) {
+            ConfigInfo info = config.getConfig(value);
+            if (info == null) continue;
+            for (RelativeSide side : RelativeSide.values()) {
+                info.setDataType(
+                        value == transmissionType && side == relativeSide ? dataType : DataType.NONE,
+                        side
+                );
+            }
+            config.sideChanged(value, relativeSide);
+        }
     }
 }

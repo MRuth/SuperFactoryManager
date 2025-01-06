@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/// A BlockPos passed here will not be stored raw beyond the method call.
+/// A BlockPos passed here will not be stored as a reference beyond the method call.
 /// BlockPos::asLong may be used but that's fine.
 /// It's fine to pass a MutableBlockPos here.
 @Retention(RetentionPolicy.CLASS)
