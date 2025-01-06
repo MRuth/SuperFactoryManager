@@ -12,7 +12,7 @@ public class SFMTestSpec {
     private final List<String> postConditions = new ArrayList<>();
 
     public SFMTestSpec setProgram(String program) {
-        this.program = program.stripIndent().stripTrailing();
+        this.program = program.stripTrailing().stripIndent();
         return this;
     }
 
