@@ -138,6 +138,7 @@ public class ProgramLinter {
                 .labelAccess()
                 .getLabelledPositions(labelPositionHolder)
                 .stream()
+                .filter(pair -> level.isLoaded(pair.getSecond()))
                 .filter(pair -> SFMModCompat.isMekanismBlock(level, pair.getSecond()));
 
         // add warning if interacting with mekanism but the mekanism side config is not ALLOW
@@ -207,6 +208,7 @@ public class ProgramLinter {
                 .labelAccess()
                 .getLabelledPositions(labelPositionHolder)
                 .stream()
+                .filter(pair -> level.isLoaded(pair.getSecond()))
                 .filter(pair -> SFMModCompat.isMekanismBlock(level, pair.getSecond()));
         if (directions.equals(DirectionQualifier.NULL_DIRECTION)) {
             // add warning if interacting with mekanism without specifying a side

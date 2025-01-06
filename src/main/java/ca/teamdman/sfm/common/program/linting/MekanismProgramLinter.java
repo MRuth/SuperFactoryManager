@@ -99,6 +99,7 @@ public class MekanismProgramLinter implements IProgramLinter {
                 .labelAccess()
                 .getLabelledPositions(labelPositionHolder)
                 .stream()
+                .filter(pair -> level.isLoaded(pair.getSecond()))
                 .filter(pair -> SFMModCompat.isMekanismBlock(level, pair.getSecond()));
 
         if (directions.equals(DirectionQualifier.NULL_DIRECTION)) {
