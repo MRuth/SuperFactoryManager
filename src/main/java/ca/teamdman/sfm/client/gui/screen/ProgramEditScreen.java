@@ -377,6 +377,12 @@ public class ProgramEditScreen extends Screen {
         }
 
         @Override
+        public int getInnerHeight() {
+            // TODO: fix misalignment caused by wrapping causing scroll and click inaccuracies
+            return this.font.lineHeight * this.textField.getLineCount();
+        }
+
+        @Override
         public boolean mouseDragged(
                 double mx,
                 double my,
