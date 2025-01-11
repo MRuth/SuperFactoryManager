@@ -8,6 +8,7 @@ logs/
 .project
 .conda
 
+
 logs/debug.log
 logs/latest.log
 logs/test.log
@@ -19,6 +20,7 @@ out
 *.iml
 .idea
 .idea.bak
+.idea.bak.*
 
 # gradle
 build
