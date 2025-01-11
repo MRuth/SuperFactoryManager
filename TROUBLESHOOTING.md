@@ -63,3 +63,5 @@ Downgrading to IntelliJ IDEA Community Edition `2023.3.8` has restored my abilit
 - run the `runData` gradle task to generate missing files and apply changes
 - [neoforged/RenderNurse](https://github.com/neoforged/RenderNurse/tree/main) may help with debugging graphics problems but I personally haven't tried it
 - Look at the run configuration and make sure the correct JDK and module are specified
+- If you have problems with `runClient` not working in debug mode, try it in normal play mode first. If that fails, try running the gradle task directly instead of using the IntelliJ run configuration.
+- Go to project structure and remove all the modules, remove all the run configurations, and re-import the Gradle project, then run `genIntellijRuns` 
