@@ -94,6 +94,7 @@ EVERY 20G+5 TICKS DO END
 -- Add `/sfm changelog` command
 -- Add swapping between fancy and normal cables with network tool
 -- Performance improvements by reducing memory allocations iterating block neighbours
+-- Fix inaccurate scrollbar
 
 
 ---- 4.19.1 ----
