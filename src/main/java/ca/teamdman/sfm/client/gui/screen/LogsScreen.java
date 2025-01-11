@@ -345,6 +345,13 @@ public class LogsScreen extends Screen {
         }
 
         @Override
+        public int getInnerHeight() {
+            // parent method uses this.textField.getLineCount() which is split for text wrapping
+            // we don't use the wrapped text, so we need to calculate the height ourselves to avoid overshooting
+            return this.font.lineHeight * (content.size() + 2);
+        }
+
+        @Override
         protected void renderContents(PoseStack poseStack, int mx, int my, float partialTicks) {
             Matrix4f matrix4f = poseStack.last().pose();
             if (shouldRebuildText()) {

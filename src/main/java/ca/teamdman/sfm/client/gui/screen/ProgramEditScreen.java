@@ -378,8 +378,9 @@ public class ProgramEditScreen extends Screen {
 
         @Override
         public int getInnerHeight() {
-            // TODO: fix misalignment caused by wrapping causing scroll and click inaccuracies
-            return this.font.lineHeight * this.textField.getLineCount();
+            // parent method uses this.textField.getLineCount() which is split for text wrapping
+            // we don't use the wrapped text, so we need to calculate the height ourselves to avoid overshooting
+            return this.font.lineHeight * (lastProgramWithSyntaxHighlighting.size() + 2);
         }
 
         @Override
@@ -440,7 +441,7 @@ public class ProgramEditScreen extends Screen {
             for (int line = 0; line < lines.size(); ++line) {
                 var componentColoured = lines.get(line);
                 int lineLength = componentColoured.getString().length();
-                int lineHeight = this.font.lineHeight + (line == 0 ? 2 : 0);
+                int lineHeight = this.font.lineHeight;
                 boolean cursorOnThisLine = isCursorVisible
                                            && cursorIndex >= charCount
                                            && cursorIndex <= charCount + lineLength;
