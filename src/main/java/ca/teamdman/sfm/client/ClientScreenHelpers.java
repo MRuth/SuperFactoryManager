@@ -44,7 +44,7 @@ public class ClientScreenHelpers {
             String initialContent,
             Consumer<String> saveCallback
     ) {
-        ProgramEditScreen screen = new ProgramEditScreen(initialContent, saveCallback);
+        ProgramEditScreenV2 screen = new ProgramEditScreenV2(initialContent, saveCallback);
         setOrPushScreen(screen);
         screen.scrollToTop();
     }

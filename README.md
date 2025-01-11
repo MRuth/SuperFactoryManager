@@ -31,3 +31,11 @@ Get the [VSCode extension](https://marketplace.visualstudio.com/items?itemName=T
 for syntax highlighting 🌈
 
 ![](media/vscode%20syntax.png)
+
+## Troubleshooting
+
+SFM is a fun project to work on!
+
+However, sometimes things get in the way.
+
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for some common problems and resolutions.
