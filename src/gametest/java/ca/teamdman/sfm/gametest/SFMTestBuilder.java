@@ -67,7 +67,7 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                         expectedStack.isEmpty() && actualStack.isEmpty() || ItemStack.isSame(
                                 expectedStack,
                                 actualStack
-                        ),
+                        ) && expectedStack.getCount() == actualStack.getCount(),
                         String.format("Expected %s in chest %s slot %d, but found %s",
                                       expectedStack, name, i, actualStack
                         )
