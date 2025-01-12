@@ -5,6 +5,7 @@ import ca.teamdman.sfm.common.recipe.PrintingPressFinishedRecipe;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.registry.SFMRecipeSerializers;
+import ca.teamdman.sfm.datagen.version_plumbing.MCVersionAgnosticRecipeDataGen;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -16,15 +17,14 @@ import net.minecraftforge.data.event.GatherDataEvent;
 
 import java.util.function.Consumer;
 
-public class SFMRecipes extends RecipeProvider {
+public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
     public SFMRecipes(GatherDataEvent event) {
-        super(event.getGenerator());
+        super(event, SFM.MOD_ID);
     }
 
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder
-                .shaped(SFMBlocks.CABLE_BLOCK.get(), 16)
+        beginShaped(SFMBlocks.CABLE_BLOCK.get(), 16)
                 .define('D', Tags.Items.DYES_BLACK)
                 .define('G', Items.LIGHT_WEIGHTED_PRESSURE_PLATE)
                 .define('C', Tags.Items.CHESTS)
@@ -36,22 +36,19 @@ public class SFMRecipes extends RecipeProvider {
                 .unlockedBy("has_chest", RecipeProvider.has(Tags.Items.CHESTS))
                 .save(consumer);
 
-        ShapelessRecipeBuilder
-                .shapeless(SFMBlocks.FANCY_CABLE_BLOCK.get())
+        beginShapeless(SFMBlocks.FANCY_CABLE_BLOCK.get(), 1)
                 .requires(SFMBlocks.CABLE_BLOCK.get(), 1)
                 .unlockedBy("has_iron_ingot", RecipeProvider.has(Items.IRON_INGOT))
                 .unlockedBy("has_chest", RecipeProvider.has(Tags.Items.CHESTS))
                 .save(consumer);
 
-        ShapelessRecipeBuilder
-                .shapeless(SFMBlocks.CABLE_BLOCK.get())
+        beginShapeless(SFMBlocks.CABLE_BLOCK.get(), 1)
                 .requires(SFMBlocks.FANCY_CABLE_BLOCK.get(), 1)
                 .unlockedBy("has_iron_ingot", RecipeProvider.has(Items.IRON_INGOT))
                 .unlockedBy("has_chest", RecipeProvider.has(Tags.Items.CHESTS))
                 .save(consumer, new ResourceLocation(SFM.MOD_ID, "fancy_to_cable"));
 
-        ShapedRecipeBuilder
-                .shaped(SFMBlocks.MANAGER_BLOCK.get())
+        beginShaped(SFMBlocks.MANAGER_BLOCK.get(), 1)
                 .define('A', Tags.Items.CHESTS)
                 .define('B', SFMBlocks.CABLE_BLOCK.get())
                 .define('C', Items.REPEATER)
@@ -62,8 +59,7 @@ public class SFMRecipes extends RecipeProvider {
                 .pattern("ABA")
                 .save(consumer);
 
-        ShapedRecipeBuilder
-                .shaped(SFMBlocks.TUNNELLED_MANAGER_BLOCK.get())
+        beginShaped(SFMBlocks.TUNNELLED_MANAGER_BLOCK.get(), 1)
                 .define('M', SFMBlocks.MANAGER_BLOCK.get())
                 .define('H', Items.HOPPER)
                 .unlockedBy("has_iron_ingot", RecipeProvider.has(Items.IRON_INGOT))
@@ -73,8 +69,7 @@ public class SFMRecipes extends RecipeProvider {
                 .pattern("   ")
                 .save(consumer);
 
-        ShapedRecipeBuilder
-                .shaped(SFMItems.LABEL_GUN_ITEM.get())
+        beginShaped(SFMItems.LABEL_GUN_ITEM.get(), 1)
                 .define('S', Tags.Items.RODS_WOODEN)
                 .define('B', Tags.Items.DYES_BLACK)
                 .define('L', Tags.Items.DYES_BLUE)
@@ -86,8 +81,7 @@ public class SFMRecipes extends RecipeProvider {
                 .save(consumer);
 
 
-        ShapedRecipeBuilder
-                .shaped(SFMItems.NETWORK_TOOL_ITEM.get())
+        beginShaped(SFMItems.NETWORK_TOOL_ITEM.get(), 1)
                 .define('S', Items.IRON_INGOT)
                 .define('L', Items.REDSTONE_LAMP)
                 .define('P', Items.HEAVY_WEIGHTED_PRESSURE_PLATE)
@@ -99,8 +93,7 @@ public class SFMRecipes extends RecipeProvider {
                 .save(consumer);
 
 
-        ShapedRecipeBuilder
-                .shaped(SFMItems.DISK_ITEM.get())
+        beginShaped(SFMItems.DISK_ITEM.get(), 1)
                 .define('R', Blocks.REDSTONE_BLOCK)
                 .define('e', Items.REDSTONE)
                 .define('d', Items.REPEATER)
@@ -114,8 +107,7 @@ public class SFMRecipes extends RecipeProvider {
                 .pattern("ede")
                 .save(consumer);
 
-        ShapedRecipeBuilder
-                .shaped(SFMItems.WATER_TANK_ITEM.get())
+        beginShaped(SFMItems.WATER_TANK_ITEM.get(), 1)
                 .define('b', Items.WATER_BUCKET)
                 .define('g', Items.IRON_BARS)
                 .define('p', Items.LIGHT_WEIGHTED_PRESSURE_PLATE)
@@ -125,15 +117,13 @@ public class SFMRecipes extends RecipeProvider {
                 .pattern("gbg")
                 .save(consumer);
 
-        ShapelessRecipeBuilder
-                .shapeless(SFMItems.EXPERIENCE_GOOP_ITEM.get())
+        beginShapeless(SFMItems.EXPERIENCE_GOOP_ITEM.get(), 1)
                 .requires(SFMItems.EXPERIENCE_SHARD_ITEM.get(), 9)
                 .unlockedBy("has_experience_shard", RecipeProvider.has(SFMItems.EXPERIENCE_SHARD_ITEM.get()))
                 .save(consumer);
 
 
-        ShapedRecipeBuilder
-                .shaped(SFMItems.PRINTING_PRESS_ITEM.get())
+        beginShaped(SFMItems.PRINTING_PRESS_ITEM.get(), 1)
                 .define('a', Items.ANVIL)
                 .define('i', Tags.Items.DYES_BLACK)
                 .define('p', Items.LIGHT_WEIGHTED_PRESSURE_PLATE)

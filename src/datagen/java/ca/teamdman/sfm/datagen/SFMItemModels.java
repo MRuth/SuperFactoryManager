@@ -3,19 +3,19 @@ package ca.teamdman.sfm.datagen;
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
+import ca.teamdman.sfm.datagen.version_plumbing.MCVersionAgnosticItemModelsDataGen;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.RegistryObject;
 
-public class SFMItemModels extends ItemModelProvider {
+public class SFMItemModels extends MCVersionAgnosticItemModelsDataGen {
     public SFMItemModels(
             GatherDataEvent event
     ) {
-        super(event.getGenerator(), SFM.MOD_ID, event.getExistingFileHelper());
+        super(event, SFM.MOD_ID);
     }
 
 

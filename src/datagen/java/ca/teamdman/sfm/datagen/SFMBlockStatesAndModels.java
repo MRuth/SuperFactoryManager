@@ -5,6 +5,7 @@ import ca.teamdman.sfm.common.block.FancyCableBlock;
 import ca.teamdman.sfm.common.block.WaterTankBlock;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.util.SFMDirections;
+import ca.teamdman.sfm.datagen.version_plumbing.MCVersionAgnosticBlockStatesAndModelsDataGen;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -13,11 +14,10 @@ import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.data.event.GatherDataEvent;
 
-public class SFMBlockStatesAndModels extends BlockStateProvider {
+public class SFMBlockStatesAndModels extends MCVersionAgnosticBlockStatesAndModelsDataGen {
     public SFMBlockStatesAndModels(GatherDataEvent event) {
-        super(event.getGenerator(), SFM.MOD_ID, event.getExistingFileHelper());
+        super(event, SFM.MOD_ID);
     }
-
 
     @Override
     protected void registerStatesAndModels() {

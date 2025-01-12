@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains some example scripts for getting familiar with the langauge that SFM uses.
+This directory contains some example scripts for getting familiar with the language that SFM uses.
 
 ## Basics
 

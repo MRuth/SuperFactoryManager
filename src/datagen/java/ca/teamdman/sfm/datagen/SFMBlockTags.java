@@ -2,17 +2,17 @@ package ca.teamdman.sfm.datagen;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
-import net.minecraft.data.tags.BlockTagsProvider;
+import ca.teamdman.sfm.datagen.version_plumbing.MCVersionAgnosticBlockTagsDataGen;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.data.event.GatherDataEvent;
 
-public class SFMBlockTags extends BlockTagsProvider {
+public class SFMBlockTags extends MCVersionAgnosticBlockTagsDataGen {
     public SFMBlockTags(GatherDataEvent event) {
-        super(event.getGenerator(), SFM.MOD_ID, event.getExistingFileHelper());
+        super(event, SFM.MOD_ID);
     }
 
     @Override
-    protected void addTags() {
+    protected void addBlockTags() {
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(SFMBlocks.CABLE_BLOCK.get())
                 .add(SFMBlocks.CABLE_FACADE_BLOCK.get())

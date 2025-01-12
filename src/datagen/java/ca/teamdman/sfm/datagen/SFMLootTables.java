@@ -1,66 +1,34 @@
 package ca.teamdman.sfm.datagen;
 
+import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
-import com.google.common.collect.Lists;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.resources.ResourceLocation;
+import ca.teamdman.sfm.datagen.version_plumbing.MCVersionAgnosticLootTablesDataGen;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.registries.RegistryObject;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.Set;
 
-public class SFMLootTables extends LootTableProvider {
+public class SFMLootTables extends MCVersionAgnosticLootTablesDataGen {
 
     public SFMLootTables(GatherDataEvent event) {
-        super(event.getGenerator());
+        super(event, SFM.MOD_ID);
     }
 
     @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
-        return Lists.newArrayList(Pair.of(BlockLoot::new, LootContextParamSets.BLOCK));
+    protected void populate(BlockLootWriter writer) {
+        writer.dropSelf(SFMBlocks.MANAGER_BLOCK);
+        writer.dropSelf(SFMBlocks.TUNNELLED_MANAGER_BLOCK);
+        writer.dropSelf(SFMBlocks.CABLE_BLOCK);
+        writer.dropOther(SFMBlocks.CABLE_FACADE_BLOCK, SFMBlocks.CABLE_BLOCK);
+        writer.dropSelf(SFMBlocks.FANCY_CABLE_BLOCK);
+        writer.dropOther(SFMBlocks.FANCY_CABLE_FACADE_BLOCK, SFMBlocks.FANCY_CABLE_BLOCK);
+        writer.dropSelf(SFMBlocks.PRINTING_PRESS_BLOCK);
+        writer.dropSelf(SFMBlocks.WATER_TANK_BLOCK);
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext tracker) {
-        map.forEach((k, v) -> LootTables.validate(tracker, k, v));
-    }
-
-
-    private static class BlockLoot extends net.minecraft.data.loot.BlockLoot {
-
-        @Override
-        protected void addTables() {
-            dropSelf(SFMBlocks.MANAGER_BLOCK.get());
-            dropSelf(SFMBlocks.TUNNELLED_MANAGER_BLOCK.get());
-            dropSelf(SFMBlocks.CABLE_BLOCK.get());
-            dropOther(SFMBlocks.CABLE_FACADE_BLOCK.get(), SFMBlocks.CABLE_BLOCK.get());
-            dropSelf(SFMBlocks.FANCY_CABLE_BLOCK.get());
-            dropSelf(SFMBlocks.PRINTING_PRESS_BLOCK.get());
-            dropSelf(SFMBlocks.WATER_TANK_BLOCK.get());
-        }
-
-        @Override
-        protected Iterable<Block> getKnownBlocks() {
-            return Arrays.asList(
-                    SFMBlocks.MANAGER_BLOCK.get(),
-                    SFMBlocks.TUNNELLED_MANAGER_BLOCK.get(),
-                    SFMBlocks.CABLE_BLOCK.get(),
-                    SFMBlocks.CABLE_FACADE_BLOCK.get(),
-                    SFMBlocks.FANCY_CABLE_BLOCK.get(),
-                    SFMBlocks.WATER_TANK_BLOCK.get(),
-                    SFMBlocks.PRINTING_PRESS_BLOCK.get()
-            );
-        }
+    protected Set<? extends RegistryObject<Block>> getExpectedBlocks() {
+        return SFMBlocks.getBlocks();
     }
 }

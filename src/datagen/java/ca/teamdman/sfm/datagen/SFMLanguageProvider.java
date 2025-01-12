@@ -2,7 +2,7 @@ package ca.teamdman.sfm.datagen;
 
 import ca.teamdman.sfm.SFM;
 import ca.teamdman.sfm.common.localization.LocalizationKeys;
-import net.minecraftforge.common.data.LanguageProvider;
+import ca.teamdman.sfm.datagen.version_plumbing.MCVersionAgnosticLanguageDataGen;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SFMLanguageProvider extends LanguageProvider {
+public class SFMLanguageProvider extends MCVersionAgnosticLanguageDataGen {
     public SFMLanguageProvider(GatherDataEvent event) {
-        super(event.getGenerator(), SFM.MOD_ID, "en_us");
+        super(event, SFM.MOD_ID, "en_us");
     }
 
     @Override
