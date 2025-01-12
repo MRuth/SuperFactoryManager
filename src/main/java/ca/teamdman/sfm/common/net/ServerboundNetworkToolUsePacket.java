@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
@@ -90,7 +91,7 @@ public record ServerboundNetworkToolUsePacket(
                         payload.append(entity).append("\n");
                     }
                     payload.append("---- capability directions ----\n");
-                    for (var cap : SFMModCompat.getCapabilitiesUnsafe()) {
+                    for (var cap : (Iterable<Capability<?>>) SFMResourceTypes.getCapabilities()::iterator) {
                         String directions = DirectionQualifier.EVERY_DIRECTION
                                 .stream()
                                 .filter(dir -> entity.getCapability(cap, dir).isPresent())
