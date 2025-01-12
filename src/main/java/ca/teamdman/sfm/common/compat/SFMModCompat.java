@@ -34,6 +34,7 @@ public class SFMModCompat {
 
     /**
      * Do not modify the result of this since it returns a direct reference to the cache
+     * TODO: modify this to populate with a registry crawl on the first call, we don't want to hardcode which would make addon life harder
      */
     public static List<Capability<?>> getCapabilitiesUnsafe() {
         if (CAPABILITIES.isEmpty()) {
