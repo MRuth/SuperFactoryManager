@@ -8,7 +8,6 @@ import ca.teamdman.sfm.common.util.SFMDirections;
 import ca.teamdman.sfm.datagen.version_plumbing.MCVersionAgnosticBlockStatesAndModelsDataGen;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -122,7 +121,8 @@ public class SFMBlockStatesAndModels extends MCVersionAgnosticBlockStatesAndMode
                 .end()
                 .texture("cable", modLoc("block/fancy_cable"))
                 .texture("particle", modLoc("block/fancy_cable"));
-        var connectionModel = models().withExistingParent(modLoc("block/fancy_cable_connection").getPath(), "block/block")
+        var connectionModel = models()
+                .withExistingParent(modLoc("block/fancy_cable_connection").getPath(), "block/block")
                 .element()
                 .from(5, 5, 0)
                 .to(11, 11, 5)
@@ -142,7 +142,7 @@ public class SFMBlockStatesAndModels extends MCVersionAgnosticBlockStatesAndMode
                         case UP:
                         case DOWN: {
                             faceBuilder.uvs(0, 0, 5, 6)
-                                .rotation(ModelBuilder.FaceRotation.CLOCKWISE_90);
+                                    .rotation(ModelBuilder.FaceRotation.CLOCKWISE_90);
                             break;
                         }
                     }
@@ -166,7 +166,7 @@ public class SFMBlockStatesAndModels extends MCVersionAgnosticBlockStatesAndMode
                 .end();
 
         // Parts (connections)
-        for (Direction direction: SFMDirections.DIRECTIONS) {
+        for (Direction direction : SFMDirections.DIRECTIONS) {
             var rotX = 0;
             var rotY = 0;
 

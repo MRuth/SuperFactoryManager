@@ -43,13 +43,16 @@ public class SFMItemModels extends MCVersionAgnosticItemModelsDataGen {
     }
 
     private void justParent(
-            RegistryObject<? extends Item> item, RegistryObject<? extends Block> block
+            RegistryObject<? extends Item> item,
+            RegistryObject<? extends Block> block
     ) {
         justParent(item, block, "");
     }
 
     private void justParent(
-            RegistryObject<? extends Item> item, RegistryObject<? extends Block> block, String extra
+            RegistryObject<? extends Item> item,
+            RegistryObject<? extends Block> block,
+            String extra
     ) {
         withExistingParent(block.getId().getPath(), SFM.MOD_ID + ":block/" + item.getId().getPath() + extra);
     }
