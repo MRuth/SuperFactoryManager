@@ -16,6 +16,7 @@ import ca.teamdman.sfm.common.program.linting.GatherWarningsProgramBehaviour;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.util.SFMDirections;
+import ca.teamdman.sfm.common.util.SFMItemUtils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -1048,7 +1049,7 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
         // assert the form was extracted
         assertTrue(printingPress.getForm().isEmpty(), "Form was not extracted");
         assertTrue(!player.getMainHandItem().isEmpty(), "Form was not given to player");
-        assertTrue(ItemStack.isSameItemSameTags(player.getMainHandItem(), form), "Form doesn't match");
+        assertTrue(SFMItemUtils.isSameItemSameTags(player.getMainHandItem(), form), "Form doesn't match");
         // pull out item
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         // right click on printing press
@@ -1185,7 +1186,7 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                     )
             );
             ItemStack held = player.getMainHandItem();
-            if (ItemStack.isSameItemSameTags(held, reference)) {
+            if (SFMItemUtils.isSameItemSameTags(held, reference)) {
                 var chest = getItemHandler(helper, chestPos);
                 chest.insertItem(0, held, false);
                 assertTrue(printingPress.getInk().getCount() == 9, "Ink was not consumed properly");
@@ -1226,7 +1227,7 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                             ItemEntity.class,
                             new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3)
                     );
-            if (found.stream().anyMatch(e -> ItemStack.isSameItemSameTags(e.getItem(), FormItem.getForm(disk)))) {
+            if (found.stream().anyMatch(e -> SFMItemUtils.isSameItemSameTags(e.getItem(), FormItem.getForm(disk)))) {
                 helper.succeed();
             } else {
                 helper.fail("no form found");
@@ -1258,7 +1259,7 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                             ItemEntity.class,
                             new AABB(helper.absolutePos(new BlockPos(1, 4, 1))).inflate(3)
                     );
-            if (found.stream().anyMatch(e -> ItemStack.isSameItemSameTags(e.getItem(), FormItem.getForm(reference)))) {
+            if (found.stream().anyMatch(e -> SFMItemUtils.isSameItemSameTags(e.getItem(), FormItem.getForm(reference)))) {
                 helper.succeed();
             } else {
                 helper.fail("no form found");
@@ -1297,10 +1298,10 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                     );
             boolean foundDisenchantedAxe = found
                     .stream()
-                    .anyMatch(e -> ItemStack.isSameItemSameTags(e.getItem(), new ItemStack(Items.GOLDEN_AXE)));
+                    .anyMatch(e -> SFMItemUtils.isSameItemSameTags(e.getItem(), new ItemStack(Items.GOLDEN_AXE)));
             boolean foundEfficiencyBook = found
                     .stream()
-                    .anyMatch(e -> ItemStack.isSameItemSameTags(
+                    .anyMatch(e -> SFMItemUtils.isSameItemSameTags(
                             e.getItem(),
                             EnchantedBookItem.createForEnchantment(new EnchantmentInstance(
                                     Enchantments.BLOCK_EFFICIENCY,
@@ -1309,7 +1310,7 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                     ));
             boolean foundSharpnessBook = found
                     .stream()
-                    .anyMatch(e -> ItemStack.isSameItemSameTags(
+                    .anyMatch(e -> SFMItemUtils.isSameItemSameTags(
                             e.getItem(),
                             EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.SHARPNESS, 2))
                     ));
@@ -3021,7 +3022,7 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                 ItemStack insertParamCopy = insertParam.copy();
                 ItemStack ignoredInsertResult = inv.insertItem(0, insertParam, false);
                 assertTrue(
-                        ItemStack.isSame(insertParam, insertParamCopy) && insertParam.getCount() == stackSize,
+                        SFMItemUtils.isSameItemSameAmount(insertParam, insertParamCopy),
                         "stackSize="
                         + stackSize
                         + " insert param should not be modified after insertion, is now "
@@ -3035,14 +3036,14 @@ public class SFMCorrectnessGameTests extends SFMGameTestBase {
                 );
                 ItemStack extractResult = inv.extractItem(0, stackSize, false);
                 assertTrue(
-                        ItemStack.isSame(insertParam, insertParamCopy) && insertParam.getCount() == stackSize,
+                        SFMItemUtils.isSameItemSameAmount(insertParam, insertParamCopy),
                         "stackSize="
                         + stackSize
                         + " insert param should not be modified after extraction, is now "
                         + insertParam
                 );
                 assertTrue(
-                        ItemStack.isSame(insertParam, extractResult) && insertParam.getCount() == stackSize,
+                        SFMItemUtils.isSameItemSameAmount(insertParam, extractResult),
                         "stackSize=" + stackSize + " extract result should match insertion param"
                 );
             }

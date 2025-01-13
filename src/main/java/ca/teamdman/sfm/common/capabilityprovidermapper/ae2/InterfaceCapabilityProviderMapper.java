@@ -12,6 +12,7 @@ import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.capabilities.Capabilities;
 import ca.teamdman.sfm.common.capabilityprovidermapper.CapabilityProviderMapper;
 import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.SFMItemUtils;
 import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -272,7 +273,7 @@ public class InterfaceCapabilityProviderMapper implements CapabilityProviderMapp
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return ItemStack.isSameItemSameTags(this.getStackInSlot(slot), stack);
+            return SFMItemUtils.isSameItemSameTags(this.getStackInSlot(slot), stack);
         }
 
         @Override

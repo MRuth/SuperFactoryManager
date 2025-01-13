@@ -5,6 +5,7 @@ import ca.teamdman.sfm.common.facade.FacadePlanner;
 import ca.teamdman.sfm.common.facade.IFacadePlan;
 import ca.teamdman.sfm.common.net.ServerboundFacadePacket;
 import ca.teamdman.sfm.common.registry.SFMPackets;
+import ca.teamdman.sfm.common.util.SFMPlayerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +18,7 @@ public class ClientFacadeWarningHelper {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         assert player != null;
-        Level level = player.level;
+        Level level = SFMPlayerUtils.getLevel(player);
 
         IFacadePlan facadePlan = FacadePlanner.getFacadePlan(
                 player,

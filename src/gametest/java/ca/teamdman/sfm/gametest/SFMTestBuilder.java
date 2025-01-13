@@ -5,6 +5,7 @@ import ca.teamdman.sfm.common.program.LabelPositionHolder;
 import ca.teamdman.sfm.common.registry.SFMBlocks;
 import ca.teamdman.sfm.common.registry.SFMItems;
 import ca.teamdman.sfm.common.util.NotStored;
+import ca.teamdman.sfm.common.util.SFMItemUtils;
 import ca.teamdman.sfm.common.util.Stored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestAssertException;
@@ -64,10 +65,10 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                 ItemStack expectedStack = i < expected.size() ? expected.get(i) : ItemStack.EMPTY;
                 ItemStack actualStack = chest.getStackInSlot(i);
                 assertTrue(
-                        expectedStack.isEmpty() && actualStack.isEmpty() || ItemStack.isSame(
+                        expectedStack.isEmpty() && actualStack.isEmpty() || SFMItemUtils.isSameItemSameAmount(
                                 expectedStack,
                                 actualStack
-                        ) && expectedStack.getCount() == actualStack.getCount(),
+                        ),
                         String.format("Expected %s in chest %s slot %d, but found %s",
                                       expectedStack, name, i, actualStack
                         )
@@ -185,7 +186,7 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                         // take out the moved item
                         ItemStack undo = dest.getValue().extractItem(destSlot, taken.getCount(), false);
                         assertTrue(
-                                ItemStack.isSame(undo, taken) && undo.getCount() == taken.getCount(),
+                                 SFMItemUtils.isSameItemSameAmount(undo, taken),
                                 "Chaos failed to take the moved item, took "
                                 + undo
                                 + " from "

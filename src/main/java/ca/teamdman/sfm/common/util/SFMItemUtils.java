@@ -6,6 +6,7 @@ import ca.teamdman.sfm.common.localization.LocalizationKeys;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.List;
@@ -56,5 +57,16 @@ public class SFMItemUtils {
             start = start.append(Component.literal("=").withStyle(color));
         }
         return start;
+    }
+
+    @MCVersionDependentBehaviour
+    public static boolean isSameItem(ItemStack a, ItemStack b) {
+        return ItemStack.isSame(a,b);
+    }
+    public static boolean isSameItemSameTags(ItemStack a, ItemStack b) {
+        return ItemStack.isSameItemSameTags(a,b);
+    }
+    public static boolean isSameItemSameAmount(ItemStack a, ItemStack b) {
+        return isSameItem(a,b) && a.getCount() == b.getCount();
     }
 }
