@@ -97,7 +97,7 @@
   "gui.sfm.manager.state.no_disk": "missing disk",
   "gui.sfm.manager.state.no_program": "no program",
   "gui.sfm.manager.state.running": "running",
-  "gui.sfm.manager.status.fix": "Cleaning up labels!",
+  "gui.sfm.manager.status.fix": "Fixing problems!",
   "gui.sfm.manager.status.loaded_clipboard": "Loaded from clipboard!",
   "gui.sfm.manager.status.rebuild": "Rebuilding cache!",
   "gui.sfm.manager.status.reset": "Reset program and labels!",

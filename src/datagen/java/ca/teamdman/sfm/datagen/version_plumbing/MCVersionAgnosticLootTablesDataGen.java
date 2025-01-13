@@ -13,6 +13,7 @@ import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.RegistryObject;
@@ -103,7 +104,8 @@ public abstract class MCVersionAgnosticLootTablesDataGen extends LootTableProvid
         public void apply(BiConsumer<ResourceLocation, LootTable.Builder> writer) {
             var pool = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
-                    .add(LootItem.lootTableItem(other.get()));
+                    .add(LootItem.lootTableItem(other.get()))
+                    .when(ExplosionCondition.survivesExplosion());
             writer.accept(block.get().getLootTable(), LootTable.lootTable().withPool(pool));
         }
     }
