@@ -185,7 +185,7 @@ public abstract class SFMTestBuilder extends SFMGameTestBase {
                         // take out the moved item
                         ItemStack undo = dest.getValue().extractItem(destSlot, taken.getCount(), false);
                         assertTrue(
-                                ItemStack.isSame(undo, taken),
+                                ItemStack.isSame(undo, taken) && undo.getCount() == taken.getCount(),
                                 "Chaos failed to take the moved item, took "
                                 + undo
                                 + " from "
