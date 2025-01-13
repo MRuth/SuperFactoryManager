@@ -14,8 +14,10 @@ public abstract class MCVersionAgnosticBlockTagsDataGen extends BlockTagsProvide
                 event.getExistingFileHelper()
         );
     }
+
     protected abstract void addBlockTags();
 
+    @MCVersionDependentBehaviour
     @Override
     protected void addTags() {
         this.addBlockTags();

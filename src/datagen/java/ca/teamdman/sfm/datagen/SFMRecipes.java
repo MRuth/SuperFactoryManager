@@ -23,7 +23,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void populate(Consumer<FinishedRecipe> writer) {
         beginShaped(SFMBlocks.CABLE_BLOCK.get(), 16)
                 .define('D', Tags.Items.DYES_BLACK)
                 .define('G', Items.LIGHT_WEIGHTED_PRESSURE_PLATE)
@@ -34,19 +34,19 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern("DGD")
                 .unlockedBy("has_iron_ingot", RecipeProvider.has(Items.IRON_INGOT))
                 .unlockedBy("has_chest", RecipeProvider.has(Tags.Items.CHESTS))
-                .save(consumer);
+                .save(writer);
 
         beginShapeless(SFMBlocks.FANCY_CABLE_BLOCK.get(), 1)
                 .requires(SFMBlocks.CABLE_BLOCK.get(), 1)
                 .unlockedBy("has_iron_ingot", RecipeProvider.has(Items.IRON_INGOT))
                 .unlockedBy("has_chest", RecipeProvider.has(Tags.Items.CHESTS))
-                .save(consumer);
+                .save(writer);
 
         beginShapeless(SFMBlocks.CABLE_BLOCK.get(), 1)
                 .requires(SFMBlocks.FANCY_CABLE_BLOCK.get(), 1)
                 .unlockedBy("has_iron_ingot", RecipeProvider.has(Items.IRON_INGOT))
                 .unlockedBy("has_chest", RecipeProvider.has(Tags.Items.CHESTS))
-                .save(consumer, new ResourceLocation(SFM.MOD_ID, "fancy_to_cable"));
+                .save(writer, new ResourceLocation(SFM.MOD_ID, "fancy_to_cable"));
 
         beginShaped(SFMBlocks.MANAGER_BLOCK.get(), 1)
                 .define('A', Tags.Items.CHESTS)
@@ -57,7 +57,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("ABA")
-                .save(consumer);
+                .save(writer);
 
         beginShaped(SFMBlocks.TUNNELLED_MANAGER_BLOCK.get(), 1)
                 .define('M', SFMBlocks.MANAGER_BLOCK.get())
@@ -67,7 +67,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern("M  ")
                 .pattern("H  ")
                 .pattern("   ")
-                .save(consumer);
+                .save(writer);
 
         beginShaped(SFMItems.LABEL_GUN_ITEM.get(), 1)
                 .define('S', Tags.Items.RODS_WOODEN)
@@ -78,7 +78,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern(" LC")
                 .pattern(" SB")
                 .pattern("S  ")
-                .save(consumer);
+                .save(writer);
 
 
         beginShaped(SFMItems.NETWORK_TOOL_ITEM.get(), 1)
@@ -90,7 +90,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern(" LC")
                 .pattern(" SP")
                 .pattern("S  ")
-                .save(consumer);
+                .save(writer);
 
 
         beginShaped(SFMItems.DISK_ITEM.get(), 1)
@@ -105,7 +105,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern("pbp")
                 .pattern("aRc")
                 .pattern("ede")
-                .save(consumer);
+                .save(writer);
 
         beginShaped(SFMItems.WATER_TANK_ITEM.get(), 1)
                 .define('b', Items.WATER_BUCKET)
@@ -115,12 +115,12 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern("gbg")
                 .pattern("gpg")
                 .pattern("gbg")
-                .save(consumer);
+                .save(writer);
 
         beginShapeless(SFMItems.EXPERIENCE_GOOP_ITEM.get(), 1)
                 .requires(SFMItems.EXPERIENCE_SHARD_ITEM.get(), 9)
                 .unlockedBy("has_experience_shard", RecipeProvider.has(SFMItems.EXPERIENCE_SHARD_ITEM.get()))
-                .save(consumer);
+                .save(writer);
 
 
         beginShaped(SFMItems.PRINTING_PRESS_ITEM.get(), 1)
@@ -134,10 +134,10 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
                 .pattern("pip")
                 .pattern("sas")
                 .pattern("gxg")
-                .save(consumer);
+                .save(writer);
 
         addPrintingPressRecipe(
-                consumer,
+                writer,
                 new ResourceLocation("sfm", "written_book_copy"),
                 Ingredient.of(Items.WRITTEN_BOOK),
                 Ingredient.of(Tags.Items.DYES_BLACK),
@@ -145,7 +145,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
         );
 
         addPrintingPressRecipe(
-                consumer,
+                writer,
                 new ResourceLocation("sfm", "enchanted_book_copy"),
                 Ingredient.of(Items.ENCHANTED_BOOK),
                 Ingredient.of(SFMItems.EXPERIENCE_GOOP_ITEM.get()),
@@ -153,7 +153,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
         );
 
         addPrintingPressRecipe(
-                consumer,
+                writer,
                 new ResourceLocation("sfm", "map_copy"),
                 Ingredient.of(Items.FILLED_MAP),
                 Ingredient.of(Tags.Items.DYES_BLACK),
@@ -161,7 +161,7 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
         );
 
         addPrintingPressRecipe(
-                consumer,
+                writer,
                 new ResourceLocation("sfm", "program_copy"),
                 Ingredient.of(SFMItems.DISK_ITEM.get()),
                 Ingredient.of(Tags.Items.DYES_BLACK),
@@ -170,10 +170,10 @@ public class SFMRecipes extends MCVersionAgnosticRecipeDataGen {
 
         SpecialRecipeBuilder
                 .special(SFMRecipeSerializers.DISK_RESET.get())
-                .save(consumer, SFMRecipeSerializers.DISK_RESET.getId().getPath());
+                .save(writer, SFMRecipeSerializers.DISK_RESET.getId().getPath());
         SpecialRecipeBuilder
                 .special(SFMRecipeSerializers.LABEL_GUN_RESET.get())
-                .save(consumer, SFMRecipeSerializers.LABEL_GUN_RESET.getId().getPath());
+                .save(writer, SFMRecipeSerializers.LABEL_GUN_RESET.getId().getPath());
     }
 
     private void addPrintingPressRecipe(
